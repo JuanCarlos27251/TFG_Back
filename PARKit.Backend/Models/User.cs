@@ -15,14 +15,20 @@ namespace PARKit.Backend.Models
 
 
         [Required]
-        public string Name {get;set;}
+        public string Name {get;set;} = string.Empty;
         [Required]
-        public string Email {get;set;}
+        public string Email {get;set;} = string.Empty;
         [Required]
-        public string PasswordHash{get;set;}
+        public string PasswordHash{get;set;} = string.Empty;
         public DateTime CreatedAT {get;set;} = DateTime.UtcNow;
+        public bool IsActive{get;set;} = true;
+        public string? Phone {get;set;}
 
         [Required]
-        public UserRole Role {get;set;}
+        public string Role {get;set;} =string.Empty;
+
+        [ForeignKey("Company")]
+        public int? CompanyId {get;set;}
+        
     }
 }

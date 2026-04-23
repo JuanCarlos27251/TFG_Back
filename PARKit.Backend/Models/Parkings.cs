@@ -10,9 +10,14 @@ namespace PARKit.Backend.Models
         [Key]
         public int Id {get;set;}
 
+        [ForeignKey("Company")]
+        public int? CompanyId {get;set;}
+
         [Required]
-        public string Name {get;set;}
+        public string Name {get;set;} = string.Empty;
         public string? Description {get;set;}
+        [Required]
+        public string Address {get;set;} = string.Empty;
         [Required]
         public  double Latitude {get;set;}
         [Required]
@@ -21,6 +26,8 @@ namespace PARKit.Backend.Models
         public ParkingType Type {get;set;}
         [Required]
         public bool IsActive{get;set;}
+        public string? ImageUrl{get; set;}
+        public string? GeometryData {get;set;}
 
         public DateTime CreatedAt {get;set;} = DateTime.UtcNow;
 

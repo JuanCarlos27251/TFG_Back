@@ -15,12 +15,16 @@ namespace PARKit.Backend.Models
 
 
         [Required]
-        public string SpotNumber {get;set;}
+        public string SpotNumber {get;set;} = string.Empty;
 
         [Required]
         public SpotStatus Status {get;set;}
         
         public DateTime LastUpdated {get;set;} = DateTime.UtcNow;
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+        [Required]
+        public string Type {get;set;} = string.Empty;
 
     }
 }

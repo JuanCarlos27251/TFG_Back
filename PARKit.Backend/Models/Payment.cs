@@ -17,7 +17,19 @@ namespace PARKit.Backend.Models
         public double Amount {get;set;}
         [Required]
         public PaymentStatus Status {get;set;}
+        public string Currency { get; set; } = "EUR";
 
         public DateTime PaymentDate {get;set;} = DateTime.UtcNow;
+
+        /// <summary>
+        /// ID interno de la transacción / ClientSecret para Stripe.js
+        /// </summary>
+        public string ClientSecret { get; set; } = string.Empty;
+
+        /// <summary>
+        /// ID externo confirmado por Stripe/PayPal una vez completado el pago.
+        /// Obligatorio para marcar el pago como Completed.
+        /// </summary>
+        public string? ExternalTransactionId { get; set; }
     }
 }

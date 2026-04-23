@@ -5,6 +5,7 @@ public enum ReservationStatus
     Active = 0,
     Cancelled = 1,
     Finished = 2,
-    Pending = 3
+    Pending = 3,
+    Confirmed = 4
 
 }

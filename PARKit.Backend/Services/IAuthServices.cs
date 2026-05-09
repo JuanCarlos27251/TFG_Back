@@ -1,14 +1,15 @@
 using System.Security.Claims;
-using PARKit.Backend.DTOs.LoginDto;
-using PARKit.Backend.DTOs.UserDto;
+using PARKit.Backend.DTOs;
+
+using PARKit.Backend.DTOs.UserDtin;
 
 
-namespace PArRKit.Backend.Services.IAuthService
+namespace PARKit.Backend.Services.AuthServices
 {
     public interface IAuthServices
     {
-        public string Login(LoginDtin userDtin);
-        public string Register(UserDto userDto);
+        Task<string> Login(LoginDtin loginDtin);
+        Task<string> Register(UserDtin userDtin);
 
         public string GenerateToken(UserDto userDto);
         public bool HasAccessToResource(int requestedUserId, ClaimsPrincipal user);

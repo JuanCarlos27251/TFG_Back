@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PARKit.Backend.DTOs.UserDto
+namespace PARKit.Backend.DTOs
 {
     public class UserDto
     {

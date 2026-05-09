@@ -1,4 +1,4 @@
-namespace PArRKit.Backend.Enums;
+namespace PARKit.Backend.Enums;
 
 public enum UserRole
 {

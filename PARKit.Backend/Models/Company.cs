@@ -15,6 +15,8 @@ namespace PARKit.Backend.Models
         public string Email {get;set;}  = string.Empty;
         [Required]
         public string PasswordHash{get;set;} = string.Empty;
-
+        public DateTime CreatedAt { get; internal set; }
+        [Required]
+        public string Role {get;set;} =string.Empty;
     }
 }

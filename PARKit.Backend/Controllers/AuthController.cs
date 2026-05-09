@@ -1,29 +1,33 @@
 using Microsoft.AspNetCore.Mvc;
+using PARKit.Backend.DTOs;
+using PARKit.Backend.DTOs.UserDtin;
+using PARKit.Backend.Services;
+using PARKit.Backend.Services.AuthServices;
 
-namespace PArRKit.Backend.Controllers
+namespace PARKit.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authServices;
+        private readonly IAuthServices _authService;
 
-        public AuthController(IAuthServices authServices)
+        public AuthController(IAuthServices authService)
         {
-            _authServices = authServices;
+            _authService = authService;
         }
 
          [HttpPost("Login")]
-        public IActionResult Login(LoginDtin loginDtin)
+        public async Task<IActionResult> Login(LoginDtin loginDtin)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             try
             {
-                if (!ModelState.IsValid) { return BadRequest(ModelState); }
-                var token = _authServices.Login(loginDtin);
-                return Ok(token);
+                var token =  await _authService.Login(loginDtin);
+                return Ok(new {Token = token});
 
             }
-            catch (KeyNotFoundException ex)
+            catch (UnauthorizedAccessException ex)
             {
                 return Unauthorized(ex.Message);
             }
@@ -35,13 +39,14 @@ namespace PArRKit.Backend.Controllers
         }
 
         [HttpPost("Register")]
-        public IActionResult Register(UserDtin userDtin)
+        public async Task<IActionResult> Register(UserDtin userDtin)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             try
             {
                 if (!ModelState.IsValid) { return BadRequest(ModelState); }
-                var token = _authServices.Register(userDtin);
-                return Ok(token);
+                var token = await _authService.Register(userDtin);
+                return Ok(new {Token = token});
 
             }
             catch (Exception ex)

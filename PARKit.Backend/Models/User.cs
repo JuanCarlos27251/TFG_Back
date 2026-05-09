@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Net.Http.Headers;
 using PARKit.Backend.Enums;
-using PArRKit.Backend.Enums;
 using System;
 
 namespace PARKit.Backend.Models

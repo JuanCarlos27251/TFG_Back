@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace PArRKit.Backend.Controllers
+namespace PARKit.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

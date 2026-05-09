@@ -48,6 +48,27 @@ namespace PARKit.Backend.Repositories
             };
         }
 
+        public async Task<IEnumerable<ParkingDto>> GetByCompanyIdAsync(int companyId)
+        {
+            return await _context.Parkings
+                .Where(p => p.CompanyId == companyId)
+                .Select(p => new ParkingDto
+                {
+                    Id = p.Id,
+                    CompanyId = p.CompanyId,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Address = p.Address,
+                    Latitude = p.Latitude,
+                    Longitude = p.Longitude,
+                    Type = p.Type,
+                    IsActive = p.IsActive,
+                    ImageUrl = p.ImageUrl,
+                    GeometryData = p.GeometryData,
+                    CreatedAt = p.CreatedAt
+                }).ToListAsync();
+        }
+
         public async Task<ParkingDto> AddAsync(ParkingDtin dtin)
         {
             var parking = new Parkings // Tu modelo se llama Parkings

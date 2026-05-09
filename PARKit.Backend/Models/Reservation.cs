@@ -23,5 +23,7 @@ namespace PARKit.Backend.Models
 
         public ReservationStatus Status {get;set;}
 
+        public virtual ParkingSpot? ParkingSpot { get; set; }
+
     }
 }

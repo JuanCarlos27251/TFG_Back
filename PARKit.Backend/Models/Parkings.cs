@@ -31,6 +31,10 @@ namespace PARKit.Backend.Models
 
         public DateTime CreatedAt {get;set;} = DateTime.UtcNow;
 
+        public virtual ICollection<ParkingSpot> ParkingSpots { get; set; } = new List<ParkingSpot>();
+        public virtual ICollection<Tarif> Tarifs { get; set; } = new List<Tarif>();
+
+
         
     }
 }

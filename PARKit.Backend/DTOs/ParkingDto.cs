@@ -16,5 +16,9 @@ namespace PARKit.Backend.DTOs
         public string? ImageUrl { get; set; }
         public string? GeometryData { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        public int AvailableSpots { get; set; }
+        public List<ParkingSpotDto> Spots { get; set; } = new();
+        public List<TarifDto> Tarifs { get; set; } = new();
     }
 }

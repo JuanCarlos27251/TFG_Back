@@ -254,6 +254,42 @@ namespace PARKit.Backend.Data
                     ExpiryDate = "12/27"
                 }
             );
+            modelBuilder.Entity<Reservation>().ToTable("Reservation");
+             modelBuilder.Entity<Reservation>().HasData(
+               new Reservation
+                {
+                    Id = 1,
+                    UserId = 1,           // Juan
+                    ParkingSpotId = 1,    // Plaza A-1
+                    StartTime = DateTime.UtcNow.AddDays(1), // Mañana
+                    EndTime = DateTime.UtcNow.AddDays(1).AddHours(2),
+                    Status = ReservationStatus.Confirmed
+                },
+                new Reservation
+                {
+                    Id = 2,
+                    UserId = 2,           // María
+                    ParkingSpotId = 3,    // Plaza B-1
+                    StartTime = DateTime.UtcNow.AddHours(5),
+                    EndTime = DateTime.UtcNow.AddHours(7),
+                    Status = ReservationStatus.Pending
+                }
+            );
+            modelBuilder.Entity<Payment>().ToTable("Payment");
+            modelBuilder.Entity<Payment>().HasData(
+                new Payment
+                {
+                    Id = 1,
+                    ReservationId = 1, 
+                    Amount = 5.00,    
+                    Status = PaymentStatus.Paid,
+                    Currency = "EUR",
+                    PaymentDate = DateTime.UtcNow,
+                    ClientSecret = "pi_test_12345",
+                    ExternalTransactionId = "ch_54321_stripe"
+                }
+
+            );
         }
     }
 

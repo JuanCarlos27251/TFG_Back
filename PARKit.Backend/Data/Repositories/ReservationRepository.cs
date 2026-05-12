@@ -41,7 +41,7 @@ namespace PARKit.Backend.Repositories
                  (end > r.StartTime && end <= r.EndTime)));
         }
 
-        public async Task<ReservationDto> CreateAsync(ReservationDtin dtin)
+        public async Task<ReservationDto> CreateAsync(ReservationDtin dtin, decimal totalAmount)
         {
             var reservation = new Reservation
             {
@@ -49,13 +49,19 @@ namespace PARKit.Backend.Repositories
                 ParkingSpotId = dtin.ParkingSpotId,
                 StartTime = dtin.StartTime,
                 EndTime = dtin.EndTime,
-                Status = dtin.Status
+                Status = dtin.Status,
+                TotalAmount = totalAmount 
             };
 
             await _context.Reservations.AddAsync(reservation);
             await _context.SaveChangesAsync();
 
-            return new ReservationDto { Id = reservation.Id, Status = reservation.Status };
+            return new ReservationDto 
+            { 
+                Id = reservation.Id, 
+                Status = reservation.Status,
+                TotalAmount = reservation.TotalAmount 
+            };
         }
 
         public async Task<bool> UpdateStatusAsync(int id, ReservationStatus status)
@@ -72,6 +78,58 @@ namespace PARKit.Backend.Repositories
             var r = await _context.Reservations.FindAsync(id);
             if (r == null) return null;
             return new ReservationDto { Id = r.Id, UserId = r.UserId, Status = r.Status };
+        }
+
+        public async Task<IEnumerable<ReservationDto>> GetByCompanyIdAsync(int companyId)
+        {
+            return await _context.Reservations
+                .Include(r => r.ParkingSpot)
+                .Where(r => r.ParkingSpot != null && _context.Parkings
+                    .Any(p => p.Id == r.ParkingSpot.ParkingId && p.CompanyId == companyId))
+                .Select(r => new ReservationDto 
+                { 
+                    Id = r.Id,
+                    UserId = r.UserId,
+                    ParkingSpotId = r.ParkingSpotId,
+                    SpotNumber = r.ParkingSpot != null ? r.ParkingSpot.SpotNumber : "N/A",
+                    ParkingName = "Parking ID: " + (r.ParkingSpot != null ? r.ParkingSpot.ParkingId : 0),
+                    StartTime = r.StartTime,
+                    EndTime = r.EndTime,
+                    Status = r.Status,
+                    TotalAmount = r.TotalAmount 
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ReservationDto>> GetAllAsync()
+        {
+            return await _context.Reservations
+                .Include(r => r.ParkingSpot)
+                .Select(r => new ReservationDto 
+                { 
+                    Id = r.Id,
+                    UserId = r.UserId,
+                    ParkingSpotId = r.ParkingSpotId,
+                    SpotNumber = r.ParkingSpot != null ? r.ParkingSpot.SpotNumber : "N/A",
+                    StartTime = r.StartTime,
+                    EndTime = r.EndTime,
+                    Status = r.Status,
+                    TotalAmount = r.TotalAmount
+                })
+                .ToListAsync();
+        }
+
+        public async Task<bool> UpdateAsync(int id, ReservationDtin dtin, decimal totalAmount)
+        {
+            var res = await _context.Reservations.FindAsync(id);
+            if (res == null) return false;
+
+            res.StartTime = dtin.StartTime;
+            res.EndTime = dtin.EndTime;
+            res.TotalAmount = totalAmount;
+            res.Status = dtin.Status;
+
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

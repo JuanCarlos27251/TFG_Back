@@ -16,6 +16,9 @@ namespace PARKit.Backend.Models
         [ForeignKey("ParkingSpot")]
         public int ParkingSpotId {get;set;}
 
+        [ForeignKey("Car")]
+        public int CarId { get; set; }
+
         [Required]
         public DateTime StartTime {get;set;}
         [Required]
@@ -24,6 +27,9 @@ namespace PARKit.Backend.Models
         public ReservationStatus Status {get;set;}
 
         public virtual ParkingSpot? ParkingSpot { get; set; }
+
+        public decimal TotalAmount { get; set; }
+        public virtual Car? Car { get; set; }
 
     }
 }

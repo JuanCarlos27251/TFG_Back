@@ -8,8 +8,11 @@ namespace PARKit.Backend.Repositories
     {
         Task<IEnumerable<ReservationDto>> GetByUserIdAsync(int userId);
         Task<ReservationDto?> GetByIdAsync(int id);
-        Task<ReservationDto> CreateAsync(ReservationDtin dtin);
+        Task<ReservationDto> CreateAsync(ReservationDtin dtin, decimal TotalAmount);
         Task<bool> UpdateStatusAsync(int id, ReservationStatus status);
         Task<bool> IsSpotAvailableAsync(int spotId, DateTime start, DateTime end);
+        Task<IEnumerable<ReservationDto>> GetByCompanyIdAsync(int companyId);
+        Task<IEnumerable<ReservationDto>> GetAllAsync();
+        Task<bool> UpdateAsync(int id, ReservationDtin dtin, decimal totalAmount);
     }
 }

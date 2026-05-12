@@ -14,6 +14,8 @@ namespace PARKit.Backend.Models
 
         [Required]
         public decimal PricePerHour {get;set;}
+        public decimal LargeVehicleSurcharge { get; set; } = 0;
+        public decimal ElectricVehicleSurcharge { get; set; } = 0;  
 
         [Required]
         public string NameTarif {get;set;} = string.Empty;

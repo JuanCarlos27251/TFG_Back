@@ -15,6 +15,9 @@ namespace PARKit.Backend.DTOs.ReservationDtin
 
         [Required]
         public DateTime EndTime { get; set; }
+        
+        [Required]
+        public int CarId { get; set; }
 
         // Por defecto suele empezar en Pending o Confirmed
         public ReservationStatus Status { get; set; } = ReservationStatus.Pending;

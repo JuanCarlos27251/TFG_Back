@@ -26,5 +26,7 @@ namespace PARKit.Backend.Models
         [Required]
         public string Type {get;set;} = string.Empty;
 
+        public virtual Parkings? Parking { get; set; }
+
     }
 }

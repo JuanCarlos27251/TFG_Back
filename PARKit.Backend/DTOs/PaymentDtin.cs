@@ -6,7 +6,7 @@ namespace PARKit.Backend.DTOs.PaymentDtin
     public class PaymentDtin
     {
         [Required]
-        public int ReservtionId {get;set;}
+        public int ReservationId {get;set;}
         [Required]
         public double Amount {get;set;}
         [Required]
@@ -14,6 +14,6 @@ namespace PARKit.Backend.DTOs.PaymentDtin
         public string Currency { get; set; } = "EUR";
         public string ClientSecret { get; set; } = string.Empty;
         public string? ExternalTransactionId { get; set; }
-        public int ReservationId { get; internal set; }
+  
     }
 }

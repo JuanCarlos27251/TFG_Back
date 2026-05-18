@@ -1,5 +1,5 @@
 using PARKit.Backend.DTOs;
-using PARKit.Backend.DTOs.UserDtin;
+using PARKit.Backend.DTOs.CarDtin;
 using Microsoft.EntityFrameworkCore;
 using PARKit.Backend.Data;
 using PARKit.Backend.Models;

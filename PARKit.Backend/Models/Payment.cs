@@ -14,7 +14,7 @@ namespace PARKit.Backend.Models
         public int ReservationId {get;set;}
 
         [Required]
-        public double Amount {get;set;}
+        public decimal Amount {get;set;}
         [Required]
         public PaymentStatus Status {get;set;}
         public string Currency { get; set; } = "EUR";

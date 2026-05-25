@@ -16,10 +16,23 @@ namespace PARKit.Backend.Repositories
         {
             _context = context;
         }
+        public async Task<IEnumerable<UserDto>> GetAllAsync()
+        {
+            return await _context.Users
+                .Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Email = u.Email,
+                    Phone = u.Phone,
+                    Role = u.Role,
+                    IsActive = u.IsActive,
+                    CreatedAT = u.CreatedAT
+                }).ToListAsync();
+        }
 
         public async Task<User?> GetUserByEmailAsync(string email)
         {
-
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
@@ -56,7 +69,6 @@ namespace PARKit.Backend.Repositories
         {
             var user = await GetUserByEmailAsync(loginDtin.Email);
             
-            // Verificamos si existe y si la password coincide con el hash
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginDtin.Password, user.PasswordHash))
             {
                 return null;
@@ -76,7 +88,44 @@ namespace PARKit.Backend.Repositories
 
         public async Task<User?> GetByIdAsync(int id)
         {
-            return await _context.Users.FindAsync(id);
+             return await _context.Users.FindAsync(id);
+        }
+
+        public async Task<bool> UpdateAsync(int id, UserDtin userDtin)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return false;
+
+            user.Name = userDtin.Name;
+            user.Email = userDtin.Email;
+            user.Phone = userDtin.Phone;
+
+            if (!string.IsNullOrEmpty(userDtin.Password))
+            {
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDtin.Password);
+            }
+
+            _context.Users.Update(user);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdatePasswordAsync(int id, string newPassword)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return false;
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            _context.Users.Update(user);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return false;
+
+            _context.Users.Remove(user);
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

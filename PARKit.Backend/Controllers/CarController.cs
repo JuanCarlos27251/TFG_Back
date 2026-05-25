@@ -4,97 +4,90 @@ using Microsoft.AspNetCore.Mvc;
 using PARKit.Backend.DTOs;
 using PARKit.Backend.DTOs.CarDtin;
 using PARKit.Backend.Repositories;
+using PARKit.Backend.Services.Interfaces;
 
 namespace PARKit.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CarController : ControllerBase
+    [Authorize]
+   public class CarController : ControllerBase
     {
-        private readonly ICarRepository _carRepository;
+        private readonly ICarService _carService;
 
-        public CarController(ICarRepository carRepository)
+        public CarController(ICarService carService)
         {
-            _carRepository = carRepository;
+            _carService = carService;
         }
 
-        // 1. Obtener los coches del usuario autenticado (Tu método original corregido)
-        [HttpGet]
-        [Authorize]
-        public async Task<ActionResult<IEnumerable<CarDto>>> GetMyCars()
+        [HttpGet("MyCars")]
+        public async Task<ActionResult<List<CarDto>>> GetMyCars()
         {
+            // Obtenemos el ID del usuario directamente del Token JWT
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
-            {
-                return Unauthorized(new { message = "Token inválido o usuario no autenticado." });
-            }
+            if (userIdClaim == null) return Unauthorized(new { message = "Usuario no autenticado." });
 
-            var cars = await _carRepository.GetCarsByUserIdAsync(userId);
+            int userId = int.Parse(userIdClaim);
+            
+            // Usamos el método correcto de tu servicio
+            var cars = await _carService.GetCarsByUserIdAsync(userId);
             return Ok(cars);
         }
 
-        // 2. Obtener un coche específico por su ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<CarDto>> GetCarById(int id)
+        public async Task<ActionResult<CarDto>> GetById(int id)
         {
-            var car = await _carRepository.GetByIdAsync(id);
-            if (car == null)
-            {
-                return NotFound(new { message = $"No se encontró ningún vehículo con ID {id}." });
-            }
+            var car = await _carService.GetCarByIdAsync(id);
+            if (car == null) return NotFound(new { message = "Coche no encontrado." });
+            
             return Ok(car);
         }
 
-        // 3. Registrar un nuevo coche asignado a un usuario
-        [HttpPost("user/{userId}")]
-        public async Task<ActionResult<CarDto>> AddCar(int userId, [FromBody] CarDtin carDtin)
+        [HttpPost]
+        public async Task<ActionResult<CarDto>> Create([FromBody] CarDtin carDtin)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null) return Unauthorized();
+
+            int userId = int.Parse(userIdClaim);
 
             try
             {
-                var newCar = await _carRepository.AddAsync(userId, carDtin);
-                return CreatedAtAction(nameof(GetCarById), new { id = newCar.Id }, newCar);
+                var newCar = await _carService.AddCarAsync(userId, carDtin);
+                return CreatedAtAction(nameof(GetById), new { id = newCar.Id }, newCar);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
-                return BadRequest(new { message = "Error al registrar el vehículo.", error = ex.Message });
+                return BadRequest(new { message = ex.Message });
             }
         }
 
-        // 4. Actualizar un coche (Requiere ID del coche y del usuario por seguridad)
-        [HttpPut("{id}/user/{userId}")]
-        public async Task<IActionResult> UpdateCar(int id, int userId, [FromBody] CarDtin carDtin)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] CarDtin carDtin)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null) return Unauthorized();
 
-            var updated = await _carRepository.UpdateAsync(id, userId, carDtin);
-            if (!updated)
-            {
-                return NotFound(new { message = "No se pudo actualizar. Verifica que el coche exista y pertenezca al usuario." });
-            }
+            int userId = int.Parse(userIdClaim);
+
+            var success = await _carService.UpdateCarAsync(id, userId, carDtin);
+            if (!success) return NotFound(new { message = "Coche no encontrado o no te pertenece." });
 
             return NoContent();
         }
 
-        // 5. Eliminar un coche
-        [HttpDelete("{id}/user/{userId}")]
-        public async Task<IActionResult> DeleteCar(int id, int userId)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _carRepository.DeleteAsync(id, userId);
-            if (!deleted)
-            {
-                return NotFound(new { message = "No se pudo eliminar. Verifica que el coche exista y pertenezca al usuario." });
-            }
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null) return Unauthorized();
+
+            int userId = int.Parse(userIdClaim);
+
+            var success = await _carService.DeleteCarAsync(id, userId);
+            if (!success) return NotFound(new { message = "Coche no encontrado o no te pertenece." });
 
             return NoContent();
         }
-        
     }
 }

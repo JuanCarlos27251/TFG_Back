@@ -8,7 +8,7 @@ namespace PARKit.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+   public class AuthController : ControllerBase
     {
         private readonly IAuthServices _authService;
 
@@ -17,15 +17,14 @@ namespace PARKit.Backend.Controllers
             _authService = authService;
         }
 
-         [HttpPost("Login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginDtin loginDtin)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             try
             {
-                var token =  await _authService.Login(loginDtin);
-                return Ok(new {Token = token});
-
+                var token = await _authService.Login(loginDtin);
+                return Ok(new { Token = token });
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -33,8 +32,26 @@ namespace PARKit.Backend.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest
-                ("Error generating token: " + ex.Message);
+                return BadRequest("Error generating token: " + ex.Message);
+            }
+        }
+
+        [HttpPost("LoginCompany")]
+        public async Task<IActionResult> LoginCompany(LoginDtin loginDtin)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try
+            {
+                var token = await _authService.LoginCompany(loginDtin);
+                return Ok(new { Token = token });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error generating token: " + ex.Message);
             }
         }
 
@@ -44,15 +61,12 @@ namespace PARKit.Backend.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             try
             {
-                if (!ModelState.IsValid) { return BadRequest(ModelState); }
                 var token = await _authService.Register(userDtin);
-                return Ok(new {Token = token});
-
+                return Ok(new { Token = token });
             }
             catch (Exception ex)
             {
-                return BadRequest
-                ("Error generating token: " + ex.Message);
+                return BadRequest("Error generating token: " + ex.Message);
             }
         }
     }

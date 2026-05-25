@@ -5,6 +5,9 @@ using PARKit.Backend.DTOs.UserDtin;
 using PARKit.Backend.Repositories;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using PARKit.Backend.Data;
+using PARKit.Backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace PARKit.Backend.Services.AuthServices
 {
@@ -12,11 +15,13 @@ namespace PARKit.Backend.Services.AuthServices
 {
     private readonly IConfiguration _configuration;
     private readonly IUserRepository _repository;
+    private readonly AppDbContext _context;
 
-    public AuthServices(IConfiguration configuration, IUserRepository userRepository)
+    public AuthServices(IConfiguration configuration, IUserRepository userRepository, AppDbContext context)
     {
         _configuration = configuration;
         _repository = userRepository;
+        _context = context;
     }
 
     public async Task<string> Login(LoginDtin loginDtin) 
@@ -25,6 +30,25 @@ namespace PARKit.Backend.Services.AuthServices
         if (usuario == null) throw new UnauthorizedAccessException("Credenciales incorrectas");
         
         return GenerateToken(usuario);
+    }
+
+    public async Task<string> LoginCompany(LoginDtin loginDtin)
+    {
+        // Buscamos la empresa registrada mediante su Email
+        var company = await _context.Companies.FirstOrDefaultAsync(c => c.Email == loginDtin.Email);
+        
+        // Validamos la contraseña usando BCrypt contra el Hash guardado
+        if (company == null || !BCrypt.Net.BCrypt.Verify(loginDtin.Password, company.PasswordHash))
+        {
+            throw new UnauthorizedAccessException("Credenciales de empresa incorrectas");
+        }
+
+        if (!company.IsActive)
+        {
+            throw new UnauthorizedAccessException("La cuenta de la empresa está desactivada.");
+        }
+
+        return GenerateTokenForCompany(company);
     }
 
     public async Task<string> Register(UserDtin userDtin) // Marcado como async Task
@@ -57,6 +81,32 @@ namespace PARKit.Backend.Services.AuthServices
                     new Claim(ClaimTypes.Email, userDto.Email),
                     new Claim(ClaimTypes.Role, userDto.Role),
                     new Claim("CreatedAt", userDto.CreatedAT.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(3),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        private string GenerateTokenForCompany(Company company)
+        {
+            var keyStr = _configuration["Jwt:SecretKey"];
+            if (string.IsNullOrEmpty(keyStr)) throw new Exception("JWT Secret Key no configurada");
+            var key = Encoding.UTF8.GetBytes(keyStr);
+            
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, company.Id.ToString()),
+                    new Claim(ClaimTypes.Name, company.NameCompany),
+                    new Claim(ClaimTypes.Email, company.Email),
+                    // Aseguramos que el rol inyectado sea 'Manager' (o el que tenga asignado) para habilitar los endpoints restringidos
+                    new Claim(ClaimTypes.Role, string.IsNullOrEmpty(company.Role) ? "Manager" : company.Role), 
+                    new Claim("CreatedAt", company.CreatedAt.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(3),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

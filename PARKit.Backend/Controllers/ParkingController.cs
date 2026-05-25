@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PARKit.Backend.DTOs;
+using PARKit.Backend.Enums;
 using PARKit.Backend.Services.Interfaces;
 
 namespace PARKit.Backend.Controllers
@@ -17,12 +18,14 @@ namespace PARKit.Backend.Controllers
            _parkingService = parkingService; 
         }
 
-        [AllowAnonymous]
+       [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ParkingDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ParkingDto>>> GetAll(
+            [FromQuery] ParkingType? type = null,
+            [FromQuery] bool? onlyAvailable = null)
         {
-            var parking = await _parkingService.GetAllParkingsAsync();
-            return Ok(parking);
+            var parkings = await _parkingService.GetAllParkingsAsync(type, onlyAvailable);
+            return Ok(parkings);
         }
 
         [AllowAnonymous]
@@ -31,7 +34,6 @@ namespace PARKit.Backend.Controllers
         {
             var parking = await _parkingService.GetParkingByIdAsync(id);
             if (parking == null) return NotFound(new { message = "Parking no encontrado" });
-            
             return Ok(parking);
         }
 

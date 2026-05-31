@@ -76,9 +76,22 @@ namespace PARKit.Backend.Repositories
  
         public async Task<ReservationDto?> GetByIdAsync(int id)
         {
-            var r = await _context.Reservations.FindAsync(id);
+            var r = await _context.Reservations
+                .Include(r => r.ParkingSpot)
+                .FirstOrDefaultAsync(r => r.Id == id);
             if (r == null) return null;
-            return new ReservationDto { Id = r.Id, UserId = r.UserId, Status = r.Status };
+
+            return new ReservationDto
+            {
+                Id            = r.Id,
+                UserId        = r.UserId,
+                ParkingSpotId = r.ParkingSpotId,
+                SpotNumber    = r.ParkingSpot?.SpotNumber ?? "N/A",
+                StartTime     = r.StartTime,
+                EndTime       = r.EndTime,
+                Status        = r.Status,
+                TotalAmount   = r.TotalAmount
+            };
         }
  
         public async Task<IEnumerable<ReservationDto>> GetByCompanyIdAsync(int companyId)

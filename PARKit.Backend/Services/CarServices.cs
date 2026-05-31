@@ -27,20 +27,19 @@ namespace PARKit.Backend.Services
 
         public async Task<CarDto> AddCarAsync(int userId, CarDtin carDtin)
         {
+            if (string.IsNullOrWhiteSpace(carDtin.Name))
+                throw new ArgumentException("El nombre del vehículo es obligatorio.");  
             if (string.IsNullOrWhiteSpace(carDtin.Matricule))
-            {
                 throw new ArgumentException("La matrícula es obligatoria.");
-            }
             return await _carRepository.AddAsync(userId, carDtin);
         }
 
         public async Task<bool> UpdateCarAsync(int id, int userId, CarDtin carDtin)
         {
+            if (string.IsNullOrWhiteSpace(carDtin.Name))
+                throw new ArgumentException("El nombre del vehículo no puede estar vacío.");  
             if (string.IsNullOrWhiteSpace(carDtin.Matricule))
-            {
                 throw new ArgumentException("La matrícula no puede estar vacía.");
-            }
-
             return await _carRepository.UpdateAsync(id, userId, carDtin);
         }
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PARKit.Backend.DTOs.PaymentDtin;
 using PARKit.Backend.Services.Interfaces;
@@ -6,6 +7,7 @@ namespace PARKit.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PaymentsController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
@@ -24,16 +26,20 @@ namespace PARKit.Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessPayment([FromBody] PaymentDtin dtin)
+        public async Task<IActionResult> CreatePayment([FromBody] PaymentDtin dtin)
         {
-            try 
+            try
             {
                 var result = await _paymentService.CreatePaymentAsync(dtin);
                 return Ok(result);
             }
+            catch (Stripe.StripeException ex)
+            {
+                return BadRequest(new { message = "Error con Stripe: " + ex.Message });
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, new { message = "Error inesperado: " + ex.Message });
             }
         }
 
@@ -41,9 +47,8 @@ namespace PARKit.Backend.Controllers
         public async Task<IActionResult> Confirm(int id, [FromQuery] string transactionId)
         {
             var success = await _paymentService.ConfirmPaymentAsync(id, transactionId);
-            if (!success) return BadRequest("No se pudo confirmar el pago.");
-            return Ok("Pago confirmado correctamente.");
+            if (!success) return BadRequest(new { message = "No se pudo confirmar el pago." });
+            return Ok(new { message = "Pago confirmado correctamente." });
         }
     }
-    
 }

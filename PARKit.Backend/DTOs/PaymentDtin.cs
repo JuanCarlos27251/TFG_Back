@@ -12,7 +12,6 @@ namespace PARKit.Backend.DTOs.PaymentDtin
         [Required]
         public PaymentStatus Status {get;set;}
         public string Currency { get; set; } = "EUR";
-        public string ClientSecret { get; set; } = string.Empty;
         public string? ExternalTransactionId { get; set; }
   
     }

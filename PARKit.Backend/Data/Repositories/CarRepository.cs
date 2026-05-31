@@ -22,6 +22,7 @@ namespace PARKit.Backend.Repositories
                 .Select(c => new CarDto
                 {
                     Id = c.Id,
+                    Name = c.Name,
                     Matricule = c.Matricule,
                     LargeVehicle = c.LargeVehicle,
                     ElectricVehicle = c.ElectricVehicle,
@@ -34,6 +35,7 @@ namespace PARKit.Backend.Repositories
             var car = new Car
             {
                 UserId = userId,
+                Name = carDtin.Name,
                 Matricule = carDtin.Matricule,
                 LargeVehicle = carDtin.LargeVehicle,
                 ElectricVehicle = carDtin.ElectricVehicle
@@ -42,7 +44,7 @@ namespace PARKit.Backend.Repositories
             await _context.Cars.AddAsync(car);
             await _context.SaveChangesAsync();
 
-            return new CarDto { Id = car.Id, Matricule = car.Matricule, UserId = userId };
+            return new CarDto { Id = car.Id, Name = car.Name, Matricule = car.Matricule, UserId = userId };
         }
         public async Task<CarDto?> GetByIdAsync(int id)
         {
@@ -53,6 +55,7 @@ namespace PARKit.Backend.Repositories
             return new CarDto
             {
                 Id = car.Id,
+                Name = car.Name,
                 Matricule = car.Matricule,
                 LargeVehicle = car.LargeVehicle,
                 ElectricVehicle = car.ElectricVehicle,
@@ -68,7 +71,7 @@ namespace PARKit.Backend.Repositories
 
             // Actualizamos los campos
             car.Matricule = carDtin.Matricule;
-
+            car.Name = carDtin.Name;
             car.LargeVehicle = carDtin.LargeVehicle;
             car.ElectricVehicle = carDtin.ElectricVehicle;
 

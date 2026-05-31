@@ -25,6 +25,8 @@ namespace PARKit.Backend.Repositories
                     ParkingId = t.ParkingId,
                     PricePerHour = t.PricePerHour,
                     NameTarif = t.NameTarif,
+                    LargeVehicleSurcharge    = t.LargeVehicleSurcharge,    
+                    ElectricVehicleSurcharge = t.ElectricVehicleSurcharge,
                     StartDate = t.StartDate,
                     EndDate = t.EndDate,
                     IsHoliday = t.IsHoliday,

@@ -79,6 +79,7 @@ namespace PARKit.Backend.Data
                 {
                     Id = 1,
                     UserId = 1, 
+                    Name = "Toyota Prius",
                     Matricule = "1234ABC", 
                     ElectricVehicle = true,
                     LargeVehicle = false
@@ -87,6 +88,7 @@ namespace PARKit.Backend.Data
                 {
                     Id = 2,
                     UserId = 2, 
+                    Name = "Ford F-150",
                     Matricule = "5489zyc", 
                     ElectricVehicle = false,
                     LargeVehicle = false

@@ -11,5 +11,6 @@ namespace PARKit.Backend.DTOs
         public string Currency { get; set; } = "EUR";
         public DateTime PaymentDate { get; set; }
         public string? ExternalTransactionId { get; set; }
+        public string ClientSecret { get; set; } = string.Empty;
     }
 }

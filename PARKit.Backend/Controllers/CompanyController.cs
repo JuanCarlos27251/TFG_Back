@@ -57,7 +57,7 @@ namespace PARKit.Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Manager, Admin")]
+        [Authorize(Roles = "Manager,Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] CompanyDtin dtin)
         {
             try

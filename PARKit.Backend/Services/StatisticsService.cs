@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PARKit.Backend.Data;
+using PARKit.Backend.DTOs;
 using PARKit.Backend.Enums;
 using PARKit.Backend.Services.Interfaces;
 

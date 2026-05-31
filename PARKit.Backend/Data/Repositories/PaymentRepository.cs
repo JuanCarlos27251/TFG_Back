@@ -28,19 +28,43 @@ namespace PARKit.Backend.Repositories
                     Status = p.Status,
                     Currency = p.Currency,
                     PaymentDate = p.PaymentDate,
-                    ExternalTransactionId = p.ExternalTransactionId
+                    ExternalTransactionId = p.ExternalTransactionId,
+                    ClientSecret = p.ClientSecret
                 }).FirstOrDefaultAsync();
         }
 
+        public async Task<PaymentDto?> GetByIdAsync(int id)
+        {
+            var p = await _context.Payments.FindAsync(id);
+            if (p == null) return null;
+
+            return new PaymentDto
+            {
+                Id = p.Id,
+                ReservationId = p.ReservationId,
+                Amount = p.Amount,
+                Status = p.Status,
+                Currency = p.Currency,
+                PaymentDate = p.PaymentDate,
+                ExternalTransactionId = p.ExternalTransactionId,
+                ClientSecret = p.ClientSecret
+            };
+        }
+
         public async Task<PaymentDto> CreateAsync(PaymentDtin dtin)
+        {
+            return await CreateWithSecretAsync(dtin, string.Empty);
+        }
+
+        public async Task<PaymentDto> CreateWithSecretAsync(PaymentDtin dtin, string clientSecret)
         {
             var payment = new Payment
             {
                 ReservationId = dtin.ReservationId,
                 Amount = dtin.Amount,
-                Status = dtin.Status,
+                Status = PaymentStatus.Pending,
                 Currency = dtin.Currency,
-                ClientSecret = dtin.ClientSecret,
+                ClientSecret = clientSecret,
                 ExternalTransactionId = dtin.ExternalTransactionId,
                 PaymentDate = DateTime.UtcNow
             };
@@ -48,7 +72,16 @@ namespace PARKit.Backend.Repositories
             await _context.Payments.AddAsync(payment);
             await _context.SaveChangesAsync();
 
-            return new PaymentDto { Id = payment.Id, Amount = payment.Amount, Status = payment.Status };
+            return new PaymentDto
+            {
+                Id = payment.Id,
+                ReservationId = payment.ReservationId,
+                Amount = payment.Amount,
+                Status = payment.Status,
+                Currency = payment.Currency,
+                ClientSecret = payment.ClientSecret,
+                PaymentDate = payment.PaymentDate
+            };
         }
 
         public async Task<bool> UpdateStatusAsync(int id, PaymentStatus status, string? externalId = null)
@@ -57,7 +90,7 @@ namespace PARKit.Backend.Repositories
             if (p == null) return false;
 
             p.Status = status;
-            if (!string.IsNullOrEmpty(externalId)) 
+            if (!string.IsNullOrEmpty(externalId))
                 p.ExternalTransactionId = externalId;
 
             return await _context.SaveChangesAsync() > 0;

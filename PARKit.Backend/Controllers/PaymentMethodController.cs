@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PARKit.Backend.DTOs.PaymentMethodDtin;
 using PARKit.Backend.Services.Interfaces;
@@ -6,6 +7,7 @@ namespace PARKit.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PaymentMethodController(IPaymentMethodService methodService) : ControllerBase
     {
        private readonly IPaymentMethodService _methodService = methodService;

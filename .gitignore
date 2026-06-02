@@ -1,30 +1,39 @@
-# Build results
+# ── RESULTADOS DE COMPILACIÓN Y DEPENDENCIAS ──────────────────────────────
 bin/
 obj/
 
-# User-specific files
+# ── MIGRACIONES DE ENTITY FRAMEWORK CORE ──────────────────────────────────
+# Ignora la carpeta completa de migraciones que tienes en la raíz
+Migrations/
+
+# ── ARCHIVOS VULNERABLES / CONFIGURACIONES CON SECRETOS ───────────────────
+# Ignora los archivos de configuración que contienen credenciales y claves JWT
+appsettings.json
+appsettings.Development.json
+secrets.json
+*.secrets.json
+
+# Almacenamiento de secretos de usuario de .NET (User Secrets)
+~/.microsoft/usersecrets/
+.microsoft/usersecrets/
+
+# ── ARCHIVOS ESPECÍFICOS DE IDE / USUARIO ──────────────────────────────────
 *.user
 *.rsuser
 *.suo
 *.userosscache
 *.sln.docstates
 
-# Visual Studio Code
+# Visual Studio Code y Visual Studio
 .vscode/
+.vs/
 
-# Logs
+# ── LOGS Y ARCHIVOS TEMPORALES ─────────────────────────────────────────────
 *.log
-
-# Temporary files
 *.tmp
 *.temp
 
-# Configuración local
-appsettings.Development.json
-
-# Certificados locales
+# ── CERTIFICADOS LOCALES Y PUBLICACIONES ────────────────────────────────────
 *.pfx
 *.p12
-
-# Publicaciones
 publish/

@@ -9,6 +9,7 @@ using PARKit.Backend.Repositories;
 using PARKit.Backend.Services;
 using PARKit.Backend.Services.AuthServices;
 using PARKit.Backend.Services.Interfaces;
+using PARKit.Backend.Worker;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,13 +46,25 @@ builder.Services.AddScoped<ICarService,           CarService>();
 builder.Services.AddScoped<IStatisticsService,    StatisticsService>();
 
 // PaymentService implementa IPaymentService e IPaymentMethodService.
-// Lo registramos una sola vez y lo mapeamos a ambas interfaces.
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<IPaymentService>(sp       => sp.GetRequiredService<PaymentService>());
 builder.Services.AddScoped<IPaymentMethodService>(sp => sp.GetRequiredService<PaymentService>());
 
 // ─────────────────────────────────────────
-// 4. AUTENTICACIÓN JWT
+// 4. HTTPCLIENT PARA EL WORKER MUNICIPAL
+// ─────────────────────────────────────────
+builder.Services.AddHttpClient("ZaragozaApi", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
+
+// ─────────────────────────────────────────
+// 5. WORKER (Background Service)
+// ─────────────────────────────────────────
+builder.Services.AddHostedService<ZaragozaOccupancyWorker>();
+
+// ─────────────────────────────────────────
+// 6. AUTENTICACIÓN JWT
 // ─────────────────────────────────────────
 var jwtKey = builder.Configuration["Jwt:SecretKey"]
     ?? throw new InvalidOperationException("Jwt:SecretKey no está configurada en appsettings.");
@@ -75,7 +88,7 @@ builder.Services
             IssuerSigningKey         = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
 
-        // Permitir que SignalR reciba el token por query string (necesario para WebSockets)
+        // Permite que SignalR reciba el token por query string en WebSockets
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -92,33 +105,32 @@ builder.Services
 builder.Services.AddAuthorization();
 
 // ─────────────────────────────────────────
-// 5. SIGNALR
+// 7. SIGNALR
 // ─────────────────────────────────────────
 builder.Services.AddSignalR();
 
 // ─────────────────────────────────────────
-// 6. CORS
+// 8. CORS
 // ─────────────────────────────────────────
-// En desarrollo permitimos cualquier origen; en producción restringe al dominio del frontend.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
             .WithOrigins(
-                "http://localhost:3000",   // React/Vite dev server habitual
-                "http://localhost:5173",   // Vite alternativo
-                "http://127.0.0.1:5500",   // Live Server de VS Code
+                "http://localhost:3000",   
+                "http://localhost:5173",   
+                "http://127.0.0.1:5500",   
                 "http://localhost:5500"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials();           // Necesario para SignalR con cookies/auth
+            .AllowCredentials(); 
     });
 });
 
 // ─────────────────────────────────────────
-// 7. CONTROLLERS + SWAGGER
+// 9. CONTROLLERS + SWAGGER
 // ─────────────────────────────────────────
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -131,7 +143,6 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API REST para la gestión inteligente de aparcamientos — TFG DAW 2026"
     });
 
-    // Añadimos soporte para el token JWT en Swagger UI
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name         = "Authorization",
@@ -158,23 +169,10 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// ─────────────────────────────────────────
-// BUILD
-// ─────────────────────────────────────────
 var app = builder.Build();
 
 // ─────────────────────────────────────────
-// 8. MIGRACIONES AUTOMÁTICAS AL ARRANCAR
-//    (Útil en desarrollo; en producción usa scripts explícitos)
-// ─────────────────────────────────────────
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-}
-
-// ─────────────────────────────────────────
-// 9. PIPELINE HTTP
+// 10. PIPELINE HTTP
 // ─────────────────────────────────────────
 if (app.Environment.IsDevelopment())
 {
@@ -182,21 +180,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "PARKit API v1");
-        c.RoutePrefix = string.Empty; // Swagger en la raíz: http://localhost:5000/
+        c.RoutePrefix = string.Empty; 
     });
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowFrontend");
 
-app.UseAuthentication(); // SIEMPRE antes de UseAuthorization
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();
 
 // ─────────────────────────────────────────
-// 10. SIGNALR HUB
+// 11. SIGNALR HUB
 // ─────────────────────────────────────────
 app.MapHub<ParkingHub>("/hubs/parking");
 

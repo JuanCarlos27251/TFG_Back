@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "e:\\2ºDAW\\TFG_Back\\PARKit.Backend\\PARKit.Backend.csproj": {}
+    "E:\\2ºDAW\\TFG_Back\\PARKit.Backend\\PARKit.Backend.csproj": {}
   },
   "projects": {
-    "e:\\2ºDAW\\TFG_Back\\PARKit.Backend\\PARKit.Backend.csproj": {
+    "E:\\2ºDAW\\TFG_Back\\PARKit.Backend\\PARKit.Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\2ºDAW\\TFG_Back\\PARKit.Backend\\PARKit.Backend.csproj",
+        "projectUniqueName": "E:\\2ºDAW\\TFG_Back\\PARKit.Backend\\PARKit.Backend.csproj",
         "projectName": "PARKit.Backend",
-        "projectPath": "e:\\2ºDAW\\TFG_Back\\PARKit.Backend\\PARKit.Backend.csproj",
+        "projectPath": "E:\\2ºDAW\\TFG_Back\\PARKit.Backend\\PARKit.Backend.csproj",
         "packagesPath": "C:\\Users\\Peque\\.nuget\\packages\\",
-        "outputPath": "e:\\2ºDAW\\TFG_Back\\PARKit.Backend\\obj\\",
+        "outputPath": "E:\\2ºDAW\\TFG_Back\\PARKit.Backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

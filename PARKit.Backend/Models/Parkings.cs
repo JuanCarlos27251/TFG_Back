@@ -34,7 +34,10 @@ namespace PARKit.Backend.Models
         public virtual ICollection<ParkingSpot> ParkingSpots { get; set; } = new List<ParkingSpot>();
         public virtual ICollection<Tarif> Tarifs { get; set; } = new List<Tarif>();
 
-
+        /// <summary>
+        /// ID de zona en la API del Ayuntamiento de Zaragoza (null para parkings privados).
+        /// </summary>
+        public int? ExternalZoneId { get; set; }
         
     }
 }

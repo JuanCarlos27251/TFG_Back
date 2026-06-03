@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crear cuenta — PARKit</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        azul: "#135bec",
+                        "azul-oscuro": "#0a3bbf",
+                        "fondo-oscuro": "#0e1120",
+                    },
+                    fontFamily: { sans: ["DM Sans", "sans-serif"] },
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="../STYLES/global.css" />
+</head>
+
+<body class="bg-[#f5f6fa] dark:bg-[#0e1120] font-sans text-[#111318] dark:text-white min-h-screen flex flex-col justify-between">
+
+    <div class="fixed top-0 left-0 p-4 md:p-6 z-50">
+        <a href="index.html" class="btn btn-ghost btn-sm inline-flex items-center gap-1 bg-white/80 dark:bg-[#0e1120]/80 backdrop-blur-md border border-[var(--borde)] shadow-sm md:bg-transparent md:dark:bg-transparent md:backdrop-blur-none md:border-none md:shadow-none">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            Volver al inicio
+        </a>
+    </div>
+
+    <main class="flex-1 flex items-center justify-center px-6 py-6 md:py-10">
+        <div class="card w-full max-w-md p-8 flex flex-col gap-6 aparecer">
+            
+            <div class="flex flex-col items-center gap-3 text-center">
+                <a href="index.html" class="flex items-center gap-2 text-azul font-black text-2xl tracking-tight">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 48 48">
+                        <path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill-rule="evenodd"/>
+                        <path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill-rule="evenodd"/>
+                    </svg>
+                    PARKit
+                </a>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight mt-2">Crea tu cuenta</h1>
+                    <p class="text-sm text-[var(--texto-suave)] mt-1">Únete a la red inteligente de aparcamientos</p>
+                </div>
+            </div>
+
+            <div class="flex p-1 rounded-xl bg-[#f5f6fa] dark:bg-[#0e1120] border border-[var(--borde)]">
+                <button type="button" id="reg-tab-customer" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all bg-white dark:bg-[#161b2e] shadow-sm text-azul">
+                    Soy Conductor
+                </button>
+                <button type="button" id="reg-tab-manager" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-[var(--texto-suave)] hover:text-[#111318] dark:hover:text-white">
+                    Tengo un Parking
+                </button>
+            </div>
+
+            <form id="register-form" class="flex flex-col gap-4">
+                
+                <input type="hidden" id="user-type-input" value="customer">
+
+                <div class="flex flex-col gap-1.5">
+                    <label for="reg-name" id="label-name" class="text-xs font-semibold uppercase tracking-wider text-[var(--texto-suave)]">Nombre Completo</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--texto-suave)]">person</span>
+                        <input 
+                            type="text" 
+                            id="reg-name" 
+                            required 
+                            placeholder="Juan Pérez" 
+                            class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[var(--borde)] bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-azul/20 focus:border-azul transition-colors placeholder:text-[var(--texto-suave)]/50"
+                        />
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                    <label for="reg-email" class="text-xs font-semibold uppercase tracking-wider text-[var(--texto-suave)]">Correo electrónico</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--texto-suave)]">mail</span>
+                        <input 
+                            type="email" 
+                            id="reg-email" 
+                            required 
+                            placeholder="juan@email.com" 
+                            class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[var(--borde)] bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-azul/20 focus:border-azul transition-colors placeholder:text-[var(--texto-suave)]/50"
+                        />
+                    </div>
+                </div>
+
+                <div id="manager-fields" class="hidden flex flex-col gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label for="reg-cif" class="text-xs font-semibold uppercase tracking-wider text-[var(--texto-suave)]">CIF Empresa</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--texto-suave)]">badge</span>
+                            <input 
+                                type="text" 
+                                id="reg-cif" 
+                                placeholder="B12345678" 
+                                class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[var(--borde)] bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-azul/20 focus:border-azul transition-colors placeholder:text-[var(--texto-suave)]/50"
+                        />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                    <label for="reg-password" class="text-xs font-semibold uppercase tracking-wider text-[var(--texto-suave)]">Contraseña</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--texto-suave)]">lock</span>
+                        <input 
+                            type="password" 
+                            id="reg-password" 
+                            required 
+                            minlength="8"
+                            placeholder="Mín. 8 caracteres" 
+                            class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[var(--borde)] bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-azul/20 focus:border-azul transition-colors placeholder:text-[var(--texto-suave)]/50"
+                        />
+                    </div>
+                </div>
+
+                <button type="submit" id="reg-submit-btn" class="btn btn-primario btn-lg w-full mt-2">
+                    <span class="material-symbols-outlined text-base">person_add</span>
+                    Crear Cuenta
+                </button>
+
+                <p id="reg-error" class="hidden text-red-500 text-sm font-medium text-center mt-2"></p>
+            </form>
+
+            <div class="h-px bg-[var(--borde)] w-full"></div>
+
+            <p class="text-sm text-[var(--texto-suave)] text-center">
+                ¿Ya tienes una cuenta? 
+                <a href="login.html" class="text-azul font-bold hover:underline ml-1">Inicia sesión</a>
+            </p>
+
+        </div>
+    </main>
+
+    <footer class="py-6 text-center text-xs text-[var(--texto-suave)] border-t border-[var(--borde)] bg-white/50 dark:bg-[#0e1120]/50 backdrop-blur-sm">
+        <p>© 2026 PARKit — TFG DAW · Juan Carlos Pina Esteban</p>
+    </footer>
+
+    <div id="contenedor-toast"></div>
+
+    <script src="../js/guard.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/authView.js"></script>
+</body>
+</html>

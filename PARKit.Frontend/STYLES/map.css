@@ -1,11 +1,11 @@
-/*  Mapa  */
+/* Mapa  */
 .mapboxgl-map {
     background-color: #f3f4f6;
     width: 100%;
     height: 100%;
 }
 
-/*  Marcadores de parking  */
+/* Marcadores de parking  */
 .marcador-parking {
     width: 11px;
     height: 11px;
@@ -53,36 +53,58 @@
     visibility: visible;
 }
 
-/*  Geocoder (barra de búsqueda)  */
+/* Geocoder (barra de búsqueda rediseñada para PARKit)  */
 .mapboxgl-ctrl-top-left { z-index: 200 !important; }
 
 .mapboxgl-ctrl-geocoder {
-    min-width: 100%;
-    max-width: 360px;
-    border-radius: 24px !important;
-    border: none;
-    font-family: var(--fuente);
-    background-color: white;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    width: 100% !important;
+    max-width: 100% !important;
+    background-color: var(--fondo-card) !important;
+    border: 1px solid var(--borde) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
 }
 .mapboxgl-ctrl-geocoder--input {
+    color: var(--texto) !important;
+    font-family: var(--fuente) !important;
     height: 48px !important;
     padding: 6px 45px !important;
-    border-radius: 24px !important;
+    border-radius: 0.75rem !important;
     outline: none !important;
     box-shadow: none !important;
     font-size: 15px !important;
     background: transparent !important;
-    color: #1f2937 !important;
-    font-family: var(--fuente);
 }
 .mapboxgl-ctrl-geocoder--icon-search {
     top: 12px !important;
     left: 12px !important;
-    fill: #6b7280 !important;
+    fill: var(--texto-suave) !important;
+}
+.mapboxgl-ctrl-geocoder--button {
+    top: 8px !important;
+    background: transparent !important;
+}
+.mapboxgl-ctrl-geocoder--icon-close {
+    fill: var(--texto-suave) !important;
+}
+.mapboxgl-ctrl-geocoder .suggestions {
+    background-color: var(--fondo-card) !important;
+    border: 1px solid var(--borde) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12) !important;
+    margin-top: 0.25rem !important;
+}
+.mapboxgl-ctrl-geocoder .suggestions > li > a {
+    color: var(--texto) !important;
+    font-family: var(--fuente) !important;
+}
+.mapboxgl-ctrl-geocoder .suggestions > .active > a,
+.mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
+    background-color: rgba(19, 91, 236, 0.08) !important;
+    color: var(--azul) !important;
 }
 
-/*  Popup  */
+/* Popup  */
 .mapboxgl-popup { z-index: 20; max-width: 300px !important; }
 .mapboxgl-popup-content {
     padding: 0;
@@ -106,17 +128,18 @@
 }
 .mapboxgl-popup-close-button:hover { background: white; }
 
-/*  Panel lateral de detalles  */
+/* Panel lateral de detalles  */
 .panel-detalles {
     position: absolute;
-    left: 0; top: 64px;
-    height: calc(100vh - 64px);
+    left: 0; 
+    top: 0;
+    height: 100%;
     width: 360px;
     max-width: 100%;
     background: var(--fondo-card);
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 50;
+    z-index: 40;
     box-shadow: 20px 0 40px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
@@ -134,13 +157,11 @@
 @media (max-width: 640px) {
     .panel-detalles {
         width: 100%;
-        top: 0;
-        height: 100%;
         z-index: 100;
     }
 }
 
-/*  Indicadores de color de zonas  */
+/* Indicadores de color de zonas  */
 .punto-estado {
     width: 10px; height: 10px;
     border-radius: 50%;

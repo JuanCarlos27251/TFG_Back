@@ -5,29 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PARKit — Parking inteligente en tiempo real</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        azul: "#135bec",
-                        "azul-oscuro": "#0a3bbf",
-                        "fondo-oscuro": "#0e1120",
-                    },
-                    fontFamily: { sans: ["DM Sans", "sans-serif"] },
-                }
-            }
-        }
-    </script>
+    <script src="../JS/global.js"></script>
     <link rel="stylesheet" href="../STYLES/global.css" />
 </head>
 
-<body class="bg-[#f5f6fa] dark:bg-[#0e1120] font-sans text-[#111318] dark:text-white">
-
+<body class="layout-base">
 <!-- CABECERA-->
-<header class="sticky top-0 z-50 bg-white/80 dark:bg-[#0e1120]/80 backdrop-blur-md border-b border-[var(--borde)]">
-    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+<header class="header-base">    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
 
         <!-- Logo -->
         <a href="index.html" class="flex items-center gap-2 text-azul font-black text-xl tracking-tight">
@@ -96,7 +80,7 @@
 
         <!-- Tarjeta hero -->
         <div class="relative aparecer" style="animation-delay:0.1s">
-            <div class="w-full aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-azul/10 to-azul/25 shadow-2xl">
+            <div class="w-full aspect-[3/3] rounded-2xl overflow-hidden bg-gradient-to-br from-azul/10 to-azul/25 shadow-2xl">
                 <img
                     src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&q=80&w=700"
                     alt="Vista aérea de parking"

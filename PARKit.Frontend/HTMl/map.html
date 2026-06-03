@@ -11,29 +11,14 @@
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.2/mapbox-gl-geocoder.css" type="text/css" />
 
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        azul: "#135bec",
-                        "azul-oscuro": "#0a3bbf",
-                        "fondo-oscuro": "#0e1120",
-                    },
-                    fontFamily: { sans: ["DM Sans", "sans-serif"] },
-                }
-            }
-        }
-    </script>
+    <script src="../JS/global.js"></script>  
 
     <link rel="stylesheet" href="../STYLES/global.css">
     <link rel="stylesheet" href="../STYLES/map.css">
 </head>
 
-<body class="bg-[#f5f6fa] dark:bg-[#0e1120] font-sans text-[#111318] dark:text-white h-screen flex flex-col overflow-hidden">
-
-    <header class="sticky top-0 z-50 bg-white/80 dark:bg-[#0e1120]/80 backdrop-blur-md border-b border-[var(--borde)] flex-none">
+<body class="layout-base">
+    <header class="header-base">
         <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
 
             <a href="index.html" class="flex items-center gap-2 text-azul font-black text-xl tracking-tight">

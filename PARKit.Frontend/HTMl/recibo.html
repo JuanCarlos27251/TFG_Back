@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recibo de Compra — PARKit</title>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="../js/tailwind.config.js"></script>
+    
+    <link rel="stylesheet" href="../STYLES/global.css" />
+</head>
+
+<body class="layout-base">
+<header class="header-base">
+    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+
+        <a href="index.html" class="flex items-center gap-2 text-[var(--azul)] dark:text-white font-black text-xl tracking-tight hover:opacity-90 transition-opacity">
+            <svg class="w-7 h-7 text-[var(--azul)]" fill="currentColor" viewBox="0 0 48 48">
+                <path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill-rule="evenodd"/>
+                <path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill-rule="evenodd"/>
+            </svg>
+            <span class="text-[var(--texto)] dark:text-white">PARKit</span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-8 text-sm font-semibold">
+            <a href="map.html" class="text-[var(--texto-suave)] hover:text-[var(--azul)] dark:hover:text-white transition-colors duration-200">Mapa</a>
+            <a href="reservas.html" class="text-[var(--texto-suave)] hover:text-[var(--azul)] dark:hover:text-white transition-colors duration-200">Mis Reservas</a>
+        </nav>
+
+        <div class="flex items-center gap-4">
+            <div id="auth-links" class="flex items-center gap-2 text-sm font-medium text-[var(--texto-suave)]"></div>
+            
+            <a href="profile.html" id="header-user-avatar" class="w-9 h-9 rounded-full bg-[var(--azul)] text-white flex items-center justify-center font-black text-sm uppercase tracking-tight shadow-md shadow-blue-500/20 hover:bg-[var(--azul-oscuro)] hover:scale-105 active:scale-95 transition-all duration-200" title="Mi Perfil">
+                <span class="material-symbols-outlined text-lg leading-none">person</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-3xl w-full mx-auto flex-1 px-6 py-10 aparecer print:py-0 print:px-0">
+    
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 bg-white dark:bg-[#161b2e] p-4 rounded-2xl border border-[var(--borde)] print:hidden shadow-sm">
+        
+        <a href="index.html" class="btn btn-ghost btn-sm inline-flex items-center gap-1 bg-white/80 dark:bg-[#0e1120]/80 backdrop-blur-md border border-[var(--borde)] shadow-sm md:bg-transparent md:dark:bg-transparent md:backdrop-blur-none md:border-none md:shadow-none">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            Volver al inicio
+        </a>
+        
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+            <button id="btn-print" class="btn btn-contorno btn-sm flex-1 sm:flex-initial">
+                <span class="material-symbols-outlined">print</span>
+                Imprimir
+            </button>
+            
+            <button id="btn-download" class="btn btn-primario btn-sm flex-1 sm:flex-initial">
+                <span class="material-symbols-outlined">download</span>
+                Descargar PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-[#161b2e] rounded-3xl border border-[var(--borde)] shadow-xl p-8 md:p-12 relative overflow-hidden print:shadow-none print:border-none print:p-0">
+        
+        <div class="absolute top-0 left-0 right-0 h-2 bg-[var(--azul)] print:hidden"></div>
+
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-6 border-b border-[var(--borde)] pb-8">
+            <div>
+                <div class="flex items-center gap-2 text-[var(--azul)] dark:text-white font-black text-2xl tracking-tight mb-2">
+                    <svg class="w-6 h-6 text-[var(--azul)]" fill="currentColor" viewBox="0 0 48 48">
+                        <path d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z"/>
+                        <path d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z"/>
+                    </svg>
+                    PARKit
+                </div>
+                <p class="text-xs text-[var(--texto-suave)] font-medium leading-relaxed">
+                    PARKit Movilidad Urbana S.L.<br>
+                    CIF: B-50123456<br>
+                    Zaragoza, España
+                </p>
+            </div>
+            <div class="sm:text-right">
+                <span class="badge badge-verde uppercase font-extrabold tracking-widest print:border print:border-green-500">
+                    Pago Confirmado
+                </span>
+                <h2 class="text-xs uppercase font-extrabold tracking-wider text-[var(--texto-suave)] mt-4">Número de Justificante</h2>
+                <p id="receipt-invoice-id" class="font-mono text-lg font-bold text-[#111318] dark:text-white mt-0.5">FAC-2026-88421</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 py-6 border-b border-[var(--borde)] text-sm">
+            <div>
+                <span class="block text-xs font-extrabold text-[var(--texto-suave)] uppercase tracking-wider">Fecha Emisión</span>
+                <span id="receipt-date" class="font-bold text-[#111318] dark:text-white block mt-1">03 Jun, 2026</span>
+            </div>
+            <div>
+                <span class="block text-xs font-extrabold text-[var(--texto-suave)] uppercase tracking-wider">Método de Pago</span>
+                <span id="receipt-method" class="font-bold text-[#111318] dark:text-white block mt-1">Tarjeta (•••• 4321)</span>
+            </div>
+            <div>
+                <span class="block text-xs font-extrabold text-[var(--texto-suave)] uppercase tracking-wider">Titular</span>
+                <span id="receipt-client-name" class="font-bold text-[#111318] dark:text-white block mt-1 truncate">Juan Carlos Pina</span>
+            </div>
+            <div>
+                <span class="block text-xs font-extrabold text-[var(--texto-suave)] uppercase tracking-wider">Localizador</span>
+                <span id="receipt-booking-id" class="font-mono font-bold text-[var(--azul)] block mt-1">#PK-774102</span>
+            </div>
+        </div>
+
+        <div class="py-6">
+            <h3 class="text-xs font-extrabold text-[var(--texto-suave)] uppercase tracking-widest mb-4">Detalle de la Transacción</h3>
+            
+            <div class="w-full space-y-4">
+                <div class="flex justify-between items-start text-sm gap-4">
+                    <div>
+                        <p id="receipt-item-title" class="font-bold text-[#111318] dark:text-white">Reserva de Plaza de Aparcamiento</p>
+                        <p id="receipt-item-desc" class="text-xs text-[var(--texto-suave)] mt-1 leading-normal">
+                            Parking Plaza España (Zaragoza) · Plaza asignada automáticamente.<br>
+                            Estancia completa programada.
+                        </p>
+                    </div>
+                    <span id="receipt-item-price" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">14,50 €</span>
+                </div>
+
+                <div class="flex justify-between items-center text-sm gap-4 pt-2">
+                    <p class="text-[var(--texto-suave)]">Gastos de gestión de plataforma</p>
+                    <span id="receipt-fee-price" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">0,50 €</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-[var(--borde)] pt-6 flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-4xl text-[var(--azul)]/20 select-none print:hidden">workspace_premium</span>
+                <p class="text-xs text-[var(--texto-suave)] max-w-xs text-center sm:text-left leading-normal">
+                    Este documento sirve como justificante de pago digital para la reserva indicada. El IVA (21%) se encuentra incluido en el importe total.
+                </p>
+            </div>
+
+            <div class="w-full sm:w-auto space-y-2 text-right">
+                <div class="flex justify-between sm:justify-end gap-10 text-sm">
+                    <span class="text-[var(--texto-suave)]">Base Imponible:</span>
+                    <span id="receipt-subtotal" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">12,40 €</span>
+                </div>
+                <div class="flex justify-between sm:justify-end gap-10 text-sm">
+                    <span class="text-[var(--texto-suave)]">IVA (21%):</span>
+                    <span id="receipt-tax" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">2,60 €</span>
+                </div>
+                <div class="h-px bg-[var(--borde)] my-2"></div>
+                
+                <div class="flex justify-between sm:justify-end items-center gap-6">
+                    <span class="font-bold text-sm text-[#111318] dark:text-white uppercase tracking-wider">Total Pagado:</span>
+                    <div class="inline-flex items-center whitespace-nowrap text-3xl font-black text-[var(--azul)] tracking-tight">
+                        <span id="receipt-total" class="mr-1">15,00</span><span>€</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 pt-8 border-t border-dashed border-[var(--borde)] flex flex-col items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-5xl text-[#111318]/20 dark:text-white/20 tracking-[0.25em] select-none">barcode</span>
+            <span class="font-mono text-[10px] text-[var(--texto-suave)] uppercase tracking-widest">Verificación e-ID *2026FAC88421PARK*</span>
+        </div>
+    </div>
+</main>
+
+<footer class="bg-white dark:bg-[#0e1120] border-t border-[var(--borde)] py-14 flex-none mt-20 print:hidden">
+    <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center text-sm text-[var(--texto-suave)]">
+            <p>© 2026 PARKit — TFG DAW · Juan Carlos Pina Esteban</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/receipt.js"></script>
+
+</body>
+</html>

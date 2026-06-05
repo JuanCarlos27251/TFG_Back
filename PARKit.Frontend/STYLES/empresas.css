@@ -1,0 +1,90 @@
+/* ==============================================
+   PARKit — Estilos sección Business (modo oscuro)
+   Requiere: global.css cargado antes
+   ============================================== */
+
+/* Variables del tema oscuro corporativo */
+.tema-business {
+    --fondo:        #0b1221;
+    --fondo-card:   #11192b;
+    --fondo-header: rgba(17, 25, 43, 0.85);
+    --borde:        #1e293b;
+    --texto:        #f8fafc;
+    --texto-suave:  #94a3b8;
+    --sombra:       0 4px 20px rgba(0, 0, 0, 0.25);
+    --azul-claro:   rgba(19, 91, 236, 0.15);
+}
+
+/* ── Navegación del sidebar ─────────────────── */
+.nav-item {
+    display:       flex;
+    align-items:   center;
+    gap:           0.75rem;
+    padding:       0.75rem 1rem;
+    border-radius: var(--radio);
+    color:         var(--texto-suave);
+    font-size:     0.9rem;
+    font-weight:   500;
+    transition:    all var(--transicion);
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color:            var(--texto);
+}
+
+.nav-item.activo {
+    background-color: var(--azul-claro);
+    color:            var(--azul);
+    font-weight:      600;
+}
+
+/* ── Tabla del dashboard ────────────────────── */
+.tabla-business th {
+    padding:          1rem 1.5rem;
+    font-size:        0.75rem;
+    font-weight:      700;
+    color:            var(--texto-suave);
+    text-transform:   uppercase;
+    letter-spacing:   0.05em;
+    background-color: var(--fondo);
+    border-bottom:    1px solid var(--borde);
+}
+
+.tabla-business td {
+    padding:       1.25rem 1.5rem;
+    font-size:     0.9rem;
+    border-bottom: 1px solid var(--borde);
+    vertical-align: middle;
+}
+
+.tabla-business tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-business tbody tr {
+    transition: background-color var(--transicion);
+}
+
+.tabla-business tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* ── Etiqueta de rol (personal) ─────────────── */
+.tag-rol {
+    display:          inline-block;
+    background-color: var(--fondo);
+    color:            var(--texto-suave);
+    padding:          0.35rem 0.65rem;
+    border-radius:    var(--radio);
+    border:           1px solid var(--borde);
+}
+
+/* ── Labels formulario configuración ────────── */
+.label-settings {
+    font-size:      0.825rem;
+    font-weight:    700;
+    color:          var(--texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}

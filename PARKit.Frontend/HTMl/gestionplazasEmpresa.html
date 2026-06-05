@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Plazas — PARKit Business</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="../JS/global.js"></script>
+    <link rel="stylesheet" href="../STYLES/global.css" />
+    <link rel="stylesheet" href="../STYLES/empresas.css" />
+</head>
+
+<body class="layout-base tema-business md:flex-row overflow-hidden" style="height:100vh;">
+
+    <!-- ── Sidebar ───────────────────────────────── -->
+    <aside class="w-full md:w-64 bg-[var(--fondo-card)] border-r border-[var(--borde)] flex flex-col justify-between p-5 md:sticky md:top-0 md:h-screen z-40 flex-shrink-0">
+        <div class="flex flex-col gap-8">
+
+            <a href="index.html" class="flex items-center gap-3 px-2 text-[var(--texto)] font-black text-xl tracking-tight">
+                <div class="bg-[var(--azul)] rounded-xl w-10 h-10 flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-[var(--azul)]/30">
+                    <span class="material-symbols-outlined icono-relleno">local_parking</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="leading-none">PARKit</span>
+                    <span class="text-[10px] text-[var(--azul)] uppercase tracking-wider mt-1">Negocios</span>
+                </div>
+            </a>
+
+            <nav class="flex flex-col gap-1.5">
+                <a href="panelEmpresa.html" class="nav-item">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    Panel de Control
+                </a>
+                <a href="gestionPlazas.html" class="nav-item activo">
+                    <span class="material-symbols-outlined">garage</span>
+                    Gestión de Plazas
+                </a>
+                <a href="BussinessAnalytics.html" class="nav-item">
+                    <span class="material-symbols-outlined">bar_chart</span>
+                    Estadísticas
+                </a>
+                <a href="usuarioEmpresa.html" class="nav-item">
+                    <span class="material-symbols-outlined">group</span>
+                    Personal
+                </a>
+                <a href="configuracionEmpresa.html" class="nav-item">
+                    <span class="material-symbols-outlined">settings</span>
+                    Configuración
+                </a>
+            </nav>
+        </div>
+
+        <div class="mt-8">
+            <button class="btn btn-primario w-full text-sm">
+                <span class="material-symbols-outlined text-[18px]">download</span>
+                Descargar Reporte
+            </button>
+        </div>
+    </aside>
+
+    <!-- ── Área principal ────────────────────────── -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+        <!-- Header -->
+        <header class="header-base flex items-center justify-between px-6 py-4 lg:px-10 z-30 flex-shrink-0">
+            <div class="flex items-center gap-6 flex-1">
+                <h2 class="text-xl font-bold tracking-tight hidden sm:block">Gestión de Plazas</h2>
+
+                <div class="relative w-full max-w-sm">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-xl">search</span>
+                    <input
+                        id="spot-search-input"
+                        type="text"
+                        class="input-base input-con-icono bg-[var(--fondo)]"
+                        placeholder="Buscar plaza (ej: A-1)..."
+                    />
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4 ml-4">
+                <!-- Indicador en vivo -->
+                <div class="badge-live">
+                    <span class="badge-live__dot"></span>
+                    Monitoreo en vivo
+                </div>
+
+                <button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[var(--borde)] transition-colors text-[var(--texto-suave)] relative">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute top-2 right-2 w-2 h-2 bg-[var(--rojo)] rounded-full"></span>
+                </button>
+
+                <div class="flex items-center gap-3 pl-4 border-l border-[var(--borde)] cursor-pointer">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-bold leading-none">Admin Principal</p>
+                        <p class="text-[11px] text-[var(--texto-suave)] mt-1">Parking Central</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-[var(--azul)] flex items-center justify-center text-white font-bold">A</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido scrollable -->
+        <div class="flex-1 overflow-y-auto p-6 lg:p-10 flex flex-col gap-8">
+
+            <!-- Título -->
+            <div>
+                <h3 id="gp-parking-title" class="text-2xl font-black tracking-tight text-[var(--texto)]">Parking Central</h3>
+                <p id="gp-parking-subtitle" class="text-sm text-[var(--texto-suave)] mt-1">Visualización y control en tiempo real de todas las plazas</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+                <div class="card p-5 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-bold uppercase tracking-widest text-[var(--texto-suave)]">Libres</p>
+                        <span class="material-symbols-outlined text-[var(--verde)]">check_circle</span>
+                    </div>
+                    <p id="stat-available" class="text-3xl font-black text-[var(--texto)]">0</p>
+                </div>
+
+                <div class="card p-5 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-bold uppercase tracking-widest text-[var(--texto-suave)]">Ocupadas</p>
+                        <span class="material-symbols-outlined text-[var(--azul)]">directions_car</span>
+                    </div>
+                    <p id="stat-occupied" class="text-3xl font-black text-[var(--texto)]">0</p>
+                </div>
+
+                <div class="card p-5 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-bold uppercase tracking-widest text-[var(--texto-suave)]">Reservadas</p>
+                        <span class="material-symbols-outlined text-[var(--naranja)]">event_available</span>
+                    </div>
+                    <p id="stat-reserved" class="text-3xl font-black text-[var(--texto)]">0</p>
+                </div>
+
+                <div class="card p-5 flex flex-col gap-3">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-bold uppercase tracking-widest text-[var(--texto-suave)]">Mantenimiento</p>
+                        <span class="material-symbols-outlined text-[var(--rojo)]">build</span>
+                    </div>
+                    <p id="stat-maintenance" class="text-3xl font-black text-[var(--texto)]">0</p>
+                </div>
+
+            </div>
+
+            <!-- Filtros + Grid de plazas -->
+            <div class="card overflow-hidden">
+
+                <!-- Barra de filtros -->
+                <div class="px-6 py-4 border-b border-[var(--borde)] flex flex-wrap items-center gap-6">
+
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold uppercase tracking-widest text-[var(--texto-suave)]">Tipo</span>
+                        <select id="filter-type-select" class="input-base bg-[var(--fondo)] w-auto text-sm font-bold py-1.5">
+                            <option value="all">Todas</option>
+                            <option value="electric">Solo eléctricas (EV)</option>
+                            <option value="large">Solo grandes</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold uppercase tracking-widest text-[var(--texto-suave)]">Estado</span>
+                        <div class="flex items-center gap-2">
+                            <button id="filter-status-0" class="filtro-estado filtro-estado--verde" title="Libres"></button>
+                            <button id="filter-status-1" class="filtro-estado filtro-estado--azul"  title="Ocupadas"></button>
+                            <button id="filter-status-2" class="filtro-estado filtro-estado--naranja" title="Reservadas"></button>
+                            <button id="filter-status-3" class="filtro-estado filtro-estado--rojo"  title="Mantenimiento"></button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Grid de plazas -->
+                <div class="p-6">
+                    <div id="spot-grid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-11 gap-3">
+
+                        <!-- Plazas de ejemplo para maqueta -->
+                        <div class="plaza plaza--libre"   data-id="A-1"><span>A-1</span></div>
+                        <div class="plaza plaza--libre"   data-id="A-2"><span>A-2</span></div>
+                        <div class="plaza plaza--ocupada" data-id="A-3"><span>A-3</span></div>
+                        <div class="plaza plaza--ocupada" data-id="A-4"><span>A-4</span></div>
+                        <div class="plaza plaza--libre"   data-id="A-5"><span>A-5</span></div>
+                        <div class="plaza plaza--reservada" data-id="A-6"><span>A-6</span></div>
+                        <div class="plaza plaza--libre"   data-id="A-7"><span>A-7</span></div>
+                        <div class="plaza plaza--libre"   data-id="B-1"><span>B-1</span></div>
+                        <div class="plaza plaza--libre"   data-id="B-2"><span>B-2</span></div>
+                        <div class="plaza plaza--mantenimiento" data-id="B-3"><span>B-3</span></div>
+                        <div class="plaza plaza--libre"   data-id="B-4"><span>B-4</span></div>
+                        <div class="plaza plaza--ocupada" data-id="B-5"><span>B-5</span></div>
+                        <div class="plaza plaza--libre"   data-id="B-6"><span>B-6</span></div>
+                        <div class="plaza plaza--libre"   data-id="B-7"><span>B-7</span></div>
+                        <div class="plaza plaza--reservada" data-id="C-1"><span>C-1</span></div>
+                        <div class="plaza plaza--libre"   data-id="C-2"><span>C-2</span></div>
+                        <div class="plaza plaza--libre"   data-id="C-3"><span>C-3</span></div>
+                        <div class="plaza plaza--ocupada" data-id="C-4"><span>C-4</span></div>
+                        <div class="plaza plaza--libre"   data-id="C-5"><span>C-5</span></div>
+                        <div class="plaza plaza--libre"   data-id="C-6"><span>C-6</span></div>
+                        <div class="plaza plaza--libre"   data-id="C-7"><span>C-7</span></div>
+                        <div class="plaza plaza--libre"   data-id="D-1"><span>D-1</span></div>
+                        <div class="plaza plaza--mantenimiento" data-id="D-2"><span>D-2</span></div>
+                        <div class="plaza plaza--libre"   data-id="D-3"><span>D-3</span></div>
+                        <div class="plaza plaza--libre"   data-id="D-4"><span>D-4</span></div>
+                        <div class="plaza plaza--ocupada" data-id="D-5"><span>D-5</span></div>
+                        <div class="plaza plaza--reservada" data-id="D-6"><span>D-6</span></div>
+                        <div class="plaza plaza--libre"   data-id="D-7"><span>D-7</span></div>
+
+                    </div>
+
+                    <!-- Leyenda -->
+                    <div class="flex flex-wrap items-center gap-5 mt-6 pt-6 border-t border-[var(--borde)]">
+                        <div class="leyenda-item"><span class="leyenda-item__dot" style="background:var(--verde)"></span>Libre</div>
+                        <div class="leyenda-item"><span class="leyenda-item__dot" style="background:var(--azul)"></span>Ocupada</div>
+                        <div class="leyenda-item"><span class="leyenda-item__dot" style="background:var(--naranja)"></span>Reservada</div>
+                        <div class="leyenda-item"><span class="leyenda-item__dot" style="background:var(--rojo)"></span>Mantenimiento</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ── Panel lateral derecho ──────────────────── -->
+    <aside class="w-80 flex-shrink-0 border-l border-[var(--borde)] bg-[var(--fondo-card)] flex flex-col overflow-hidden">
+
+        <!-- Detalle de plaza seleccionada -->
+        <div class="p-6 border-b border-[var(--borde)] flex flex-col gap-5">
+            <h3 class="font-bold text-[var(--texto)] text-sm uppercase tracking-widest">Detalle de la Plaza</h3>
+
+            <!-- Tarjeta de plaza activa -->
+            <div class="card p-4 flex items-center gap-4">
+                <div id="panel-plaza-badge" class="plaza-badge plaza-badge--vacia">
+                    <span id="panel-plaza-id" class="text-sm font-black">--</span>
+                </div>
+                <div>
+                    <p id="panel-plaza-estado" class="text-sm font-bold text-[var(--texto)]">Selecciona una plaza</p>
+                    <p id="panel-plaza-info"   class="text-xs text-[var(--texto-suave)] mt-0.5">Haz clic en el grid</p>
+                </div>
+            </div>
+
+            <!-- Acciones rápidas -->
+            <div class="flex flex-col gap-2">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)]">Acciones rápidas</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btn-liberar" class="btn-accion btn-accion--verde">
+                        <span class="material-symbols-outlined text-[16px]">done</span>
+                        Liberar
+                    </button>
+                    <button id="btn-mantenimiento" class="btn-accion btn-accion--rojo">
+                        <span class="material-symbols-outlined text-[16px]">build</span>
+                        Mantener
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ocupación global -->
+        <div class="mt-auto p-6 border-t border-[var(--borde)]">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold uppercase tracking-widest text-[var(--texto-suave)]">Ocupación total</span>
+                <span id="gp-ocupacion-texto" class="text-xs font-black text-[var(--texto)]">0%</span>
+            </div>
+            <div class="w-full h-2 bg-[var(--borde)] rounded-full overflow-hidden">
+                <div id="gp-ocupacion-barra" class="h-full bg-[var(--azul)] rounded-full transition-all duration-500" style="width:0%"></div>
+            </div>
+        </div>
+
+    </aside>
+
+</body>
+</html>

@@ -1,10 +1,16 @@
+/* ==============================================
+   PARKit — Configuración global de Tailwind
+   + Lógica de header dinámico según sesión
+   ============================================== */
+
+// ── Configuración de Tailwind ──────────────────
 window.tailwind.config = {
     darkMode: 'class',
     theme: {
         extend: {
             colors: {
-                azul:          '#135bec',
-                'azul-oscuro': '#0a3bbf',
+                azul:           '#135bec',
+                'azul-oscuro':  '#0a3bbf',
                 'fondo-oscuro': '#0e1120',
             },
             fontFamily: {
@@ -13,3 +19,129 @@ window.tailwind.config = {
         },
     },
 };
+
+// ── Lógica de header dinámico ──────────────────
+// Se ejecuta al cargar el DOM en todas las páginas que incluyan este script.
+// Adapta los botones y la navegación según el estado de sesión del usuario.
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    // ── Helpers de sesión (independientes de auth.js si no está cargado)
+    // En páginas donde auth.js esté cargado, AUTH ya estará disponible.
+    // En páginas donde no, usamos acceso directo a localStorage.
+
+    const token      = localStorage.getItem('parkit_token');
+    const rol        = localStorage.getItem('parkit_rol');
+    const rawUsuario = localStorage.getItem('parkit_usuario');
+    let usuario      = null;
+
+    try { usuario = rawUsuario ? JSON.parse(rawUsuario) : null; } catch {}
+
+    // Verificamos que el token no haya expirado
+    let sesionActiva = false;
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            sesionActiva  = payload.exp * 1000 > Date.now();
+        } catch {}
+    }
+
+    // ── Referencias a elementos del header ────────
+    const enlacesAuth  = document.getElementById('enlaces-auth');   // div con botones login/registro
+    const avatarBtn    = document.getElementById('header-user-avatar'); // avatar del perfil (páginas internas)
+    const navEmpresa   = document.querySelector('nav a[href*="empresa"], nav a[href*="Empresa"], nav a[href*="panelEmpresa"], nav a[href*="EMPRESA"]');
+
+    // ── Estado: SIN sesión ─────────────────────────
+    if (!sesionActiva) {
+        // Si el avatar está visible (páginas internas), lo ocultamos
+        if (avatarBtn) avatarBtn.style.display = 'none';
+        return; // el header por defecto ya muestra login/registro
+    }
+
+    // ── Estado: CON sesión activa ──────────────────
+    const esEmpresa = rol === 'empresa';
+    const inicial   = usuario?.inicial || (usuario?.nombre?.charAt(0).toUpperCase()) || 'U';
+    const nombre    = usuario?.nombre  || 'Usuario';
+
+    // 1. Ocultar enlace "Para empresas" en la navegación si es usuario normal
+    if (!esEmpresa && navEmpresa) {
+        navEmpresa.style.display = 'none';
+    }
+
+    // 2. Transformar el bloque de botones login/registro → avatar + menú
+    if (enlacesAuth) {
+        const destino = esEmpresa ? 'EMPRESA/panelEmpresa.html' : 'perfil.html';
+
+        enlacesAuth.innerHTML = `
+            <div class="flex items-center gap-2 relative" id="menu-usuario">
+                <button
+                    id="btn-avatar-menu"
+                    class="avatar-btn"
+                    title="${nombre}"
+                    aria-label="Menú de usuario"
+                >
+                    ${inicial}
+                </button>
+
+                <!-- Menú desplegable -->
+                <div
+                    id="dropdown-usuario"
+                    class="absolute right-0 top-full mt-2 w-48 bg-[var(--fondo-card)] border border-[var(--borde)] rounded-xl shadow-xl z-50 overflow-hidden hidden aparecer"
+                >
+                    <div class="px-4 py-3 border-b border-[var(--borde)]">
+                        <p class="text-xs font-bold text-[var(--texto-suave)] uppercase tracking-wider">Conectado como</p>
+                        <p class="text-sm font-bold text-[var(--texto)] truncate mt-0.5">${nombre}</p>
+                    </div>
+                    <a href="${destino}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--texto)] hover:bg-[var(--azul-claro)] hover:text-[var(--azul)] transition-colors">
+                        <span class="material-symbols-outlined text-base">person</span>
+                        ${esEmpresa ? 'Panel de empresa' : 'Mi perfil'}
+                    </a>
+                    ${!esEmpresa ? `
+                    <a href="reservas.html" class="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--texto)] hover:bg-[var(--azul-claro)] hover:text-[var(--azul)] transition-colors">
+                        <span class="material-symbols-outlined text-base">history</span>
+                        Mis reservas
+                    </a>` : ''}
+                    <div class="border-t border-[var(--borde)] mt-1">
+                        <button
+                            id="btn-cerrar-sesion"
+                            class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--rojo)] hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
+                        >
+                            <span class="material-symbols-outlined text-base">logout</span>
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Toggle del menú desplegable
+        const btnAvatar  = document.getElementById('btn-avatar-menu');
+        const dropdown   = document.getElementById('dropdown-usuario');
+
+        btnAvatar?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown?.classList.toggle('hidden');
+        });
+
+        // Cerrar al hacer clic fuera
+        document.addEventListener('click', () => {
+            dropdown?.classList.add('hidden');
+        });
+
+        // Cerrar sesión
+        document.getElementById('btn-cerrar-sesion')?.addEventListener('click', () => {
+            localStorage.removeItem('parkit_token');
+            localStorage.removeItem('parkit_rol');
+            localStorage.removeItem('parkit_usuario');
+            window.location.href = 'index.html';
+        });
+    }
+
+    // 3. Actualizar el avatar del header en páginas internas (perfil, reservas, pagos…)
+    if (avatarBtn) {
+        avatarBtn.textContent = inicial;
+        avatarBtn.title       = nombre;
+        avatarBtn.href        = esEmpresa ? 'panelEmpresa.html' : 'perfil.html';
+    }
+
+});

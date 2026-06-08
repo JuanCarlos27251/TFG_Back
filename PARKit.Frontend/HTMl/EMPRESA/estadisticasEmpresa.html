@@ -4,9 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Estadísticas — PARKit Business</title>
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- Chart.js para los gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../JS/global.js"></script>
+    
+    <!-- Scripts base de PARKit -->
+    <script src="../../JS/auth.js"></script>
+    <script src="../../JS/global.js"></script>
     <link rel="stylesheet" href="../../STYLES/global.css" />
     <link rel="stylesheet" href="../../STYLES/empresas.css" />
 </head>
@@ -16,7 +21,6 @@
     <!-- ── SIDEBAR ─────────────────────────────────────────────── -->
     <aside class="w-full md:w-64 bg-[var(--fondo-card)] border-r border-[var(--borde)] flex flex-col justify-between p-5 md:sticky md:top-0 md:h-screen z-40 flex-shrink-0">
         <div class="flex flex-col gap-8">
-
             <a href="../index.html" class="flex items-center gap-3 px-2 text-[var(--texto)] font-black text-xl tracking-tight">
                 <div class="bg-[var(--azul)] rounded-xl w-10 h-10 flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-[var(--azul)]/30">
                     <span class="material-symbols-outlined icono-relleno">local_parking</span>
@@ -32,17 +36,13 @@
                     <span class="material-symbols-outlined">dashboard</span>
                     Panel de Control
                 </a>
-                <a href="BussinessParkList.html" class="nav-item">
+                <a href="misparkingsEmpresa.html" class="nav-item">
                     <span class="material-symbols-outlined">directions_car</span>
                     Mis Parkings
                 </a>
-                <a href="BussinessAnalytics.html" class="nav-item activo">
+                <a href="estadisticasEmpresa.html" class="nav-item activo">
                     <span class="material-symbols-outlined">bar_chart</span>
                     Estadísticas
-                </a>
-                <a href="usuarioEmpresa.html" class="nav-item">
-                    <span class="material-symbols-outlined">group</span>
-                    Personal
                 </a>
                 <a href="configuracionEmpresa.html" class="nav-item">
                     <span class="material-symbols-outlined">settings</span>
@@ -51,10 +51,10 @@
             </nav>
         </div>
 
-        <div class="mt-8">
-            <button class="btn btn-primario w-full text-sm">
-                <span class="material-symbols-outlined text-[18px]">download</span>
-                Descargar Reporte
+        <div class="mt-8 flex flex-col gap-2">
+            <button id="btn-logout-empresa" class="btn btn-ghost w-full text-sm text-[var(--rojo)]">
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+                Cerrar sesión
             </button>
         </div>
     </aside>
@@ -66,83 +66,62 @@
         <header class="header-base flex items-center justify-between px-6 py-4 lg:px-10 z-30">
             <div class="flex items-center gap-6 flex-1">
                 <h2 class="text-xl font-bold tracking-tight hidden sm:block">Estadísticas</h2>
-
-                <!-- Selector de rango -->
-                <div class="flex items-center gap-2 bg-[var(--fondo)] border border-[var(--borde)] rounded-lg p-1">
-                    <button id="btn-range-week"  class="range-btn activo px-3 py-1.5 rounded-md text-xs font-bold transition-all">7 días</button>
-                    <button id="btn-range-month" class="range-btn px-3 py-1.5 rounded-md text-xs font-bold transition-all text-[var(--texto-suave)] hover:text-[var(--texto)]">30 días</button>
-                    <button id="btn-range-year"  class="range-btn px-3 py-1.5 rounded-md text-xs font-bold transition-all text-[var(--texto-suave)] hover:text-[var(--texto)]">12 meses</button>
-                </div>
             </div>
 
             <div class="flex items-center gap-4 ml-4">
-                <button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[var(--borde)] transition-colors text-[var(--texto-suave)] relative">
-                    <span class="material-symbols-outlined">notifications</span>
-                    <span class="absolute top-2 right-2 w-2 h-2 bg-[var(--rojo)] rounded-full"></span>
-                </button>
                 <div class="flex items-center gap-3 pl-4 border-l border-[var(--borde)] cursor-pointer">
                     <div class="text-right hidden sm:block">
-                        <p class="text-sm font-bold leading-none">Admin Principal</p>
-                        <p class="text-[11px] text-[var(--texto-suave)] mt-1">Parking Central</p>
+                        <p id="header-empresa-nombre" class="text-sm font-bold leading-none">Cargando...</p>
+                        <p id="header-empresa-subtitulo" class="text-[11px] text-[var(--texto-suave)] mt-1"></p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-[var(--azul)] flex items-center justify-center text-white font-bold">
-                        A
+                    <div id="header-empresa-avatar" class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--azul)] to-[var(--azul-oscuro)] flex items-center justify-center text-white font-bold shadow-md">
+                        …
                     </div>
                 </div>
             </div>
         </header>
 
         <!-- Main -->
-        <main class="p-6 lg:p-10 flex flex-col gap-8 flex-1 max-w-[1400px] mx-auto w-full">
+        <main class="p-6 lg:p-10 flex flex-col gap-8 flex-1 max-w-[1400px] mx-auto w-full mb-10">
 
-            <!-- Título -->
             <div>
                 <h3 class="text-2xl font-black tracking-tight text-[var(--texto)]">Análisis de Rendimiento</h3>
-                <p class="text-sm text-[var(--texto-suave)] mt-1">Métricas en tiempo real de ocupación, ingresos y reservas de tus instalaciones.</p>
+                <p class="text-sm text-[var(--texto-suave)] mt-1">Métricas calculadas de tus parkings en PARKit.</p>
             </div>
 
-            <!-- KPIs ──────────────────────────────────────────────── -->
+            <!-- KPIs -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-
                 <div class="card p-6 flex flex-col gap-4">
                     <div class="flex justify-between items-start">
-                        <p class="text-[var(--texto-suave)] text-xs font-bold uppercase tracking-widest">Ingresos Totales</p>
+                        <p class="text-[var(--texto-suave)] text-xs font-bold uppercase tracking-widest">Ingresos Trismestrales</p>
                         <div class="w-8 h-8 rounded-lg bg-[var(--azul-claro)] text-[var(--azul)] flex items-center justify-center">
                             <span class="material-symbols-outlined text-[20px]">payments</span>
                         </div>
                     </div>
                     <div>
-                        <p id="kpi-ingresos" class="text-3xl font-black text-[var(--texto)]">0,00 €</p>
-                        <div class="flex items-center gap-1 mt-1.5">
-                            <span class="badge badge-verde text-[10px] font-bold">+12,4%</span>
-                            <span class="text-[var(--texto-suave)] text-xs">vs período ant.</span>
-                        </div>
+                        <p id="kpi-ingresos" class="text-3xl font-black text-[var(--texto)]">Cargando...</p>
                     </div>
                 </div>
 
                 <div class="card p-6 flex flex-col gap-4">
                     <div class="flex justify-between items-start">
-                        <p class="text-[var(--texto-suave)] text-xs font-bold uppercase tracking-widest">Reservas</p>
+                        <p class="text-[var(--texto-suave)] text-xs font-bold uppercase tracking-widest">Reservas Confirmadas</p>
                         <div class="w-8 h-8 rounded-lg bg-[var(--verde)]/10 text-[var(--verde)] flex items-center justify-center">
                             <span class="material-symbols-outlined text-[20px]">bookmark_added</span>
                         </div>
                     </div>
                     <div>
-                        <p id="kpi-reservas" class="text-3xl font-black text-[var(--texto)]">0</p>
-                        <div class="flex items-center gap-1 mt-1.5">
-                            <span class="badge badge-verde text-[10px] font-bold">+8,1%</span>
-                            <span class="text-[var(--texto-suave)] text-xs">vs período ant.</span>
-                        </div>
+                        <p id="kpi-reservas" class="text-3xl font-black text-[var(--texto)]">--</p>
                     </div>
                 </div>
 
                 <div class="card p-6 flex flex-col gap-4">
                     <div class="flex justify-between items-start">
-                        <p class="text-[var(--texto-suave)] text-xs font-bold uppercase tracking-widest">Ocupación Media</p>
-                        <span class="badge badge-verde text-xs">En vivo</span>
+                        <p class="text-[var(--texto-suave)] text-xs font-bold uppercase tracking-widest">Ocupación Media Global</p>
+                        <span class="badge badge-verde text-xs">º</span>
                     </div>
                     <div>
-                        <p id="kpi-ocupacion" class="text-3xl font-black text-[var(--texto)]">0%</p>
+                        <p id="kpi-ocupacion" class="text-3xl font-black text-[var(--texto)]">--%</p>
                         <div class="w-full bg-[var(--fondo)] h-2 rounded-full overflow-hidden mt-3">
                             <div id="barra-ocupacion" class="bg-[var(--azul)] h-full rounded-full transition-all duration-700" style="width: 0%"></div>
                         </div>
@@ -151,115 +130,37 @@
 
                 <div class="card p-6 flex flex-col gap-4">
                     <div class="flex justify-between items-start">
-                        <p class="text-[var(--texto-suave)] text-xs font-bold uppercase tracking-widest">Ticket Medio</p>
+                        <p class="text-[var(--texto-suave)] text-xs font-bold uppercase tracking-widest">Ticket Medio x Reserva</p>
                         <div class="w-8 h-8 rounded-lg bg-[var(--naranja)]/10 text-[var(--naranja)] flex items-center justify-center">
                             <span class="material-symbols-outlined text-[20px]">receipt_long</span>
                         </div>
                     </div>
                     <div>
-                        <p id="kpi-ticket" class="text-3xl font-black text-[var(--texto)]">0,00 €</p>
-                        <div class="flex items-center gap-1 mt-1.5">
-                            <span class="badge badge-naranja text-[10px] font-bold">-1,2%</span>
-                            <span class="text-[var(--texto-suave)] text-xs">vs período ant.</span>
-                        </div>
+                        <p id="kpi-ticket" class="text-3xl font-black text-[var(--texto)]">--</p>
                     </div>
                 </div>
-
             </div>
 
-            <!-- Gráfico de ingresos semanales + donut ─────────────── -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                <!-- Ingresos por período -->
-                <div class="card overflow-hidden lg:col-span-2">
-                    <div class="p-6 border-b border-[var(--borde)] flex justify-between items-center">
-                        <div>
-                            <h3 class="text-base font-bold">Ingresos del Período</h3>
-                            <p class="text-xs text-[var(--texto-suave)] mt-0.5">Evolución de facturación seleccionada</p>
-                        </div>
-                        <button class="btn btn-ghost btn-sm">
-                            <span class="material-symbols-outlined text-[18px]">more_horiz</span>
-                        </button>
-                    </div>
-                    <div class="p-6">
-                        <canvas id="chart-ingresos" height="100"></canvas>
-                    </div>
+            <!-- Gráfico principal -->
+            <div class="card overflow-hidden">
+                <div class="p-6 border-b border-[var(--borde)]">
+                    <h3 class="text-base font-bold">Evolución de Ingresos (Últimos 6 meses)</h3>
+                    <p class="text-xs text-[var(--texto-suave)] mt-0.5">Sumarización de todas tus instalaciones</p>
                 </div>
-
-                <!-- Distribución tipo parking -->
-                <div class="card overflow-hidden">
-                    <div class="p-6 border-b border-[var(--borde)]">
-                        <h3 class="text-base font-bold">Por Tipo de Parking</h3>
-                        <p class="text-xs text-[var(--texto-suave)] mt-0.5">Distribución de ingresos</p>
-                    </div>
-                    <div class="p-6 flex flex-col items-center gap-6">
-                        <div class="w-48 h-48">
-                            <canvas id="chart-tipos"></canvas>
-                        </div>
-                        <div class="flex flex-col gap-2.5 w-full">
-                            <div class="flex items-center justify-between text-sm">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-[#135bec] flex-shrink-0"></span>
-                                    <span class="text-[var(--texto-suave)]">Privado</span>
-                                </div>
-                                <span class="font-bold">62%</span>
-                            </div>
-                            <div class="flex items-center justify-between text-sm">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-[#22c55e] flex-shrink-0"></span>
-                                    <span class="text-[var(--texto-suave)]">Público</span>
-                                </div>
-                                <span class="font-bold">23%</span>
-                            </div>
-                            <div class="flex items-center justify-between text-sm">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-[#f97316] flex-shrink-0"></span>
-                                    <span class="text-[var(--texto-suave)]">Zona Regulada</span>
-                                </div>
-                                <span class="font-bold">15%</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="p-6">
+                    <canvas id="chart-ingresos" height="80"></canvas>
                 </div>
-
             </div>
 
-            <!-- Gráficos por parking ────────────────────────────────── -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-                <!-- Ingresos por parking -->
-                <div class="card overflow-hidden">
-                    <div class="p-6 border-b border-[var(--borde)]">
-                        <h3 class="text-base font-bold">Ingresos por Parking (€)</h3>
-                        <p class="text-xs text-[var(--texto-suave)] mt-0.5">Comparativa entre instalaciones</p>
-                    </div>
-                    <div class="p-6">
-                        <canvas id="chart-ingresos-parking" height="180"></canvas>
-                    </div>
-                </div>
-
-                <!-- Reservas por parking -->
-                <div class="card overflow-hidden">
-                    <div class="p-6 border-b border-[var(--borde)]">
-                        <h3 class="text-base font-bold">Reservas por Parking</h3>
-                        <p class="text-xs text-[var(--texto-suave)] mt-0.5">Nº de reservas confirmadas</p>
-                    </div>
-                    <div class="p-6">
-                        <canvas id="chart-reservas-parking" height="180"></canvas>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Ocupación actual + tipos de vehículo ─────────────── -->
+            <!-- Gráficos inferiores -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 <!-- Ocupación actual por parking -->
                 <div class="card overflow-hidden lg:col-span-2">
                     <div class="p-6 border-b border-[var(--borde)] flex justify-between items-center">
                         <div>
-                            <h3 class="text-base font-bold">Ocupación Actual por Parking (%)</h3>
-                            <p class="text-xs text-[var(--texto-suave)] mt-0.5">Estado en tiempo real</p>
+                            <h3 class="text-base font-bold">Estado Actual por Parking (%)</h3>
+                            <p class="text-xs text-[var(--texto-suave)] mt-0.5">Nivel de llenado en tiempo real</p>
                         </div>
                         <span class="flex items-center gap-1.5 text-xs text-[var(--verde)] font-bold">
                             <span class="w-2 h-2 rounded-full bg-[var(--verde)] animate-pulse"></span>
@@ -269,311 +170,91 @@
                     <div class="p-6">
                         <canvas id="chart-ocupacion-parking" height="130"></canvas>
                     </div>
+                    
+                    <div class="p-6 border-t border-[var(--borde)]">
+                        <h3 class="text-base font-bold">Reservas por Instalación</h3>
+                        <p class="text-xs text-[var(--texto-suave)] mt-0.5 mb-4">Volumen comparativo</p>
+                        <canvas id="chart-reservas-parking" height="80"></canvas>
+                    </div>
                 </div>
 
-                <!-- Tipos de vehículo -->
+                <!-- Tipos de vehículo y Horas -->
                 <div class="card overflow-hidden">
                     <div class="p-6 border-b border-[var(--borde)]">
-                        <h3 class="text-base font-bold">Tipos de Vehículo</h3>
-                        <p class="text-xs text-[var(--texto-suave)] mt-0.5">Distribución de reservas</p>
+                        <h3 class="text-base font-bold">Métricas de Clientes</h3>
+                        <p class="text-xs text-[var(--texto-suave)] mt-0.5">Tipo de vehículo y hábitos</p>
                     </div>
-                    <div class="p-6 flex flex-col gap-4">
+                    <div class="p-6 flex flex-col gap-6">
 
-                        <div class="flex flex-col gap-1.5">
-                            <div class="flex justify-between text-sm">
-                                <span class="text-[var(--texto-suave)] flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-[var(--azul)]">directions_car</span>
-                                    Estándar
-                                </span>
-                                <span class="font-bold">54%</span>
+                        <!-- Vehículos -->
+                        <div class="flex flex-col gap-4">
+                            <!-- Gráfico donut -->
+                            <div class="w-32 h-32 mx-auto relative mb-2">
+                                <canvas id="chart-tipos"></canvas>
+                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-[var(--texto-suave)] opacity-30 text-3xl">directions_car</span>
+                                </div>
                             </div>
-                            <div class="w-full bg-[var(--fondo)] h-2 rounded-full overflow-hidden">
-                                <div class="h-full rounded-full bg-[var(--azul)] transition-all" style="width: 54%"></div>
+
+                            <div class="flex flex-col gap-3">
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-[var(--texto-suave)] flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-[#135bec] flex-shrink-0"></span>
+                                            Estándar
+                                        </span>
+                                        <span id="pct-veh-standard" class="font-bold">--</span>
+                                    </div>
+                                    <div class="w-full bg-[var(--fondo)] h-1.5 rounded-full">
+                                        <div id="barra-veh-standard" class="h-full rounded-full bg-[#135bec] transition-all" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-[var(--texto-suave)] flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-[#22c55e] flex-shrink-0"></span>
+                                            Eléctrico
+                                        </span>
+                                        <span id="pct-veh-electric" class="font-bold">--</span>
+                                    </div>
+                                    <div class="w-full bg-[var(--fondo)] h-1.5 rounded-full">
+                                        <div id="barra-veh-electric" class="h-full rounded-full bg-[#22c55e] transition-all" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-[var(--texto-suave)] flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-[#f97316] flex-shrink-0"></span>
+                                            Grande / SUV
+                                        </span>
+                                        <span id="pct-veh-large" class="font-bold">--</span>
+                                    </div>
+                                    <div class="w-full bg-[var(--fondo)] h-1.5 rounded-full">
+                                        <div id="barra-veh-large" class="h-full rounded-full bg-[#f97316] transition-all" style="width: 0%"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex flex-col gap-1.5">
-                            <div class="flex justify-between text-sm">
-                                <span class="text-[var(--texto-suave)] flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-[var(--verde)]">electric_car</span>
-                                    Eléctrico
-                                </span>
-                                <span class="font-bold">28%</span>
-                            </div>
-                            <div class="w-full bg-[var(--fondo)] h-2 rounded-full overflow-hidden">
-                                <div class="h-full rounded-full bg-[var(--verde)] transition-all" style="width: 28%"></div>
+                        <!-- Horas Pico -->
+                        <div class="border-t border-[var(--borde)] pt-5">
+                            <p class="text-xs text-[var(--texto-suave)] uppercase font-bold tracking-widest mb-3">Horas de Mayor Demanda</p>
+                            <div id="contenedor-horas-pico" class="flex gap-2 flex-wrap">
+                                <!-- Se inyecta por JS -->
                             </div>
                         </div>
 
-                        <div class="flex flex-col gap-1.5">
-                            <div class="flex justify-between text-sm">
-                                <span class="text-[var(--texto-suave)] flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-[var(--naranja)]">local_shipping</span>
-                                    Grande / SUV
-                                </span>
-                                <span class="font-bold">18%</span>
-                            </div>
-                            <div class="w-full bg-[var(--fondo)] h-2 rounded-full overflow-hidden">
-                                <div class="h-full rounded-full bg-[var(--naranja)] transition-all" style="width: 18%"></div>
-                            </div>
-                        </div>
-
-                        <div class="border-t border-[var(--borde)] pt-4 mt-2">
-                            <p class="text-xs text-[var(--texto-suave)] uppercase font-bold tracking-widest mb-3">Horas Pico</p>
-                            <div class="flex gap-1 flex-wrap">
-                                <span class="badge badge-azul text-[10px]">08:00 – 09:00</span>
-                                <span class="badge badge-azul text-[10px]">13:00 – 14:00</span>
-                                <span class="badge badge-azul text-[10px]">17:00 – 19:00</span>
-                            </div>
-                        </div>
                     </div>
-                </div>
-
-            </div>
-
-            <!-- Tabla de últimas transacciones ───────────────────── -->
-            <div class="card overflow-hidden">
-                <div class="p-6 border-b border-[var(--borde)] flex justify-between items-center">
-                    <h3 class="text-base font-bold">Últimas Transacciones</h3>
-                    <a href="#" class="text-sm font-semibold text-[var(--azul)] hover:underline">Ver todo</a>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="tabla-business w-full text-left border-collapse">
-                        <thead>
-                            <tr>
-                                <th>Localizador</th>
-                                <th>Parking</th>
-                                <th>Plaza</th>
-                                <th>Fecha</th>
-                                <th>Estado</th>
-                                <th class="text-right">Importe</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><span class="font-mono text-[var(--azul)] font-bold">#RES-001</span></td>
-                                <td>Parking Central</td>
-                                <td><span class="font-mono text-[var(--texto-suave)]">A-1</span></td>
-                                <td class="text-[var(--texto-suave)]">01 Jun, 2026</td>
-                                <td><span class="badge badge-verde">Confirmada</span></td>
-                                <td class="text-right font-bold">5,00 €</td>
-                            </tr>
-                            <tr>
-                                <td><span class="font-mono text-[var(--azul)] font-bold">#RES-002</span></td>
-                                <td>Parking Norte</td>
-                                <td><span class="font-mono text-[var(--texto-suave)]">B-3</span></td>
-                                <td class="text-[var(--texto-suave)]">02 Jun, 2026</td>
-                                <td><span class="badge badge-naranja">Pendiente</span></td>
-                                <td class="text-right font-bold">5,00 €</td>
-                            </tr>
-                            <tr>
-                                <td><span class="font-mono text-[var(--azul)] font-bold">#RES-003</span></td>
-                                <td>Zona 1 - Centro</td>
-                                <td><span class="font-mono text-[var(--texto-suave)]">Z1-07</span></td>
-                                <td class="text-[var(--texto-suave)]">03 Jun, 2026</td>
-                                <td><span class="badge badge-rojo">Cancelada</span></td>
-                                <td class="text-right font-bold text-[var(--texto-suave)]">0,00 €</td>
-                            </tr>
-                            <tr>
-                                <td><span class="font-mono text-[var(--azul)] font-bold">#RES-004</span></td>
-                                <td>Parking Central</td>
-                                <td><span class="font-mono text-[var(--texto-suave)]">A-3</span></td>
-                                <td class="text-[var(--texto-suave)]">04 Jun, 2026</td>
-                                <td><span class="badge badge-verde">Confirmada</span></td>
-                                <td class="text-right font-bold">3,75 €</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
 
         </main>
     </div>
 
-    <style>
-        /* Range selector button activo */
-        .range-btn.activo {
-            background-color: var(--azul);
-            color: white;
-        }
-    </style>
+    <!-- Toast container -->
+    <div id="contenedor-toast" class="fixed bottom-6 right-6 flex flex-col gap-2 z-[100]"></div>
 
-    <script>
-        // ── Paleta compartida con el tema dark de la app ────────────
-        const colorAzul    = '#135bec';
-        const colorVerde   = '#22c55e';
-        const colorNaranja = '#f97316';
-        const colorRojo    = '#ef4444';
-        const colorBorde   = '#1e293b';
-        const colorTexto   = '#f0f2fa';
-        const colorSuave   = '#8892b0';
-
-        Chart.defaults.color = colorSuave;
-        Chart.defaults.borderColor = colorBorde;
-        Chart.defaults.font.family = "'DM Sans', sans-serif";
-
-        // ── KPIs ficticios (se reemplazarán con datos de la API) ───
-        document.getElementById('kpi-ingresos').textContent  = '4.248,50 €';
-        document.getElementById('kpi-reservas').textContent  = '312';
-        document.getElementById('kpi-ocupacion').textContent = '78%';
-        document.getElementById('kpi-ticket').textContent    = '13,62 €';
-        document.getElementById('barra-ocupacion').style.width = '78%';
-
-        // ── Gráfico: Ingresos del Período ──────────────────────────
-        new Chart(document.getElementById('chart-ingresos'), {
-            type: 'line',
-            data: {
-                labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-                datasets: [{
-                    label: 'Ingresos (€)',
-                    data: [320, 480, 410, 560, 720, 850, 640],
-                    fill: true,
-                    backgroundColor: 'rgba(19,91,236,0.12)',
-                    borderColor: colorAzul,
-                    borderWidth: 2.5,
-                    pointBackgroundColor: colorAzul,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { color: colorBorde } },
-                    y: { grid: { color: colorBorde }, ticks: { callback: v => v + ' €' } }
-                }
-            }
-        });
-
-        // ── Gráfico: Tipos de parking (Donut) ──────────────────────
-        new Chart(document.getElementById('chart-tipos'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Privado', 'Público', 'Zona Regulada'],
-                datasets: [{
-                    data: [62, 23, 15],
-                    backgroundColor: [colorAzul, colorVerde, colorNaranja],
-                    borderColor: '#11192b',
-                    borderWidth: 3,
-                    hoverOffset: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                cutout: '72%',
-                plugins: { legend: { display: false } }
-            }
-        });
-
-        // ── Gráfico: Ingresos por Parking (barras horizontales) ────
-        new Chart(document.getElementById('chart-ingresos-parking'), {
-            type: 'bar',
-            data: {
-                labels: ['Parking Central', 'Parking Norte', 'Zona 1 Centro', 'Zona 6 Delicias', 'Zona 8 San José'],
-                datasets: [{
-                    label: 'Ingresos (€)',
-                    data: [1840, 1200, 430, 380, 280],
-                    backgroundColor: colorAzul + 'cc',
-                    borderColor: colorAzul,
-                    borderWidth: 1.5,
-                    borderRadius: 6,
-                    borderSkipped: false
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { color: colorBorde }, ticks: { callback: v => v + ' €' } },
-                    y: { grid: { display: false } }
-                }
-            }
-        });
-
-        // ── Gráfico: Reservas por Parking ──────────────────────────
-        new Chart(document.getElementById('chart-reservas-parking'), {
-            type: 'bar',
-            data: {
-                labels: ['Parking Central', 'Parking Norte', 'Zona 1 Centro', 'Zona 6 Delicias', 'Zona 8 San José'],
-                datasets: [{
-                    label: 'Reservas',
-                    data: [135, 88, 42, 31, 16],
-                    backgroundColor: colorVerde + 'bb',
-                    borderColor: colorVerde,
-                    borderWidth: 1.5,
-                    borderRadius: 6,
-                    borderSkipped: false
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { color: colorBorde } },
-                    y: { grid: { display: false } }
-                }
-            }
-        });
-
-        // ── Gráfico: Ocupación actual por parking ──────────────────
-        new Chart(document.getElementById('chart-ocupacion-parking'), {
-            type: 'bar',
-            data: {
-                labels: ['P. Central', 'P. Norte', 'Z.1 Centro', 'Z.2 Casco', 'Z.6 Delicias', 'Z.8 San José', 'Z.11 Actur'],
-                datasets: [{
-                    label: 'Ocupación (%)',
-                    data: [75, 50, 90, 68, 82, 45, 60],
-                    backgroundColor: (ctx) => {
-                        const v = ctx.raw;
-                        if (v >= 85) return colorRojo + 'cc';
-                        if (v >= 60) return colorNaranja + 'cc';
-                        return colorVerde + 'cc';
-                    },
-                    borderColor: (ctx) => {
-                        const v = ctx.raw;
-                        if (v >= 85) return colorRojo;
-                        if (v >= 60) return colorNaranja;
-                        return colorVerde;
-                    },
-                    borderWidth: 1.5,
-                    borderRadius: 6,
-                    borderSkipped: false
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: ctx => ' ' + ctx.raw + '%' } }
-                },
-                scales: {
-                    x: { grid: { display: false } },
-                    y: {
-                        grid: { color: colorBorde },
-                        min: 0,
-                        max: 100,
-                        ticks: { callback: v => v + '%' }
-                    }
-                }
-            }
-        });
-
-        // ── Selector de rango ──────────────────────────────────────
-        document.querySelectorAll('.range-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.range-btn').forEach(b => {
-                    b.classList.remove('activo');
-                    b.classList.add('text-[var(--texto-suave)]');
-                });
-                btn.classList.add('activo');
-                btn.classList.remove('text-[var(--texto-suave)]');
-            });
-        });
-    </script>
-
+    <!-- Carga del JS unificado de Empresa -->
+    <script src="../../JS/empresa.js"></script>
 </body>
 </html>

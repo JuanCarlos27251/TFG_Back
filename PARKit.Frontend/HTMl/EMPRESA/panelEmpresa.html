@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Panel de Control - PARKit Business</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script src="../JS/global.js"></script>
+    <script src="../../JS/auth.js"></script>
+    <script src="../../JS/global.js"></script>
     <link rel="stylesheet" href="../../STYLES/global.css" />
     <link rel="stylesheet" href="../../STYLES/empresas.css" />
 </head>
 
 <body class="layout-base tema-business flex flex-col md:flex-row min-h-screen">
 
+    <!-- ── Sidebar ──────────────────────────────────────────── -->
     <aside class="w-full md:w-64 bg-[var(--fondo-card)] border-r border-[var(--borde)] flex flex-col justify-between p-5 md:sticky md:top-0 md:h-screen z-40 shadow-lg md:shadow-none">
         <div class="flex flex-col gap-8">
             <a href="../index.html" class="flex items-center gap-3 px-2 text-[var(--texto)] font-black text-xl tracking-tight">
@@ -37,10 +39,6 @@
                     <span class="material-symbols-outlined">bar_chart</span>
                     Estadísticas
                 </a>
-                <a href="usuarioEmpresa.html" class="nav-item">
-                    <span class="material-symbols-outlined">group</span>
-                    Personal
-                </a>
                 <a href="configuracionEmpresa.html" class="nav-item">
                     <span class="material-symbols-outlined">settings</span>
                     Configuración
@@ -48,20 +46,22 @@
             </nav>
         </div>
 
-        <div class="mt-8">
-            <button class="btn btn-primario w-full text-sm">
-                <span class="material-symbols-outlined text-[18px]">download</span>
-                Descargar Reporte
+        <div class="mt-8 flex flex-col gap-2">
+            <button id="btn-logout-empresa" class="btn btn-ghost w-full text-sm text-[var(--rojo)]">
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+                Cerrar sesión
             </button>
         </div>
     </aside>
 
+    <!-- ── Contenido principal ──────────────────────────────── -->
     <main class="flex-1 flex flex-col min-w-0">
-        
+
+        <!-- Header -->
         <header class="header-base flex items-center justify-between px-6 py-4 lg:px-10 z-30">
             <div class="flex items-center gap-6 flex-1">
                 <h2 class="text-xl font-bold tracking-tight hidden sm:block">Vista General</h2>
-                
+
                 <div class="relative w-full max-w-md">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-xl">search</span>
                     <input type="text" class="input-base input-con-icono bg-[var(--fondo)]" placeholder="Buscar matrícula o reserva..." />
@@ -73,21 +73,25 @@
                     <span class="material-symbols-outlined">notifications</span>
                     <span class="absolute top-2 right-2 w-2 h-2 bg-[var(--rojo)] rounded-full"></span>
                 </button>
-                <div class="flex items-center gap-3 pl-4 border-l border-[var(--borde)] cursor-pointer">
+                <div class="flex items-center gap-3 pl-4 border-l border-[var(--borde)]">
                     <div class="text-right hidden sm:block">
-                        <p class="text-sm font-bold leading-none">Admin Principal</p>
-                        <p class="text-[11px] text-[var(--texto-suave)] mt-1">Parking Central</p>
+                        <p id="header-empresa-nombre" class="text-sm font-bold leading-none">Cargando...</p>
+                        <p id="header-empresa-subtitulo" class="text-[11px] text-[var(--texto-suave)] mt-1"></p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--azul)] to-[var(--azul-oscuro)] flex items-center justify-center text-white font-bold shadow-md">
-                        A
+                    <div id="header-empresa-avatar" class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--azul)] to-[var(--azul-oscuro)] flex items-center justify-center text-white font-bold shadow-md">
+                        …
                     </div>
                 </div>
             </div>
         </header>
 
+        <!-- Cuerpo -->
         <div class="p-6 lg:p-10 flex flex-col gap-8 flex-1 max-w-[1400px] mx-auto w-full">
-            
+
+            <!-- Tarjetas KPI -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Parkings totales -->
                 <div class="card p-6 flex flex-col gap-4">
                     <div class="flex justify-between items-start">
                         <p class="text-[var(--texto-suave)] text-xs font-bold uppercase tracking-widest">Parkings Totales</p>
@@ -95,9 +99,10 @@
                             <span class="material-symbols-outlined text-[20px]">local_parking</span>
                         </div>
                     </div>
-                    <p class="text-4xl font-black text-[var(--texto)]">3</p>
+                    <p id="stat-total-parkings" class="text-4xl font-black text-[var(--texto)]">—</p>
                 </div>
 
+                <!-- Plazas totales -->
                 <div class="card p-6 flex flex-col gap-4">
                     <div class="flex justify-between items-start">
                         <p class="text-[var(--texto-suave)] text-xs font-bold uppercase tracking-widest">Plazas Totales</p>
@@ -105,28 +110,31 @@
                             <span class="material-symbols-outlined text-[20px]">grid_view</span>
                         </div>
                     </div>
-                    <p class="text-4xl font-black text-[var(--texto)]">1,245</p>
+                    <p id="stat-total-plazas" class="text-4xl font-black text-[var(--texto)]">—</p>
                 </div>
 
+                <!-- Ocupación media -->
                 <div class="card p-6 flex flex-col gap-4">
                     <div class="flex justify-between items-start">
                         <p class="text-[var(--texto-suave)] text-xs font-bold uppercase tracking-widest">Ocupación Media</p>
-                        <span class="badge badge-verde text-xs">+5.2%</span>
+                        <span id="stat-ocupacion-badge" class="badge badge-verde text-xs">En vivo</span>
                     </div>
                     <div>
-                        <p class="text-4xl font-black text-[var(--texto)] mb-3">78%</p>
+                        <p id="stat-ocupacion-valor" class="text-4xl font-black text-[var(--texto)] mb-3">—</p>
                         <div class="w-full bg-[var(--fondo)] h-2 rounded-full overflow-hidden">
-                            <div class="bg-[var(--azul)] h-full rounded-full" style="width: 78%"></div>
+                            <div id="stat-ocupacion-barra" class="bg-[var(--azul)] h-full rounded-full transition-all duration-700" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
+            <!-- Gráfico ingresos -->
             <div class="card overflow-hidden">
                 <div class="p-6 border-b border-[var(--borde)] flex justify-between items-center bg-[var(--fondo-card)]">
                     <div>
-                        <h3 class="text-lg font-bold">Ingresos Semanales</h3>
-                        <p class="text-sm text-[var(--texto-suave)] mt-1">Evolución de beneficios en la última semana</p>
+                        <h3 class="text-lg font-bold">Ingresos Mensuales</h3>
+                        <p class="text-sm text-[var(--texto-suave)] mt-1">Evolución de ingresos en los últimos meses</p>
                     </div>
                     <button class="btn btn-ghost btn-sm">
                         <span class="material-symbols-outlined text-[18px]">more_horiz</span>
@@ -134,27 +142,22 @@
                 </div>
                 <div class="p-6 bg-[var(--fondo-card)]">
                     <div class="flex flex-col gap-6 w-full">
-                        <svg class="w-full h-[240px]" fill="none" preserveAspectRatio="none" viewBox="0 0 1000 240" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M0 180C50 160 100 190 150 140C200 90 250 110 300 80C350 50 400 60 450 100C500 140 550 180 600 170C650 160 700 80 750 60C800 40 850 20 900 10C950 0 1000 30 1000 30V240H0V180Z" fill="url(#revenue_grad)"></path>
-                            <path d="M0 180C50 160 100 190 150 140C200 90 250 110 300 80C350 50 400 60 450 100C500 140 550 180 600 170C650 160 700 80 750 60C800 40 850 20 900 10C950 0 1000 30 1000 30" stroke="var(--azul)" stroke-linecap="round" stroke-width="4"></path>
-                            <defs>
-                                <linearGradient id="revenue_grad" x1="500" x2="500" y1="0" y2="240" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="var(--azul)" stop-opacity="0.25"></stop>
-                                    <stop offset="1" stop-color="var(--azul)" stop-opacity="0"></stop>
-                                </linearGradient>
-                            </defs>
+                        <svg id="grafico-ingresos" class="w-full h-[240px]" fill="none" preserveAspectRatio="none" viewBox="0 0 1000 240" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Relleno dinámico por empresa.js -->
+                            <text x="50%" y="50%" text-anchor="middle" fill="var(--texto-suave)" font-size="14">Cargando datos...</text>
                         </svg>
-                        <div class="flex justify-between px-2 text-[var(--texto-suave)] text-xs font-bold uppercase tracking-wider">
-                            <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
+                        <div id="grafico-etiquetas" class="flex justify-between px-2 text-[var(--texto-suave)] text-xs font-bold uppercase tracking-wider">
+                            <!-- Etiquetas dinámicas -->
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Actividad reciente -->
             <div class="card overflow-hidden">
                 <div class="p-6 border-b border-[var(--borde)] flex justify-between items-center bg-[var(--fondo-card)]">
                     <h3 class="text-lg font-bold">Actividad Reciente</h3>
-                    <a href="#" class="text-sm font-semibold text-[var(--azul)] hover:underline">Ver todo</a>
+                    <a href="misparkingsEmpresa.html" class="text-sm font-semibold text-[var(--azul)] hover:underline">Ver todo</a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="tabla-business w-full text-left border-collapse">
@@ -168,26 +171,11 @@
                                 <th class="text-right">Importe</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tabla-actividad-body">
                             <tr>
-                                <td>
-                                    <div class="badge badge-azul font-mono text-sm tracking-widest">1234 ABC</div>
+                                <td colspan="6" class="text-center py-8 text-[var(--texto-suave)]">
+                                    <span class="w-6 h-6 border-2 border-[var(--azul)] border-t-transparent rounded-full animate-spin inline-block"></span>
                                 </td>
-                                <td>Usuario Invitado</td>
-                                <td><span class="font-mono text-[var(--texto-suave)]">A-012</span></td>
-                                <td class="text-[var(--texto-suave)]">Hace 5 min</td>
-                                <td><span class="badge badge-verde">Aparcado</span></td>
-                                <td class="text-right font-bold text-[var(--texto)]">--</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="badge badge-azul font-mono text-sm tracking-widest">9876 XYZ</div>
-                                </td>
-                                <td>Marta López</td>
-                                <td><span class="font-mono text-[var(--texto-suave)]">B-045</span></td>
-                                <td class="text-[var(--texto-suave)]">Hace 45 min</td>
-                                <td><span class="badge badge-naranja">Reservado</span></td>
-                                <td class="text-right font-bold text-[var(--texto)]">4,50€</td>
                             </tr>
                         </tbody>
                     </table>
@@ -196,6 +184,12 @@
 
         </div>
     </main>
+
+    <!-- Toast container -->
+    <div id="contenedor-toast" class="fixed bottom-6 right-6 flex flex-col gap-2 z-[100]"></div>
+
+    <!-- Script de empresa (debe ir después de auth.js) -->
+    <script src="../../JS/empresa.js"></script>
 
 </body>
 </html>

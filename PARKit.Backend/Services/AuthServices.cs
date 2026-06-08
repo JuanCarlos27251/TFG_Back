@@ -99,6 +99,8 @@ namespace PARKit.Backend.Services.AuthServices
             
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                 Issuer   = _configuration["Jwt:ValidIssuer"],    
+                 Audience = _configuration["Jwt:ValidAudience"],  
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, company.Id.ToString()),

@@ -4,8 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Confirmar Reserva — PARKit</title>
+    
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script src="../JS/global.js"></script>
+    
     <link rel="stylesheet" href="../STYLES/global.css" />
 </head>
 
@@ -28,7 +30,6 @@
             <a href="perfil.html" id="header-user-avatar" class="avatar-btn" title="Mi Perfil">
                 <span class="material-symbols-outlined text-lg leading-none">person</span>
             </a>
-
         </div>
     </header>
 
@@ -36,24 +37,33 @@
     
     <div class="mb-8">
         <h1 class="text-4xl font-black tracking-tight mb-2 text-[#111318] dark:text-white">Confirmar Reserva</h1>
-        <p class="text-[var(--texto-suave)] text-lg">Revisa los detalles y completa el pago de forma segura para garantizar tu plaza.</p>
+        <p class="text-[var(--texto-suave)] text-lg">Revisa los detalles y completa el pago para garantizar tu plaza.</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         
         <div class="lg:col-span-2 space-y-6">
             
-            <div class="card p-6">
-                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-azul">credit_card</span> Método de Pago
-                </h3>
+            <!-- MÉTODO DE PAGO GUARDADO EN DB -->
+            <div class="card p-6 border-t-4 border-indigo-500">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-indigo-500">credit_card</span> Selecciona tu tarjeta
+                    </h3>
+                    <div class="flex gap-1 opacity-60">
+                        <span class="material-symbols-outlined text-sm">lock</span>
+                        <span class="text-[10px] uppercase font-bold mt-0.5">Cifrado E2E</span>
+                    </div>
+                </div>
+                
                 <div id="payment-methods-list" class="space-y-3">
                     <p class="text-sm text-[var(--texto-suave)] italic bg-[#f5f6fa]/50 dark:bg-[#161b2e]/30 p-4 rounded-xl text-center animate-pulse">
-                        Cargando tus métodos de pago guardados...
+                        Cargando tus métodos de pago...
                     </p>
                 </div>
             </div>
 
+            <!-- TIPO DE ESTACIONAMIENTO -->
             <div class="card p-6 space-y-4">
                 <h3 class="text-lg font-bold flex items-center gap-2">
                     <span class="material-symbols-outlined text-azul">tune</span> Tipo de Estacionamiento
@@ -70,7 +80,7 @@
                         <span id="icon-type-fixed" class="material-symbols-outlined text-azul select-none">check_circle</span>
                     </label>
 
-                    <label id="label-type-dynamic" class="relative flex cursor-pointer rounded-xl border p-4 shadow-sm focus:outline-none border-[var(--borde)] bg-transparent transition-all hover:bg-white/5">
+                    <label id="label-type-dynamic" class="relative flex cursor-pointer rounded-xl border p-4 shadow-sm focus:outline-none border-[var(--borde)] bg-transparent transition-all hover:bg-[#f5f6fa]">
                         <input type="radio" name="reservation-type" value="1" class="sr-only" />
                         <span class="flex flex-1">
                             <span class="flex flex-col">
@@ -83,6 +93,7 @@
                 </div>
             </div>
 
+            <!-- TIEMPO Y DURACIÓN -->
             <div class="card p-6 space-y-6">
                 <div>
                     <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
@@ -90,7 +101,7 @@
                     </h3>
                     <input type="time" id="input-arrival-time"
                            class="w-full sm:w-auto p-3 border border-[var(--borde)] rounded-xl text-sm font-bold dark:bg-[#0e1120] focus:ring-1 focus:ring-azul focus:border-azul transition-all" />
-                    <p class="text-xs text-[var(--texto-suave)] mt-2">Establecida automáticamente según tu hora actual y navegación estimada.</p>
+                    <p class="text-xs text-[var(--texto-suave)] mt-2">Establecida automáticamente según tu hora actual.</p>
                 </div>
 
                 <div class="border-t border-[var(--borde)] pt-6">
@@ -98,7 +109,7 @@
                         <span class="material-symbols-outlined text-azul">hourglass_top</span> Duración de la Reserva
                     </h3>
                     <div id="duration-selector" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold hover:bg-azul/5 hover:border-azul transition-all active" data-hours="1">1 Hora</button>
+                        <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold active bg-azul/10 border-azul text-azul hover:bg-azul/5 hover:border-azul transition-all" data-hours="1">1 Hora</button>
                         <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold hover:bg-azul/5 hover:border-azul transition-all" data-hours="2">2 Horas</button>
                         <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold hover:bg-azul/5 hover:border-azul transition-all" data-hours="4">4 Horas</button>
                         <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold hover:bg-azul/5 hover:border-azul transition-all" data-hours="8">8 Horas</button>
@@ -106,6 +117,7 @@
                 </div>
             </div>
 
+            <!-- VEHÍCULOS -->
             <div class="card p-6">
                 <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
                     <span class="material-symbols-outlined text-azul">directions_car</span> Vehículo a vincular
@@ -119,19 +131,19 @@
 
             <div class="flex flex-col gap-3">
                 <button id="btn-complete-booking"
-                        class="w-full bg-azul hover:bg-azul-oscuro text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-azul/20 hover:scale-[1.01] active:scale-[0.99]">
+                        class="w-full bg-azul hover:bg-azul-oscuro text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-[var(--azul)]/20 hover:scale-[1.01] active:scale-[0.99]">
                     <span class="material-symbols-outlined text-xl">lock</span>
                     Confirmar y Pagar <span id="summary-total-btn" class="ml-1 bg-white/20 px-2 py-0.5 rounded text-sm font-black">---</span>
                 </button>
                 <p class="text-xs text-center text-[var(--texto-suave)] flex items-center justify-center gap-1">
-                    <span class="material-symbols-outlined text-xs text-[var(--verde)]">verified_user</span> Transacción cifrada con protocolo de seguridad SSL de 256 bits.
+                    <span class="material-symbols-outlined text-xs text-[var(--verde)]">verified_user</span> Transacción cifrada con protocolo de seguridad integrado.
                 </p>
             </div>
         </div>
 
         <div class="lg:col-span-1">
             <div class="sticky top-24 card overflow-hidden shadow-md">
-                <div id="parking-preview-img" class="h-44 bg-cover bg-center bg-[#e4e7ef] dark:bg-[#161b2e] relative">
+                <div id="parking-preview-img" class="h-44 bg-cover bg-center bg-[#e4e7ef] dark:bg-[#161b2e] relative" style="background-image: url('https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=600&q=70');">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                 </div>
                 
@@ -160,8 +172,8 @@
                             <span class="text-[var(--texto-suave)]">Tarifa de estancia</span>
                             <span id="summary-base-price" class="font-bold text-[#111318] dark:text-white">---</span>
                         </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-[var(--texto-suave)]">Gastos de gestión PARKit</span>
+                        <div class="flex justify-between text-sm items-center">
+                            <span class="text-[var(--texto-suave)]">Gastos PARKit</span>
                             <span class="font-bold text-[#111318] dark:text-white">1,50 €</span>
                         </div>
                         <div class="flex justify-between items-center pt-4 border-t border-[var(--borde)]">
@@ -207,7 +219,7 @@
                 <ul class="flex flex-col gap-3 text-sm text-[var(--texto-suave)]">
                     <li><a href="login.html" class="hover:text-azul transition-colors">Iniciar sesión</a></li>
                     <li><a href="register.html" class="hover:text-azul transition-colors">Registrarse</a></li>
-                    <li><a href="profile.html" class="hover:text-azul transition-colors">Mi perfil</a></li>
+                    <li><a href="perfil.html" class="hover:text-azul transition-colors">Mi perfil</a></li>
                 </ul>
             </div>
 
@@ -221,7 +233,7 @@
 
         </div>
 
-        <div class="mt-12 pt-8 border-t border-[var(--borde)] flex flex-col md:flex-row justify-between items-center gap-3 text-sm text-[var(--texto-suave)]">
+        <div class="mt-12 pt-8 border-t border-[var(--borde)] flex justify-between items-center text-sm text-[var(--texto-suave)]">
             <p>© 2026 PARKit — TFG DAW · Juan Carlos Pina Esteban</p>
             <div class="flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-[var(--verde)] animate-pulse"></span>
@@ -231,8 +243,10 @@
     </div>
 </footer>
 
-<div id="contenedor-toast"></div>
+<div id="contenedor-toast" class="fixed bottom-6 right-6 flex flex-col gap-2 z-[100]"></div>
 
-
+<!-- CARGA DE SCRIPTS PARA CONEXIONES A BBDD -->
+<script src="../JS/auth.js"></script>
+<script src="../JS/pagos.js"></script>
 </body>
 </html>

@@ -184,17 +184,32 @@ class ParkingMap {
             essential: true 
         });
 
-        document.getElementById('detalle-nombre').textContent    = parking.name || 'Parking PARKit';
+        // Nombres y Ubicación
+        document.getElementById('detalle-nombre').textContent    = parking.name || 'Parking Municipal';
         document.getElementById('detalle-direccion').textContent = parking.address || 'Zaragoza';
-        document.getElementById('detalle-plazas').textContent    = Math.floor(Math.random() * 40) + 5; 
-        document.getElementById('detalle-capacidad').textContent = '120';
-        document.getElementById('detalle-precio').textContent    = '2.50 € / h';
+        
+        // ── AQUÍ LA MAGIA: Lectura de Plazas de Base de Datos ──
+        // Si hay 'availableSpots' validos, los pone, sino avisa con '--'
+        document.getElementById('detalle-plazas').textContent    = parking.availableSpots != null ? parking.availableSpots : '--'; 
+        
+        // La capacidad total será el número de items dentro de la lista de Seats o Spots
+        const totalSpots = parking.spots && parking.spots.length > 0 ? parking.spots.length : 'Depende de vía';
+        document.getElementById('detalle-capacidad').textContent = totalSpots;
+
+        // ── LECTURA DE TARIFA OFICIAL ──
+        let precioPantalla = 'Regulación Zona';
+        if (parking.tarifs && parking.tarifs.length > 0) {
+            // Pillamos el precio base configurado por la empresa / municipal en tu base de datos
+            precioPantalla = `${parking.tarifs[0].pricePerHour.toFixed(2)} € / h`;
+        }
+        document.getElementById('detalle-precio').textContent = precioPantalla;
 
         document.getElementById('panel-detalles')?.classList.add('abierto');
         
         // Quitar vieja ruta si había una
         this.limpiarRuta();
     }
+
 
     cerrarPanel() {
         document.getElementById('panel-detalles')?.classList.remove('abierto');

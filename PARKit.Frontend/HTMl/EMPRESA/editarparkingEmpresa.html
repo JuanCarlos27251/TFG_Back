@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Editar Parking — PARKit Business</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script src="../JS/global.js"></script>
+    <script src="../../JS/auth.js"></script>
+    <script src="../../JS/global.js"></script>
     <link rel="stylesheet" href="../../STYLES/global.css" />
     <link rel="stylesheet" href="../../STYLES/empresas.css" />
 </head>
 
 <body class="layout-base tema-business md:flex-row">
 
-    <!-- ── Sidebar ─────────────────────────────────────────── -->
+    <!-- ── Sidebar ── -->
     <aside class="w-full md:w-64 bg-[var(--fondo-card)] border-r border-[var(--borde)] flex flex-col justify-between p-5 md:sticky md:top-0 md:h-screen z-40 flex-shrink-0">
         <div class="flex flex-col gap-8">
             <a href="../index.html" class="flex items-center gap-3 px-2 text-[var(--texto)] font-black text-xl tracking-tight">
@@ -24,107 +25,88 @@
                     <span class="text-[10px] text-[var(--azul)] uppercase tracking-wider mt-1">Negocios</span>
                 </div>
             </a>
-
             <nav class="flex flex-col gap-1.5">
                 <a href="panelEmpresa.html" class="nav-item">
-                    <span class="material-symbols-outlined">dashboard</span>
-                    Panel de Control
+                    <span class="material-symbols-outlined">dashboard</span>Panel de Control
                 </a>
-                <a href="misParkingsEmpresa.html" class="nav-item activo">
-                    <span class="material-symbols-outlined">directions_car</span>
-                    Mis Parkings
-                </a>
-                <a href="gestionplazasEmpresa.html" class="nav-item">
-                    <span class="material-symbols-outlined">garage</span>
-                    Gestión de Plazas
+                <a href="misparkingsEmpresa.html" class="nav-item activo">
+                    <span class="material-symbols-outlined">directions_car</span>Mis Parkings
                 </a>
                 <a href="estadisticasEmpresa.html" class="nav-item">
-                    <span class="material-symbols-outlined">bar_chart</span>
-                    Estadísticas
+                    <span class="material-symbols-outlined">bar_chart</span>Estadísticas
                 </a>
                 <a href="configuracionEmpresa.html" class="nav-item">
-                    <span class="material-symbols-outlined">settings</span>
-                    Configuración
+                    <span class="material-symbols-outlined">settings</span>Configuración
                 </a>
             </nav>
         </div>
-
-        <div class="mt-8">
-            <button class="btn btn-primario w-full text-sm">
-                <span class="material-symbols-outlined text-[18px]">download</span>
-                Descargar Reporte
+        <div class="mt-8 flex flex-col gap-2">
+            <button id="btn-logout-empresa" class="btn btn-ghost w-full text-sm text-[var(--rojo)]">
+                <span class="material-symbols-outlined text-[18px]">logout</span>Cerrar sesión
             </button>
         </div>
     </aside>
 
-    <!-- ── Área principal ──────────────────────────────────── -->
+    <!-- ── Área principal ── -->
     <div class="flex-1 flex flex-col min-w-0">
 
         <!-- Header -->
         <header class="header-base flex items-center justify-between px-6 py-4 lg:px-10 z-30">
             <div class="flex items-center gap-3">
-                <a href="misParkingsEmpresa.html"
+                <a href="misparkingsEmpresa.html"
                    class="w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--borde)] text-[var(--texto-suave)] hover:text-[var(--texto)] hover:bg-[var(--borde)] transition-all">
                     <span class="material-symbols-outlined text-lg">arrow_back</span>
                 </a>
                 <div>
                     <h2 class="text-base font-bold tracking-tight leading-none">Editar Parking</h2>
                     <div class="flex items-center gap-2 mt-0.5">
-                        <span class="text-[11px] text-[var(--texto-suave)]">Parking Central</span>
-                        <span class="badge badge-verde text-[9px] font-extrabold uppercase tracking-widest py-0.5 flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-[var(--verde)] animate-pulse"></span>
-                            Activo
+                        <span data-parking-nombre class="text-[11px] text-[var(--texto-suave)]">Cargando...</span>
+                        <span id="badge-activo" class="badge badge-verde text-[9px] font-extrabold uppercase tracking-widest py-0.5 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[var(--verde)] animate-pulse"></span>Activo
                         </span>
                     </div>
                 </div>
             </div>
-
             <div class="flex items-center gap-3 ml-4">
                 <button type="button" onclick="window.history.back()"
                     class="btn btn-ghost text-sm border border-[var(--borde)] px-4 py-2">
                     Descartar
                 </button>
-                <button type="submit" form="edit-parking-form"
+                <button type="submit" form="parking-form"
                     class="btn btn-primario text-sm px-6 py-2 shadow-lg shadow-[var(--azul)]/20">
                     <span class="material-symbols-outlined text-[18px]">save</span>
                     Guardar Cambios
                 </button>
                 <div class="flex items-center gap-3 pl-4 border-l border-[var(--borde)]">
-                    <div class="w-9 h-9 rounded-full bg-[var(--azul)] flex items-center justify-center text-white font-bold text-sm">A</div>
+                    <div id="header-empresa-avatar" class="w-9 h-9 rounded-full bg-[var(--azul)] flex items-center justify-center text-white font-bold text-sm">E</div>
                 </div>
             </div>
         </header>
 
         <!-- Contenido scrollable -->
         <div class="flex-1 overflow-y-auto">
-            <form id="edit-parking-form" class="p-6 lg:p-10 flex flex-col gap-8 max-w-[1100px] mx-auto w-full">
+            <form id="parking-form" class="p-6 lg:p-10 flex flex-col gap-8 max-w-[1100px] mx-auto w-full">
 
-                <!-- ── Banner: parking existente con preview ───── -->
+                <!-- Banner de preview del parking -->
                 <div class="card overflow-hidden">
                     <div class="relative h-36 bg-[var(--fondo)] overflow-hidden">
-                        <img
+                        <img id="banner-img"
                             src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=1200&q=70"
-                            alt="Parking Central"
-                            class="w-full h-full object-cover opacity-60"
-                        />
+                            alt="Parking"
+                            class="w-full h-full object-cover opacity-60" />
                         <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
                         <div class="absolute inset-0 flex items-center px-8 gap-5">
                             <div class="w-14 h-14 rounded-xl bg-[var(--azul)] flex items-center justify-center shadow-lg flex-shrink-0">
                                 <span class="material-symbols-outlined icono-relleno text-white text-2xl">local_parking</span>
                             </div>
                             <div>
-                                <p class="text-white font-black text-xl tracking-tight leading-none">Parking Central</p>
-                                <p class="text-white/60 text-sm mt-1 flex items-center gap-1">
+                                <p data-parking-nombre class="text-white font-black text-xl tracking-tight leading-none">Cargando...</p>
+                                <p data-parking-direccion class="text-white/60 text-sm mt-1 flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[14px]">location_on</span>
-                                    Calle Mayor, 1, Zaragoza
+                                    ...
                                 </p>
-                                <div class="flex items-center gap-2 mt-2">
-                                    <span class="badge badge-azul text-[10px] font-extrabold uppercase tracking-widest">Público</span>
-                                    <span class="text-white/50 text-[11px]">ID: #1 · Creado 01/01/2026</span>
-                                </div>
                             </div>
                         </div>
-                        <!-- Botón cambiar imagen -->
                         <label for="facility-image"
                             class="absolute bottom-3 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/50 hover:bg-black/70 text-white text-xs font-bold cursor-pointer backdrop-blur-sm transition-all border border-white/20">
                             <span class="material-symbols-outlined text-[14px]">photo_camera</span>
@@ -134,7 +116,7 @@
                     </div>
                 </div>
 
-                <!-- ── BLOQUE 1: Datos principales ─────────────── -->
+                <!-- BLOQUE 1: Información general -->
                 <div class="card overflow-hidden">
                     <div class="px-6 py-4 border-b border-[var(--borde)] bg-[var(--fondo)]/30">
                         <h3 class="text-xs font-bold uppercase tracking-widest text-[var(--texto-suave)] flex items-center gap-2">
@@ -143,62 +125,33 @@
                         </h3>
                     </div>
                     <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-
                         <!-- Columna izquierda -->
                         <div class="flex flex-col gap-5">
                             <div class="flex flex-col gap-1.5">
                                 <label class="label-settings">Nombre del Parking</label>
-                                <input
-                                    id="p-name"
-                                    type="text"
-                                    value="Parking Central"
-                                    class="input-base bg-[var(--fondo)] text-base font-bold"
-                                    required
-                                />
+                                <input id="p-name" type="text" placeholder="Nombre Comercial"
+                                    class="input-base bg-[var(--fondo)] text-base font-bold" required />
                             </div>
-
                             <div class="flex flex-col gap-1.5">
                                 <label class="label-settings">Dirección</label>
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-lg">location_on</span>
-                                    <input
-                                        id="p-address"
-                                        type="text"
-                                        value="Calle Mayor, 1, Zaragoza"
-                                        class="input-base input-con-icono bg-[var(--fondo)]"
-                                        required
-                                    />
+                                    <input id="p-address" type="text" placeholder="Calle Ejemplo, 12, Zaragoza"
+                                        class="input-base input-con-icono bg-[var(--fondo)]" required />
                                 </div>
                             </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="flex flex-col gap-1.5">
-                                    <label class="label-settings">Precio Base (€/h)</label>
-                                    <div class="relative">
-                                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-sm font-bold">€</span>
-                                        <input id="p-price" type="text" value="2.50"
-                                            class="input-base bg-[var(--fondo)] pl-8 font-bold" required />
-                                    </div>
-                                </div>
-                                <div class="flex flex-col gap-1.5">
-                                    <label class="label-settings">Capacidad Total</label>
-                                    <input id="p-total" type="number" value="7"
-                                        class="input-base bg-[var(--fondo)]" />
-                                </div>
-                            </div>
-
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="flex flex-col gap-1.5">
                                     <label class="label-settings">Estado</label>
                                     <select id="is-active" class="input-base bg-[var(--fondo)] font-bold">
-                                        <option value="true" selected>✅ Activo</option>
+                                        <option value="true">✅ Activo</option>
                                         <option value="false">🔴 Inactivo</option>
                                     </select>
                                 </div>
                                 <div class="flex flex-col gap-1.5">
                                     <label class="label-settings">Tipo</label>
                                     <select id="facility-type" class="input-base bg-[var(--fondo)]">
-                                        <option value="0" selected>Público</option>
+                                        <option value="0">Público</option>
                                         <option value="1">Privado</option>
                                         <option value="2">Zona Regulada</option>
                                         <option value="3">Zona Naranja</option>
@@ -206,55 +159,53 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Columna derecha -->
                         <div class="flex flex-col gap-5">
                             <div class="flex flex-col gap-1.5">
                                 <label class="label-settings">Descripción</label>
                                 <textarea id="p-desc" rows="4"
-                                    class="input-base bg-[var(--fondo)] resize-none"
-                                >Parking en el centro de Zaragoza, con acceso desde Calle Mayor. Disponible las 24 horas. Plazas para vehículos eléctricos y grandes disponibles en planta baja.</textarea>
+                                    placeholder="Describe las características del parking, accesos, servicios..."
+                                    class="input-base bg-[var(--fondo)] resize-none"></textarea>
                             </div>
-
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="flex flex-col gap-1.5">
                                     <label class="label-settings">Latitud</label>
-                                    <input id="p-lat" type="text" value="41.6561"
-                                        class="input-base bg-[var(--fondo)] font-mono text-sm" />
+                                    <input id="p-lat" type="number" step="any" placeholder="41.6488"
+                                        class="input-base bg-[var(--fondo)] font-mono text-sm" required />
                                 </div>
                                 <div class="flex flex-col gap-1.5">
                                     <label class="label-settings">Longitud</label>
-                                    <input id="p-lng" type="text" value="-0.8773"
-                                        class="input-base bg-[var(--fondo)] font-mono text-sm" />
+                                    <input id="p-lng" type="number" step="any" placeholder="-0.8773"
+                                        class="input-base bg-[var(--fondo)] font-mono text-sm" required />
                                 </div>
                             </div>
 
-                            <!-- Resumen de estado actual -->
+                            <!-- Resumen de ocupación actual (dinámico) -->
                             <div class="flex flex-col gap-2 p-4 rounded-lg bg-[var(--fondo)] border border-[var(--borde)]">
                                 <p class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)] mb-1">Resumen actual</p>
                                 <div class="grid grid-cols-3 gap-3 text-center">
                                     <div>
-                                        <p class="text-lg font-black text-[var(--verde)]">4</p>
+                                        <p id="resumen-libres" class="text-lg font-black text-[var(--verde)]">--</p>
                                         <p class="text-[10px] text-[var(--texto-suave)] font-bold uppercase">Libres</p>
                                     </div>
                                     <div>
-                                        <p class="text-lg font-black text-[var(--texto)]">7</p>
+                                        <p id="resumen-total" class="text-lg font-black text-[var(--texto)]">--</p>
                                         <p class="text-[10px] text-[var(--texto-suave)] font-bold uppercase">Total</p>
                                     </div>
                                     <div>
-                                        <p class="text-lg font-black text-[var(--azul)]">57%</p>
+                                        <p id="resumen-pct" class="text-lg font-black text-[var(--azul)]">--%</p>
                                         <p class="text-[10px] text-[var(--texto-suave)] font-bold uppercase">Ocup.</p>
                                     </div>
                                 </div>
                                 <div class="w-full h-1.5 bg-[var(--borde)] rounded-full overflow-hidden mt-1">
-                                    <div class="h-full bg-[var(--azul)] rounded-full" style="width:57%"></div>
+                                    <div id="resumen-barra" class="h-full bg-[var(--azul)] rounded-full transition-all duration-500" style="width:0%"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ── BLOQUE 2: Recargos por vehículo ─────────── -->
+                <!-- BLOQUE 2: Recargos por vehículo -->
                 <div class="card overflow-hidden">
                     <div class="px-6 py-4 border-b border-[var(--borde)] bg-[var(--azul)]/5 flex items-center gap-2">
                         <span class="material-symbols-outlined text-[var(--azul)] text-base">directions_car</span>
@@ -274,7 +225,7 @@
                             </div>
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-sm font-bold">€</span>
-                                <input id="large-plus" type="text" value="1.20"
+                                <input id="large-plus" type="text" placeholder="1.00"
                                     class="input-base bg-[var(--fondo)] pl-8 font-bold" />
                             </div>
                         </div>
@@ -285,19 +236,19 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-[var(--texto)]">Vehículo Eléctrico</p>
-                                    <p class="text-[11px] text-[var(--texto-suave)]">Cargador incluido en la tarifa</p>
+                                    <p class="text-[11px] text-[var(--texto-suave)] ">Cargador incluido en la tarifa</p>                                   
                                 </div>
                             </div>
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-sm font-bold">€</span>
-                                <input id="electric-plus" type="text" value="1.50"
+                                <input id="electric-plus" type="text" placeholder="0.50"
                                     class="input-base bg-[var(--fondo)] pl-8 font-bold" />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ── BLOQUE 3: Tarifas horarias ──────────────── -->
+                <!-- BLOQUE 3: Tarifas horarias -->
                 <div class="flex flex-col gap-4">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                         <div>
@@ -313,89 +264,17 @@
 
                     <div class="card overflow-hidden">
                         <!-- Cabecera columnas -->
-                        <div class="hidden md:grid grid-cols-[1fr_80px_80px_100px_100px_80px_56px] gap-3 px-5 py-3 border-b border-[var(--borde)] bg-[var(--fondo)]/50">
+                        <div class="hidden md:grid grid-cols-[1fr_80px_80px_100px_100px_56px] gap-3 px-5 py-3 border-b border-[var(--borde)] bg-[var(--fondo)]/50">
                             <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)]">Nombre de la Tarifa</span>
                             <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)] text-center">€/hora</span>
                             <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)] text-center">Festivo</span>
                             <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)] text-center">Hora inicio</span>
                             <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)] text-center">Hora fin</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)] text-center">Estado</span>
                             <span></span>
                         </div>
-
-                        <!-- Fila 1: Tarifa Día -->
-                        <div class="tarif-row grid grid-cols-1 md:grid-cols-[1fr_80px_80px_100px_100px_80px_56px] gap-3 px-5 py-4 border-b border-[var(--borde)] items-center hover:bg-[var(--fondo)]/30 transition-colors">
-                            <input type="text" value="Tarifa General Día"
-                                class="input-base bg-[var(--fondo)] text-sm font-bold" />
-                            <div class="relative">
-                                <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-xs font-bold">€</span>
-                                <input type="text" value="2.50"
-                                    class="input-base bg-[var(--fondo)] pl-6 text-sm font-bold text-center" />
-                            </div>
-                            <div class="flex justify-center">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="sr-only peer" />
-                                    <div class="w-9 h-5 bg-[var(--borde)] rounded-full peer peer-checked:after:translate-x-4 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--azul)]"></div>
-                                </label>
-                            </div>
-                            <input type="time" value="08:00" class="input-base bg-[var(--fondo)] text-sm text-center" />
-                            <input type="time" value="22:59" class="input-base bg-[var(--fondo)] text-sm text-center" />
-                            <div class="flex justify-center">
-                                <span class="badge badge-verde text-[10px] font-extrabold uppercase">Activa</span>
-                            </div>
-                            <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--borde)] text-[var(--texto-suave)] hover:border-[var(--rojo)] hover:text-[var(--rojo)] transition-all mx-auto">
-                                <span class="material-symbols-outlined text-[16px]">delete</span>
-                            </button>
-                        </div>
-
-                        <!-- Fila 2: Tarifa Nocturna -->
-                        <div class="tarif-row grid grid-cols-1 md:grid-cols-[1fr_80px_80px_100px_100px_80px_56px] gap-3 px-5 py-4 border-b border-[var(--borde)] items-center hover:bg-[var(--fondo)]/30 transition-colors">
-                            <input type="text" value="Tarifa Nocturna"
-                                class="input-base bg-[var(--fondo)] text-sm font-bold" />
-                            <div class="relative">
-                                <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-xs font-bold">€</span>
-                                <input type="text" value="1.50"
-                                    class="input-base bg-[var(--fondo)] pl-6 text-sm font-bold text-center" />
-                            </div>
-                            <div class="flex justify-center">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="sr-only peer" />
-                                    <div class="w-9 h-5 bg-[var(--borde)] rounded-full peer peer-checked:after:translate-x-4 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--azul)]"></div>
-                                </label>
-                            </div>
-                            <input type="time" value="23:00" class="input-base bg-[var(--fondo)] text-sm text-center" />
-                            <input type="time" value="07:59" class="input-base bg-[var(--fondo)] text-sm text-center" />
-                            <div class="flex justify-center">
-                                <span class="badge badge-verde text-[10px] font-extrabold uppercase">Activa</span>
-                            </div>
-                            <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--borde)] text-[var(--texto-suave)] hover:border-[var(--rojo)] hover:text-[var(--rojo)] transition-all mx-auto">
-                                <span class="material-symbols-outlined text-[16px]">delete</span>
-                            </button>
-                        </div>
-
-                        <!-- Fila 3: Tarifa Festivo -->
-                        <div class="tarif-row grid grid-cols-1 md:grid-cols-[1fr_80px_80px_100px_100px_80px_56px] gap-3 px-5 py-4 items-center hover:bg-[var(--fondo)]/30 transition-colors">
-                            <input type="text" value="Tarifa Festivo"
-                                class="input-base bg-[var(--fondo)] text-sm font-bold" />
-                            <div class="relative">
-                                <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-xs font-bold">€</span>
-                                <input type="text" value="3.00"
-                                    class="input-base bg-[var(--fondo)] pl-6 text-sm font-bold text-center" />
-                            </div>
-                            <div class="flex justify-center">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="sr-only peer" checked />
-                                    <div class="w-9 h-5 bg-[var(--borde)] rounded-full peer peer-checked:after:translate-x-4 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--azul)]"></div>
-                                </label>
-                            </div>
-                            <input type="time" value="00:00" class="input-base bg-[var(--fondo)] text-sm text-center" />
-                            <input type="time" value="23:59" class="input-base bg-[var(--fondo)] text-sm text-center" />
-                            <div class="flex justify-center">
-                                <span class="badge badge-naranja text-[10px] font-extrabold uppercase">Festivo</span>
-                            </div>
-                            <button type="button" class="w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--borde)] text-[var(--texto-suave)] hover:border-[var(--rojo)] hover:text-[var(--rojo)] transition-all mx-auto">
-                                <span class="material-symbols-outlined text-[16px]">delete</span>
-                            </button>
+                        <!-- Filas inyectadas por JS -->
+                        <div id="tarifs-body">
+                            <p class="text-center py-6 text-xs text-[var(--texto-suave)] italic">Cargando tarifas...</p>
                         </div>
                     </div>
 
@@ -407,7 +286,37 @@
                     </div>
                 </div>
 
-                <!-- ── BLOQUE 4: Zona de peligro ───────────────── -->
+                <!-- BLOQUE 4: Generador de Plazas -->
+                <div class="card overflow-hidden">
+                    <div class="px-6 py-4 border-b border-[var(--borde)] bg-[var(--fondo)]/30 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[var(--azul)] text-base">garage</span>
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-[var(--texto-suave)]">Generador de Plazas</h3>
+                        <span class="ml-auto text-[10px] text-[var(--texto-suave)] font-medium">Se añaden al parking actual</span>
+                    </div>
+                    <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="label-settings">Número de Plazas a Generar</label>
+                            <input id="p-total" type="number" min="1" max="200" placeholder="Ej: 50"
+                                class="input-base bg-[var(--fondo)]" />
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="label-settings">Tipo de Plaza</label>
+                            <select id="p-spot-type" class="input-base bg-[var(--fondo)]">
+                                <option value="Standard">Estándar</option>
+                                <option value="EV">Eléctrico (EV)</option>
+                                <option value="Large">Grande (SUV)</option>
+                                <option value="PMR">PMR (Movilidad Reducida)</option>
+                            </select>
+                        </div>
+                        <button type="button" id="btn-generar-plazas"
+                            class="btn btn-primario text-sm flex items-center justify-center gap-2 shadow-lg shadow-[var(--azul)]/20 h-[42px]">
+                            <span class="material-symbols-outlined text-[18px]">auto_fix_high</span>
+                            Generar Plazas
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BLOQUE 5: Zona de peligro -->
                 <div class="card overflow-hidden border-[var(--rojo)]/20">
                     <div class="px-6 py-4 border-b border-[var(--rojo)]/20 bg-[var(--rojo)]/5 flex items-center gap-2">
                         <span class="material-symbols-outlined text-[var(--rojo)] text-base">warning</span>
@@ -423,10 +332,10 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-[var(--texto)]">Desactivar Parking</p>
-                                    <p class="text-[11px] text-[var(--texto-suave)] mt-0.5">Se ocultará del mapa para los usuarios. Los datos se conservan.</p>
+                                    <p class="text-[11px] text-[var(--texto-suave)] mt-0.5">Se ocultará del mapa. Los datos se conservan.</p>
                                 </div>
                             </div>
-                            <button type="button"
+                            <button type="button" id="btn-desactivar"
                                 class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-[var(--naranja)]/40 text-[var(--naranja)] text-xs font-bold hover:bg-[var(--naranja)]/10 transition-all">
                                 <span class="material-symbols-outlined text-[16px]">pause_circle</span>
                                 Desactivar Parking
@@ -441,10 +350,10 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-[var(--texto)]">Eliminar Parking</p>
-                                    <p class="text-[11px] text-[var(--texto-suave)] mt-0.5">Acción irreversible. Se borrarán plazas, tarifas y reservas asociadas.</p>
+                                    <p class="text-[11px] text-[var(--texto-suave)] mt-0.5">Acción irreversible. Se borrarán plazas, tarifas y reservas.</p>
                                 </div>
                             </div>
-                            <button type="button"
+                            <button type="button" id="btn-eliminar"
                                 class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-[var(--rojo)]/40 text-[var(--rojo)] text-xs font-bold hover:bg-[var(--rojo)]/10 transition-all">
                                 <span class="material-symbols-outlined text-[16px]">delete_forever</span>
                                 Eliminar definitivamente
@@ -453,16 +362,13 @@
                     </div>
                 </div>
 
-                <!-- Acciones finales móvil -->
+                <!-- Acciones móvil -->
                 <div class="flex gap-3 pt-2 pb-6 md:hidden">
                     <button type="button" onclick="window.history.back()"
-                        class="flex-1 btn btn-ghost border border-[var(--borde)] text-sm py-3">
-                        Descartar
-                    </button>
+                        class="flex-1 btn btn-ghost border border-[var(--borde)] text-sm py-3">Descartar</button>
                     <button type="submit"
                         class="flex-1 btn btn-primario text-sm py-3 shadow-lg shadow-[var(--azul)]/20">
-                        <span class="material-symbols-outlined text-[18px]">save</span>
-                        Guardar
+                        <span class="material-symbols-outlined text-[18px]">save</span> Guardar
                     </button>
                 </div>
 
@@ -470,5 +376,8 @@
         </div>
     </div>
 
+    <div id="contenedor-toast" class="fixed bottom-6 right-6 flex flex-col gap-2 z-[100]"></div>
+    <script src="../../JS/formularioParking.js"></script>
 </body>
 </html>
+

@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestión de Plazas — PARKit Business</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-    <script src="../JS/global.js"></script>
+    <script src="../../JS/auth.js"></script>
+    <script src="../../JS/global.js"></script>
     <link rel="stylesheet" href="../../STYLES/global.css" />
     <link rel="stylesheet" href="../../STYLES/empresas.css" />
 </head>
 
 <body class="layout-base tema-business md:flex-row overflow-hidden" style="height:100vh;">
 
-    <!-- ── Sidebar ───────────────────────────────── -->
-    <aside class="w-full md:w-64 bg-[var(--fondo-card)] border-r border-[var(--borde)] flex flex-col justify-between p-5 md:sticky md:top-0 md:h-screen z-40 flex-shrink-0">
+        <!-- ── Sidebar ──────────────────────────────────────────── -->
+    <aside class="w-full md:w-64 bg-[var(--fondo-card)] border-r border-[var(--borde)] flex flex-col justify-between p-5 md:sticky md:top-0 md:h-screen z-40 shadow-lg md:shadow-none">
         <div class="flex flex-col gap-8">
-
             <a href="../index.html" class="flex items-center gap-3 px-2 text-[var(--texto)] font-black text-xl tracking-tight">
                 <div class="bg-[var(--azul)] rounded-xl w-10 h-10 flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-[var(--azul)]/30">
                     <span class="material-symbols-outlined icono-relleno">local_parking</span>
@@ -27,13 +27,13 @@
             </a>
 
             <nav class="flex flex-col gap-1.5">
-                <a href="panelEmpresa.html" class="nav-item">
+                <a href="panelEmpresa.html" class="nav-item ">
                     <span class="material-symbols-outlined">dashboard</span>
                     Panel de Control
                 </a>
-                <a href="gestionPlazas.html" class="nav-item activo">
-                    <span class="material-symbols-outlined">garage</span>
-                    Gestión de Plazas
+                <a href="misparkingsEmpresa.html" class="nav-item activo">
+                    <span class="material-symbols-outlined">directions_car</span>
+                    Mis Parkings
                 </a>
                 <a href="estadisticasEmpresa.html" class="nav-item">
                     <span class="material-symbols-outlined">bar_chart</span>
@@ -46,10 +46,10 @@
             </nav>
         </div>
 
-        <div class="mt-8">
-            <button class="btn btn-primario w-full text-sm">
-                <span class="material-symbols-outlined text-[18px]">download</span>
-                Descargar Reporte
+        <div class="mt-8 flex flex-col gap-2">
+            <button id="btn-logout-empresa" class="btn btn-ghost w-full text-sm text-[var(--rojo)]">
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+                Cerrar sesión
             </button>
         </div>
     </aside>
@@ -87,10 +87,10 @@
 
                 <div class="flex items-center gap-3 pl-4 border-l border-[var(--borde)] cursor-pointer">
                     <div class="text-right hidden sm:block">
-                        <p class="text-sm font-bold leading-none">Admin Principal</p>
-                        <p class="text-[11px] text-[var(--texto-suave)] mt-1">Parking Central</p>
+                        <p id="header-empresa-nombre" class="text-sm font-bold leading-none">Cargando...</p>
+                        <p id="header-empresa-subtitulo" class="text-[11px] text-[var(--texto-suave)] mt-1"></p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-[var(--azul)] flex items-center justify-center text-white font-bold">A</div>
+                    <div id="header-empresa-avatar" class="w-10 h-10 rounded-full bg-[var(--azul)] flex items-center justify-center text-white font-bold">A</div>
                 </div>
             </div>
         </header>
@@ -99,9 +99,14 @@
         <div class="flex-1 overflow-y-auto p-6 lg:p-10 flex flex-col gap-8">
 
             <!-- Título -->
-            <div>
-                <h3 id="gp-parking-title" class="text-2xl font-black tracking-tight text-[var(--texto)]">Parking Central</h3>
-                <p id="gp-parking-subtitle" class="text-sm text-[var(--texto-suave)] mt-1">Visualización y control en tiempo real de todas las plazas</p>
+            <div class="flex justify-between items-end gap-2">
+                <div>
+                    <h3 id="gp-parking-title" class="text-2xl font-black tracking-tight text-[var(--texto)]">Cargando Parking...</h3>
+                    <p id="gp-parking-subtitle" class="text-sm text-[var(--texto-suave)] mt-1">Recuperando esquema de distribución</p>
+                </div>
+                <button class="btn btn-ghost text-xs text-[var(--texto-suave)] flex items-center gap-1 border border-[var(--borde)] hover:text-[var(--azul)] hover:border-[var(--azul)]" onclick="window.history.back()">
+                    <span class="material-symbols-outlined text-[16px]">arrow_back</span> Volver a Lista
+                </button>
             </div>
 
             <!-- Stats -->
@@ -171,46 +176,45 @@
                 <!-- Grid de plazas -->
                 <div class="p-6">
                     <div id="spot-grid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-11 gap-3">
+                        <!-- Plazas inyectadas por JS -->
+                    </div>
 
-                        <!-- Plazas de ejemplo para maqueta -->
-                        <div class="plaza plaza--libre"   data-id="A-1"><span>A-1</span></div>
-                        <div class="plaza plaza--libre"   data-id="A-2"><span>A-2</span></div>
-                        <div class="plaza plaza--ocupada" data-id="A-3"><span>A-3</span></div>
-                        <div class="plaza plaza--ocupada" data-id="A-4"><span>A-4</span></div>
-                        <div class="plaza plaza--libre"   data-id="A-5"><span>A-5</span></div>
-                        <div class="plaza plaza--reservada" data-id="A-6"><span>A-6</span></div>
-                        <div class="plaza plaza--libre"   data-id="A-7"><span>A-7</span></div>
-                        <div class="plaza plaza--libre"   data-id="B-1"><span>B-1</span></div>
-                        <div class="plaza plaza--libre"   data-id="B-2"><span>B-2</span></div>
-                        <div class="plaza plaza--mantenimiento" data-id="B-3"><span>B-3</span></div>
-                        <div class="plaza plaza--libre"   data-id="B-4"><span>B-4</span></div>
-                        <div class="plaza plaza--ocupada" data-id="B-5"><span>B-5</span></div>
-                        <div class="plaza plaza--libre"   data-id="B-6"><span>B-6</span></div>
-                        <div class="plaza plaza--libre"   data-id="B-7"><span>B-7</span></div>
-                        <div class="plaza plaza--reservada" data-id="C-1"><span>C-1</span></div>
-                        <div class="plaza plaza--libre"   data-id="C-2"><span>C-2</span></div>
-                        <div class="plaza plaza--libre"   data-id="C-3"><span>C-3</span></div>
-                        <div class="plaza plaza--ocupada" data-id="C-4"><span>C-4</span></div>
-                        <div class="plaza plaza--libre"   data-id="C-5"><span>C-5</span></div>
-                        <div class="plaza plaza--libre"   data-id="C-6"><span>C-6</span></div>
-                        <div class="plaza plaza--libre"   data-id="C-7"><span>C-7</span></div>
-                        <div class="plaza plaza--libre"   data-id="D-1"><span>D-1</span></div>
-                        <div class="plaza plaza--mantenimiento" data-id="D-2"><span>D-2</span></div>
-                        <div class="plaza plaza--libre"   data-id="D-3"><span>D-3</span></div>
-                        <div class="plaza plaza--libre"   data-id="D-4"><span>D-4</span></div>
-                        <div class="plaza plaza--ocupada" data-id="D-5"><span>D-5</span></div>
-                        <div class="plaza plaza--reservada" data-id="D-6"><span>D-6</span></div>
-                        <div class="plaza plaza--libre"   data-id="D-7"><span>D-7</span></div>
+                    <!-- Leyenda Visual -->
+                    <div class="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-[var(--borde)]">
+                        
+                        <!-- Cuadrados de colores -->
+                        <div class="flex items-center gap-2 text-sm font-bold text-[var(--texto-suave)]">
+                            <div class="w-4 h-4 rounded-[3px] bg-[#22c55e] shadow-sm shadow-[#22c55e]/40"></div> 
+                            <span>Libre</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm font-bold text-[var(--texto-suave)]">
+                            <div class="w-4 h-4 rounded-[3px] bg-[#eab308] shadow-sm shadow-[#eab308]/40"></div> 
+                            <span>En Uso</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm font-bold text-[var(--texto-suave)]">
+                            <div class="w-4 h-4 rounded-[3px] bg-[#3b82f6] shadow-sm shadow-[#3b82f6]/40"></div> 
+                            <span>Reservada</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm font-bold text-[var(--texto-suave)]">
+                            <div class="w-4 h-4 rounded-[3px] bg-[#ef4444] shadow-sm shadow-[#ef4444]/40"></div> 
+                            <span>Mantenimiento</span>
+                        </div>
+                        
+                        <!-- Separador y Leyenda de Iconos de Tipo (Opcional) -->
+                        <div class="ml-2 pl-4 border-l border-[var(--borde)] flex items-center gap-4">
+                            <div class="text-[10px] flex items-center gap-1 text-[var(--texto-suave)] uppercase font-bold">
+                                <span class="material-symbols-outlined text-[13px] text-[var(--verde)]">bolt</span> Eléctrica
+                            </div>
+                            <div class="text-[10px] flex items-center gap-1 text-[var(--texto-suave)] uppercase font-bold">
+                                <span class="material-symbols-outlined text-[13px] text-[var(--naranja)]">airport_shuttle</span> Grande
+                            </div>
+                            <div class="text-[10px] flex items-center gap-1 text-[var(--texto-suave)] uppercase font-bold">
+                                <span class="material-symbols-outlined text-[13px] text-[var(--azul)]">accessible</span> PMR
+                            </div>
+                        </div>
 
                     </div>
 
-                    <!-- Leyenda -->
-                    <div class="flex flex-wrap items-center gap-5 mt-6 pt-6 border-t border-[var(--borde)]">
-                        <div class="leyenda-item"><span class="leyenda-item__dot" style="background:var(--verde)"></span>Libre</div>
-                        <div class="leyenda-item"><span class="leyenda-item__dot" style="background:var(--azul)"></span>Ocupada</div>
-                        <div class="leyenda-item"><span class="leyenda-item__dot" style="background:var(--naranja)"></span>Reservada</div>
-                        <div class="leyenda-item"><span class="leyenda-item__dot" style="background:var(--rojo)"></span>Mantenimiento</div>
-                    </div>
                 </div>
             </div>
 
@@ -239,11 +243,11 @@
             <div class="flex flex-col gap-2">
                 <p class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)]">Acciones rápidas</p>
                 <div class="grid grid-cols-2 gap-2">
-                    <button id="btn-liberar" class="btn-accion btn-accion--verde">
+                    <button id="btn-liberar" style="display:none;" class="btn-accion btn-accion--verde">
                         <span class="material-symbols-outlined text-[16px]">done</span>
                         Liberar
                     </button>
-                    <button id="btn-mantenimiento" class="btn-accion btn-accion--rojo">
+                    <button id="btn-mantenimiento" style="display:none;" class="btn-accion btn-accion--rojo">
                         <span class="material-symbols-outlined text-[16px]">build</span>
                         Mantener
                     </button>
@@ -264,5 +268,9 @@
 
     </aside>
 
+    <div id="contenedor-toast" class="fixed bottom-6 right-6 flex flex-col gap-2 z-[100]"></div>
+    
+    <!-- Script lógico de plazas -->
+    <script src="../../JS/plazasEmpresa.js"></script>
 </body>
 </html>

@@ -63,7 +63,7 @@ const AUTH = (() => {
         localStorage.removeItem(CLAVE_TOKEN);
         localStorage.removeItem(CLAVE_ROL);
         localStorage.removeItem(CLAVE_USUARIO);
-        if (redirigir) window.location.href = 'index.html';
+        if (redirigir) window.location.href = '/PARKit.Frontend/HTMl/index.html';
     }
 
     // ── Decodificador de payload JWT ───────────────────────────────

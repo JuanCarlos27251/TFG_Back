@@ -38,7 +38,7 @@
     <div class="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div class="mb-8">
             <h1 class="text-4xl font-black tracking-tight mb-2 text-[#111318] dark:text-white">Mis Reservas</h1>
-            <p class="text-[var(--texto-suave)] text-lg">Historial completo de tus sesiones de parking y reservas realizadas en tiempo real.</p>
+            <p class="text-[var(--texto-suave)] text-lg">Historial de actividad en PARKit.</p>
         </div>
         
         <div class="w-full md:w-80 bg-white dark:bg-[#161b2e] p-2 rounded-2xl border border-[var(--borde)] shadow-sm">
@@ -189,8 +189,10 @@
     </div>
 </footer>
 
-<div id="contenedor-toast"></div>
+<div id="contenedor-toast" class="fixed bottom-6 right-6 flex flex-col gap-2 z-[100]"></div>
 
+<script src="../JS/auth.js"></script>
 <script src="../JS/global.js"></script>
+<script src="../JS/reservas.js"></script>
 </body>
 </html>

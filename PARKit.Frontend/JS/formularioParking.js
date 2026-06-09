@@ -260,13 +260,21 @@
 
     async function guardarTarifa(fila) {
         const id = fila.dataset.tarifId;
+        
+        let tInicio = fila.querySelector('.t-inicio').value;
+        let tFin = fila.querySelector('.t-fin').value;
+
+        // Añadimos ":00" (segundos) si solo viene "HH:MM" para que ASP.NET lo valide correctamente (Evita el Error 400)
+        if (tInicio && tInicio.length === 5) tInicio += ':00';
+        if (tFin && tFin.length === 5) tFin += ':00';
+
         const payload = {
             parkingId: parseInt(parkingId),
             nameTarif: fila.querySelector('.t-nombre').value.trim(),
             pricePerHour: parseFloat(fila.querySelector('.t-precio').value),
             isHoliday: fila.querySelector('.t-festivo').checked,
-            starTime: fila.querySelector('.t-inicio').value || null,
-            endTime: fila.querySelector('.t-fin').value || null
+            starTime: tInicio || null,
+            endTime: tFin || null
         };
 
         if (!payload.nameTarif || isNaN(payload.pricePerHour)) {
@@ -289,6 +297,7 @@
             mostrarToast('Error guardando tarifa: ' + e.message, 'error');
         }
     }
+
 
     async function borrarTarifa(fila) {
         const id = fila.dataset.tarifId;

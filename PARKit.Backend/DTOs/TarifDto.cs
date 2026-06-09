@@ -8,6 +8,11 @@ namespace PARKit.Backend.DTOs
         public string NameTarif { get; set; } = string.Empty;
         public decimal LargeVehicleSurcharge { get; set; }
         public decimal ElectricVehicleSurcharge { get; set; }
+
+        // ── NUEVOS CAMPOS ──
+        public decimal ReservationSurcharge { get; set; }
+        public decimal CancellationFee { get; set; }
+
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public bool IsHoliday { get; set; }

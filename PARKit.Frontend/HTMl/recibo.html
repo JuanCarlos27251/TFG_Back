@@ -29,16 +29,16 @@
             <a href="perfil.html" id="header-user-avatar" class="avatar-btn" title="Mi Perfil">
                 <span class="material-symbols-outlined text-lg leading-none">person</span>
             </a>
-
         </div>
     </header>
+
 <main class="max-w-3xl w-full mx-auto flex-1 px-6 py-10 aparecer print:py-0 print:px-0">
     
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 bg-white dark:bg-[#161b2e] p-4 rounded-2xl border border-[var(--borde)] print:hidden shadow-sm">
         
-        <a href="index.html" class="btn btn-ghost btn-sm inline-flex items-center gap-1 bg-white/80 dark:bg-[#0e1120]/80 backdrop-blur-md border border-[var(--borde)] shadow-sm md:bg-transparent md:dark:bg-transparent md:backdrop-blur-none md:border-none md:shadow-none">
+        <a href="confirmacionpago.html" class="btn btn-ghost btn-sm inline-flex items-center gap-1 bg-white/80 dark:bg-[#0e1120]/80 backdrop-blur-md border border-[var(--borde)] shadow-sm md:bg-transparent md:dark:bg-transparent md:backdrop-blur-none md:border-none md:shadow-none">
             <span class="material-symbols-outlined text-sm">arrow_back</span>
-            Volver al inicio
+            Volver a Confirmación
         </a>
         
         <div class="flex items-center gap-3 w-full sm:w-auto">
@@ -78,26 +78,26 @@
                     Pago Confirmado
                 </span>
                 <h2 class="text-xs uppercase font-extrabold tracking-wider text-[var(--texto-suave)] mt-4">Número de Justificante</h2>
-                <p id="receipt-invoice-id" class="font-mono text-lg font-bold text-[#111318] dark:text-white mt-0.5">FAC-2026-88421</p>
+                <p id="receipt-invoice-id" class="font-mono text-lg font-bold text-[#111318] dark:text-white mt-0.5">—</p>
             </div>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 py-6 border-b border-[var(--borde)] text-sm">
             <div>
                 <span class="block text-xs font-extrabold text-[var(--texto-suave)] uppercase tracking-wider">Fecha Emisión</span>
-                <span id="receipt-date" class="font-bold text-[#111318] dark:text-white block mt-1">03 Jun, 2026</span>
+                <span id="receipt-date" class="font-bold text-[#111318] dark:text-white block mt-1">—</span>
             </div>
             <div>
                 <span class="block text-xs font-extrabold text-[var(--texto-suave)] uppercase tracking-wider">Método de Pago</span>
-                <span id="receipt-method" class="font-bold text-[#111318] dark:text-white block mt-1">Tarjeta (•••• 4321)</span>
+                <span id="receipt-method" class="font-bold text-[#111318] dark:text-white block mt-1">—</span>
             </div>
             <div>
                 <span class="block text-xs font-extrabold text-[var(--texto-suave)] uppercase tracking-wider">Titular</span>
-                <span id="receipt-client-name" class="font-bold text-[#111318] dark:text-white block mt-1 truncate">Juan Carlos Pina</span>
+                <span id="receipt-client-name" class="font-bold text-[#111318] dark:text-white block mt-1 truncate">—</span>
             </div>
             <div>
                 <span class="block text-xs font-extrabold text-[var(--texto-suave)] uppercase tracking-wider">Localizador</span>
-                <span id="receipt-booking-id" class="font-mono font-bold text-[var(--azul)] block mt-1">#PK-774102</span>
+                <span id="receipt-booking-id" class="font-mono font-bold text-[var(--azul)] block mt-1">—</span>
             </div>
         </div>
 
@@ -107,18 +107,15 @@
             <div class="w-full space-y-4">
                 <div class="flex justify-between items-start text-sm gap-4">
                     <div>
-                        <p id="receipt-item-title" class="font-bold text-[#111318] dark:text-white">Reserva de Plaza de Aparcamiento</p>
-                        <p id="receipt-item-desc" class="text-xs text-[var(--texto-suave)] mt-1 leading-normal">
-                            Parking Plaza España (Zaragoza) · Plaza asignada automáticamente.<br>
-                            Estancia completa programada.
-                        </p>
+                        <p id="receipt-item-title" class="font-bold text-[#111318] dark:text-white">—</p>
+                        <p id="receipt-item-desc" class="text-xs text-[var(--texto-suave)] mt-1 leading-normal"></p>
                     </div>
-                    <span id="receipt-item-price" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">14,50 €</span>
+                    <span id="receipt-item-price" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">0,00 €</span>
                 </div>
 
                 <div class="flex justify-between items-center text-sm gap-4 pt-2">
                     <p class="text-[var(--texto-suave)]">Gastos de gestión de plataforma</p>
-                    <span id="receipt-fee-price" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">0,50 €</span>
+                    <span id="receipt-fee-price" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">0,00 €</span>
                 </div>
             </div>
         </div>
@@ -134,18 +131,18 @@
             <div class="w-full sm:w-auto space-y-2 text-right">
                 <div class="flex justify-between sm:justify-end gap-10 text-sm">
                     <span class="text-[var(--texto-suave)]">Base Imponible:</span>
-                    <span id="receipt-subtotal" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">12,40 €</span>
+                    <span id="receipt-subtotal" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">—</span>
                 </div>
                 <div class="flex justify-between sm:justify-end gap-10 text-sm">
                     <span class="text-[var(--texto-suave)]">IVA (21%):</span>
-                    <span id="receipt-tax" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">2,60 €</span>
+                    <span id="receipt-tax" class="font-bold text-[#111318] dark:text-white whitespace-nowrap">—</span>
                 </div>
                 <div class="h-px bg-[var(--borde)] my-2"></div>
                 
                 <div class="flex justify-between sm:justify-end items-center gap-6">
                     <span class="font-bold text-sm text-[#111318] dark:text-white uppercase tracking-wider">Total Pagado:</span>
                     <div class="inline-flex items-center whitespace-nowrap text-3xl font-black text-[var(--azul)] tracking-tight">
-                        <span id="receipt-total" class="mr-1">15,00</span><span>€</span>
+                        <span id="receipt-total" class="mr-1">0,00</span><span>€</span>
                     </div>
                 </div>
             </div>
@@ -153,7 +150,7 @@
 
         <div class="mt-12 pt-8 border-t border-dashed border-[var(--borde)] flex flex-col items-center justify-center gap-2">
             <span class="material-symbols-outlined text-5xl text-[#111318]/20 dark:text-white/20 tracking-[0.25em] select-none">barcode</span>
-            <span class="font-mono text-[10px] text-[var(--texto-suave)] uppercase tracking-widest">Verificación e-ID *2026FAC88421PARK*</span>
+            <span class="font-mono text-[10px] text-[var(--texto-suave)] uppercase tracking-widest">Verificación e-ID —</span>
         </div>
     </div>
 </main>
@@ -166,6 +163,7 @@
     </div>
 </footer>
 
-
+<script src="../JS/global.js"></script>
+<script src="../JS/recibo.js"></script>
 </body>
 </html>

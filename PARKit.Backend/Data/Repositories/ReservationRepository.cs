@@ -20,15 +20,19 @@ namespace PARKit.Backend.Repositories
         {
             return await _context.Reservations
                 .Include(r => r.ParkingSpot)
+                .ThenInclude(s => s.Parking)
                 .Where(r => r.UserId == userId)
                 .Select(r => new ReservationDto
                 {
-                    Id = r.Id,
+                     Id = r.Id,
                     UserId = r.UserId,
                     ParkingSpotId = r.ParkingSpotId,
+                    SpotNumber = r.ParkingSpot != null ? r.ParkingSpot.SpotNumber : "N/A",
+                    ParkingName = r.ParkingSpot != null && r.ParkingSpot.Parking != null ? r.ParkingSpot.Parking.Name : "Parking Municipal (Externa)",
                     StartTime = r.StartTime,
                     EndTime = r.EndTime,
-                    Status = r.Status
+                    Status = r.Status,
+                    TotalAmount = r.TotalAmount 
                 }).ToListAsync();
         }
  

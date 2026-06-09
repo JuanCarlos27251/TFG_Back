@@ -10,6 +10,11 @@ namespace PARKit.Backend.DTOs.TarifDtin
         public decimal PricePerHour { get; set; }
         [Required]
         public string NameTarif { get; set; } = string.Empty;
+
+        // ── NUEVOS CAMPOS ──
+        public decimal ReservationSurcharge { get; set; } = 0;
+        public decimal CancellationFee { get; set; } = 0;
+
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         [Required]

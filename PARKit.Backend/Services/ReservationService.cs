@@ -28,7 +28,7 @@ namespace PARKit.Backend.Services
             _paymentRepo = paymentRepo;
         }
 
-        private async Task<decimal> CalculatePriceAsync(ReservationDtin dtin)
+                private async Task<decimal> CalculatePriceAsync(ReservationDtin dtin)
         {
             var spot = await _spotRepo.GetByIdAsync(dtin.ParkingSpotId)
                 ?? throw new KeyNotFoundException($"No se encontró la plaza con ID {dtin.ParkingSpotId}.");
@@ -49,8 +49,14 @@ namespace PARKit.Backend.Services
             if (duration.TotalHours <= 0)
                 throw new ArgumentException("La hora de fin debe ser posterior a la hora de inicio.");
 
-            return (decimal)duration.TotalHours * pricePerHour;
+            // 1. Calculamos la estancia bruta base
+            decimal estanciaBruta = (decimal)duration.TotalHours * pricePerHour;
+            
+            // 2. AÑADIMOS los 1.50€ fijos de gastos de gestión del sistema a la reserva total.
+            // Para que BD y Frontend sean exactamente 100% simétricos.
+            return estanciaBruta + 1.50m;
         }
+
 
         public async Task<ReservationDto> CreateReservationAsync(ReservationDtin dtin)
         {

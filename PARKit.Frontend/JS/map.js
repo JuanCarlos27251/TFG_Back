@@ -26,6 +26,8 @@ class ParkingMap {
         this.setupGeocoder();
         this.setupUIEventListeners();
         this.updateStatus('Cargando mapa...');
+        this.comprobarRutaPendiente();
+
     }
 
     initializeMap() {
@@ -197,10 +199,9 @@ class ParkingMap {
         document.getElementById('detalle-capacidad').textContent = totalSpots;
 
         // ── LECTURA DE TARIFA OFICIAL ──
-        let precioPantalla = 'Regulación Zona';
+        let precioPantalla = 'Sin tarifa';
         if (parking.tarifs && parking.tarifs.length > 0) {
-            // Pillamos el precio base configurado por la empresa / municipal en tu base de datos
-            precioPantalla = `${parking.tarifs[0].pricePerHour.toFixed(2)} € / h`;
+            precioPantalla = `${Number(parking.tarifs[0].pricePerHour).toFixed(2)} € / h`;
         }
         document.getElementById('detalle-precio').textContent = precioPantalla;
 
@@ -356,6 +357,52 @@ class ParkingMap {
         const el = document.getElementById('status-text');
         if (el) el.textContent = message;
     }
+    // ── RUTA PENDIENTE DESDE CONFIRMACIÓN DE PAGO ──
+    comprobarRutaPendiente() {
+        const raw = localStorage.getItem('pendingRoute');
+        if (!raw) return;
+
+        try {
+            const ruta = JSON.parse(raw);
+            if (!ruta.trazar || !ruta.destLat || !ruta.destLng) return;
+
+            localStorage.removeItem('pendingRoute'); // limpiar para no re-trazar en siguiente visita
+
+            // Esperamos a que el mapa cargue del todo
+            this.map.once('load', () => {
+                // Marcador del destino
+                const elDest = document.createElement('div');
+                elDest.className = 'w-10 h-10 bg-[var(--azul)] text-white rounded-full flex items-center justify-center border-2 border-white shadow-lg';
+                elDest.innerHTML = '<span class="material-symbols-outlined text-xl">local_parking</span>';
+                new mapboxgl.Marker({ element: elDest })
+                    .setLngLat([ruta.destLng, ruta.destLat])
+                    .addTo(this.map);
+
+                this.updateStatus('Activando GPS para trazar ruta...');
+
+                // Activamos el geolocalizador; cuando responda, trazamos la ruta
+                this.geolocator.once('geolocate', (e) => {
+                    this.userLocation = [e.coords.longitude, e.coords.latitude];
+
+                    // Simulamos tener un parking seleccionado para aprovechar trazarRuta()
+                    this.selectedParking = { latitude: ruta.destLat, longitude: ruta.destLng, name: ruta.destName };
+                    this.trazarRuta();
+
+                    // Abrimos el panel de detalles con el nombre
+                    document.getElementById('detalle-nombre').textContent    = ruta.destName;
+                    document.getElementById('detalle-direccion').textContent = 'Parking reservado';
+                    document.getElementById('panel-detalles')?.classList.add('abierto');
+                });
+
+                this.geolocator.trigger();
+            });
+
+        } catch (e) {
+            console.error('[Map] Error al leer pendingRoute:', e);
+        }
+    }
+
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {

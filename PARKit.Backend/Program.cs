@@ -120,7 +120,8 @@ builder.Services.AddCors(options =>
             .WithOrigins(
                 "http://localhost:3000",   
                 "http://localhost:5173",   
-                "http://127.0.0.1:5500",   
+                "http://127.0.0.1:5500", 
+                "http://127.0.0.1:5501", 
                 "http://localhost:5500"
             )
             .AllowAnyHeader()
@@ -132,7 +133,13 @@ builder.Services.AddCors(options =>
 // ─────────────────────────────────────────
 // 9. CONTROLLERS + SWAGGER
 // ─────────────────────────────────────────
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {

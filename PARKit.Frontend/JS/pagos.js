@@ -1,5 +1,5 @@
 /* ==============================================
-   PARKit — Checkout de Pagos (Validación Server-Side)
+   PARKit — Checkout de Pagos (Modificado: Timer antes de pagar)
    ============================================== */
 
 (() => {
@@ -12,11 +12,15 @@
     let cocheSeleccionado = null;
     let metodoPagoSeleccionadoId = null;
 
+    // Timer logic
+    let timerInterval = null;
+    let timerStartMs  = null;
+    let estanciaMinutosFinal = 0;
+
     const reserva = {
-        modo: 0, 
+        modo: 0, // 0 = Fijo, 1 = Tiempo Real
         horasReserva: 1,
-        gastosGestion: 1.50, // Gastos PARKit
-        precioFinalHora: 0 
+        gastosGestion: 1.50
     };
 
     function mostrarToast(msg, tipo = 'exito') {
@@ -26,7 +30,7 @@
         const colores = { exito: 'verde', error: 'rojo', aviso: 'naranja' };
         toast.className = `toast toast-${tipo}`;
         toast.innerHTML = `
-            <span class="material-symbols-outlined icono-relleno mb-0.5" style="color:var(--${colores[tipo]||'azul'})">${tipo === 'exito' ? 'check_circle' : (tipo === 'rojo' ? 'error' : 'warning')}</span>
+            <span class="material-symbols-outlined icono-relleno mb-0.5" style="color:var(--${colores[tipo]||'azul'})">${tipo === 'exito' ? 'check_circle' : 'error'}</span>
             <span class="text-sm font-medium pr-4">${msg}</span>`;
         cont.appendChild(toast);
         setTimeout(() => toast.remove(), 4000);
@@ -35,8 +39,7 @@
     async function apiFetch(url, opciones = {}) {
         const resp = await fetch(url, { headers: AUTH.cabecerasAuth(), ...opciones });
         if (!resp.ok) throw new Error(`Error HTTP: ${resp.status}`);
-        if (resp.status === 204) return null;
-        return resp.json();
+        return resp.status === 244 ? null : resp.json();
     }
 
     async function initPagos() {
@@ -49,21 +52,15 @@
         const pid = params.get('parkingId');
 
         if (!pid) {
-            alert("No se seleccionó parking.");
             window.location.href = 'map.html';
             return;
         }
 
-        const user = AUTH.obtenerUsuario();
-
-        await Promise.all([
-            cargarDatosParking(pid),
-            cargarCochesUsuario(),
-            cargarMetodosPagoUsuario(user?.id)
-        ]);
+        await cargarDatosParking(pid);
+        await Promise.all([cargarCochesUsuario(), cargarMetodosPagoUsuario(AUTH.obtenerUsuario()?.id)]);
 
         setupEventosInteractivos();
-        actualizarResumenMatematico(); 
+        actualizarResumenMatematico();
     }
 
     async function cargarDatosParking(id) {
@@ -71,292 +68,202 @@
             parkingActivo = await apiFetch(`${API}/api/Parking/${id}`);
             document.getElementById('summary-parking-name').textContent = parkingActivo.name;
             document.getElementById('summary-parking-address').innerHTML = `<span class="material-symbols-outlined text-base text-azul">location_on</span> ${parkingActivo.address}`;
-            if (parkingActivo.imageUrl) {
-                document.getElementById('parking-preview-img').style.backgroundImage = `url('${parkingActivo.imageUrl}')`;
-            }
-        } catch (error) {
-            mostrarToast("Error cargando parking.", "error");
-        }
+            if (parkingActivo.imageUrl) document.getElementById('parking-preview-img').style.backgroundImage = `url('${parkingActivo.imageUrl}')`;
+        } catch (e) { mostrarToast("Error cargando parking.", "error"); }
     }
 
     async function cargarCochesUsuario() {
-        const contenedor = document.getElementById('vehicles-list');
         try {
             vehiculosGlobal = await apiFetch(`${API}/api/Car/MyCars`);
-            contenedor.innerHTML = '';
-            
+            const cont = document.getElementById('vehicles-list');
+            cont.innerHTML = '';
             if (!vehiculosGlobal || vehiculosGlobal.length === 0) {
-                contenedor.innerHTML = `<p class="text-sm text-[var(--rojo)] bg-red-50 p-3 rounded font-bold border border-red-200">No tienes vehículos registrados. Añade uno en tu perfil.</p>`;
+                cont.innerHTML = `<p class="text-sm text-red-500 font-bold p-3">No tienes vehículos registrados.</p>`;
                 document.getElementById('btn-complete-booking').disabled = true;
                 return;
             }
-
             cocheSeleccionado = vehiculosGlobal[0];
-
-            vehiculosGlobal.forEach((car, index) => {
-                const isSelected = index === 0;
-                const badges = [];
-                if (car.electricVehicle) badges.push('<span class="bg-[var(--verde)]/10 text-[var(--verde)] px-2 py-0.5 rounded text-[10px] font-black uppercase">Eléctrico</span>');
-                if (car.largeVehicle) badges.push('<span class="bg-[var(--naranja)]/10 text-[var(--naranja)] px-2 py-0.5 rounded text-[10px] font-black uppercase">Grande</span>');
-
+            vehiculosGlobal.forEach((car, i) => {
                 const label = document.createElement('label');
-                label.className = `flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all ${isSelected ? 'border-azul bg-azul/5' : 'border-[var(--borde)] hover:bg-[#f5f6fa]'}`;
-                label.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded bg-[#f5f6fa] dark:bg-[#161b2e] flex items-center justify-center font-bold text-xs uppercase border border-[var(--borde)]">
-                            ${car.matricule.substring(0,3)}
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold uppercase tracking-wider text-[#111318] dark:text-white">${car.matricule} <span class="pl-2 flex gap-1 mt-1">${badges.join(' ')}</span></p>
-                            <p class="text-xs text-[var(--texto-suave)]">${car.name}</p>
-                        </div>
-                    </div>
-                    <input type="radio" name="car_selection" value="${car.id}" class="w-4 h-4 text-azul focus:ring-azul" ${isSelected ? 'checked' : ''}>
-                `;
-
-                label.querySelector('input').addEventListener('change', () => {
-                    cocheSeleccionado = car; 
-                    contenedor.querySelectorAll('label').forEach(l => l.className = 'flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all border-[var(--borde)] hover:bg-[#f5f6fa]');
-                    label.className = 'flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all border-azul bg-azul/5';
-                    actualizarResumenMatematico(); 
-                });
-
-                contenedor.appendChild(label);
+                label.className = `flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all ${i===0?'border-azul bg-azul/5':'border-[var(--borde)]'}`;
+                label.innerHTML = `<div><p class="text-sm font-bold">${car.matricule}</p><p class="text-xs text-gray-500">${car.name}</p></div><input type="radio" name="car" ${i===0?'checked':''}>`;
+                label.onclick = () => { cocheSeleccionado = car; actualizarResumenMatematico(); };
+                cont.appendChild(label);
             });
-        } catch (error) {
-            contenedor.innerHTML = `<p class="text-[var(--rojo)] font-bold text-sm">Error conectando con tus vehículos.</p>`;
-        }
+        } catch (e) { console.error(e); }
     }
 
-    async function cargarMetodosPagoUsuario(userId) {
-        const contenedor = document.getElementById('payment-methods-list');
-        if(!userId) return;
-
+    async function cargarMetodosPagoUsuario(uid) {
         try {
-            metodosPagoGlobal = await apiFetch(`${API}/api/PaymentMethod/user/${userId}`);
-            contenedor.innerHTML = '';
-            
-            if (!metodosPagoGlobal || metodosPagoGlobal.length === 0) {
-                contenedor.innerHTML = `<p class="text-sm text-[var(--rojo)] bg-red-50 p-3 rounded font-bold border border-red-200">No tienes tarjetas en tu perfil. Registra una para pagar.</p>`;
-                document.getElementById('btn-complete-booking').disabled = true;
-                return;
-            }
-
+            metodosPagoGlobal = await apiFetch(`${API}/api/PaymentMethod/user/${uid}`);
+            const cont = document.getElementById('payment-methods-list');
+            cont.innerHTML = '';
+            if (!metodosPagoGlobal?.length) return;
             metodoPagoSeleccionadoId = metodosPagoGlobal[0].id;
-
-            metodosPagoGlobal.forEach((pago, index) => {
-                const isSelected = index === 0;
-                let colorTarjeta = pago.cadType?.toLowerCase() === 'visa' ? 'bg-indigo-600' : 'bg-red-500';
-
+            metodosPagoGlobal.forEach((p, i) => {
                 const label = document.createElement('label');
-                label.className = `flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all ${isSelected ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : 'border-[var(--borde)] hover:bg-[#f5f6fa]'}`;
-                label.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-6 rounded ${colorTarjeta} text-white flex items-center justify-center font-bold text-[9px] italic border shadow-sm">
-                            ${pago.cadType || 'CARD'}
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold uppercase text-[#111318] dark:text-white">•••• ${pago.lastFourDigits || '0000'}</p>
-                            <p class="text-[10px] text-[var(--texto-suave)]">Expira: ${pago.expiryDate || '12/28'}</p>
-                        </div>
-                    </div>
-                    <input type="radio" name="payment_selection" value="${pago.id}" class="w-4 h-4 text-indigo-500 focus:ring-indigo-500" ${isSelected ? 'checked' : ''}>
-                `;
-
-                label.querySelector('input').addEventListener('change', () => {
-                    metodoPagoSeleccionadoId = pago.id;
-                    contenedor.querySelectorAll('label').forEach(l => l.className = 'flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all border-[var(--borde)] hover:bg-[#f5f6fa]');
-                    label.className = 'flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20';
-                });
-
-                contenedor.appendChild(label);
+                label.className = `flex items-center justify-between p-4 border rounded-xl cursor-pointer ${i===0?'border-indigo-500 bg-indigo-50':''}`;
+                label.innerHTML = `<div><p class="text-sm font-bold">•••• ${p.lastFourDigits}</p></div><input type="radio" name="pay" ${i===0?'checked':''}>`;
+                label.onclick = () => metodoPagoSeleccionadoId = p.id;
+                cont.appendChild(label);
             });
-        } catch (error) {
-             contenedor.innerHTML = `<p class="text-[var(--rojo)] text-sm font-bold border border-red-200 bg-red-50 p-3 rounded">Falló la red al buscar tus tarjetas.</p>`;
-        }
+        } catch (e) { console.error(e); }
     }
-
 
     function setupEventosInteractivos() {
-        const radiosModo = document.querySelectorAll('input[name="reservation-type"]');
-        radiosModo.forEach(radio => {
-            radio.addEventListener('change', (e) => {
+        // Fechas
+        const inF = document.getElementById('input-arrival-date');
+        const inH = document.getElementById('input-arrival-time');
+        const hoy = new Date();
+        inF.value = hoy.toISOString().split('T')[0];
+        inH.value = `${String(hoy.getHours()).padStart(2,'0')}:${String(hoy.getMinutes()).padStart(2,'0')}`;
+        [inF, inH].forEach(el => el?.addEventListener('change', actualizarResumenMatematico));
+
+        // Radios de modo (Fijo vs Tiempo Real)
+        document.querySelectorAll('input[name="reservation-type"]').forEach(r => {
+            r.addEventListener('change', (e) => {
                 reserva.modo = parseInt(e.target.value);
-                
-                if (reserva.modo === 0) {
-                    document.getElementById('label-type-fixed').classList.replace('border-[var(--borde)]', 'border-azul');
-                    document.getElementById('label-type-fixed').classList.replace('hover:bg-[#f5f6fa]', 'bg-azul/5');
-                    document.getElementById('icon-type-fixed').textContent = 'check_circle';
-                    
-                    document.getElementById('label-type-dynamic').classList.replace('border-azul', 'border-[var(--borde)]');
-                    document.getElementById('label-type-dynamic').classList.replace('bg-azul/5', 'hover:bg-[#f5f6fa]');
-                    document.getElementById('icon-type-dynamic').textContent = 'circle';
-                    
-                    document.getElementById('duration-selector').style.opacity = '1';
-                    document.getElementById('duration-selector').style.pointerEvents = 'auto';
-                } else {
-                    document.getElementById('label-type-dynamic').classList.replace('border-[var(--borde)]', 'border-azul');
-                    document.getElementById('label-type-dynamic').classList.replace('hover:bg-[#f5f6fa]', 'bg-azul/5');
-                    document.getElementById('icon-type-dynamic').textContent = 'check_circle';
-                    
-                    document.getElementById('label-type-fixed').classList.replace('border-azul', 'border-[var(--borde)]');
-                    document.getElementById('label-type-fixed').classList.replace('bg-azul/5', 'hover:bg-[#f5f6fa]');
-                    document.getElementById('icon-type-fixed').textContent = 'circle';
-                    
-                    document.getElementById('duration-selector').style.opacity = '0.3';
-                    document.getElementById('duration-selector').style.pointerEvents = 'none';
-                }
+                const isFijo = reserva.modo === 0;
+                document.getElementById('fixed-time-selector').classList.toggle('hidden', !isFijo);
+                document.getElementById('dynamic-time-controls').classList.toggle('hidden', isFijo);
+                document.getElementById('btn-complete-booking').disabled = !isFijo;
                 actualizarResumenMatematico();
             });
         });
 
-        const btnHoras = document.querySelectorAll('.duration-btn');
-        btnHoras.forEach(btn => {
-            btn.addEventListener('click', () => {
-                btnHoras.forEach(b => b.classList.remove('active', 'bg-azul/10', 'border-azul', 'text-azul'));
-                btn.classList.add('active', 'bg-azul/10', 'border-azul', 'text-azul');
+        // Duración (Botones)
+        document.querySelectorAll('.duration-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active','bg-azul/10','border-azul','text-azul'));
+                btn.classList.add('active','bg-azul/10','border-azul','text-azul');
                 reserva.horasReserva = parseInt(btn.dataset.hours);
                 actualizarResumenMatematico();
-            });
+            };
         });
 
-        const inputLlegada = document.getElementById('input-arrival-time');
-        const ahora = new Date();
-        inputLlegada.value = `${ahora.getHours().toString().padStart(2, '0')}:${ahora.getMinutes().toString().padStart(2, '0')}`;
-        inputLlegada.addEventListener('change', actualizarResumenMatematico);
+        // Cronómetro
+        document.getElementById('btn-start-timer')?.addEventListener('click', () => {
+            timerStartMs = Date.now();
+            timerInterval = setInterval(() => {
+                const s = Math.floor((Date.now() - timerStartMs)/1000);
+                document.getElementById('timer-display').textContent = `⏱ ${Math.floor(s/3600).toString().padStart(2,'0')}:${Math.floor((s%3600)/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+            }, 1000);
+            document.getElementById('btn-start-timer').classList.add('hidden');
+            document.getElementById('btn-stop-timer').classList.remove('hidden');
+        });
 
-        document.getElementById('btn-complete-booking').addEventListener('click', procesarReservaYPagoEnBBDD);
+        document.getElementById('btn-stop-timer')?.addEventListener('click', () => {
+            clearInterval(timerInterval);
+            estanciaMinutosFinal = Math.ceil((Date.now() - timerStartMs) / 60000);
+            document.getElementById('btn-stop-timer').classList.add('hidden');
+            document.getElementById('btn-complete-booking').disabled = false;
+            actualizarResumenMatematico();
+        });
+
+        document.getElementById('btn-complete-booking').onclick = procesarPagoFinal;
     }
 
     function actualizarResumenMatematico() {
         if (!parkingActivo) return;
+        const tarifa = parkingActivo.tarifs?.[0];
+        if (!tarifa) return;
 
-        // Comprobamos si el backend envió la tarifa explícitamente en el JSON
-        const tarifaFija = (parkingActivo.tarifs && parkingActivo.tarifs.length > 0) ? parkingActivo.tarifs[0] : null;
-        
-        // Tiempos
-        const horaVal = document.getElementById('input-arrival-time').value;
-        const [h, m] = horaVal.split(':').map(Number);
-        const dIn = new Date(); dIn.setHours(h, m, 0, 0);
+        let extra = 0;
+        if (cocheSeleccionado?.largeVehicle) extra += Number(tarifa.largeVehicleSurcharge);
+        if (cocheSeleccionado?.electricVehicle) extra += Number(tarifa.electricVehicleSurcharge);
+        const precioH = Number(tarifa.pricePerHour) + extra;
 
-        document.getElementById('summary-checkin').textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
+        let estancia = 0;
+        let suplReserva = 0;
 
-        if (reserva.modo === 0) { 
-            const dOut = new Date(dIn.getTime() + (reserva.horasReserva * 60*60*1000));
-            document.getElementById('summary-checkout').textContent = `${dOut.getHours().toString().padStart(2,'0')}:${dOut.getMinutes().toString().padStart(2,'0')}`;
-            
-            // Si hay tarifa fija en el frontend, calculamos la previa. Si no, le decimos al usuario que el coste depende de la zona de Zaragoza.
-            if (tarifaFija) {
-                let precioBase = tarifaFija.pricePerHour;
-                let sobreCostes = 0;
-                if (cocheSeleccionado && cocheSeleccionado.largeVehicle) sobreCostes += tarifaFija.largeVehicleSurcharge || 0;
-                if (cocheSeleccionado && cocheSeleccionado.electricVehicle) sobreCostes += tarifaFija.electricVehicleSurcharge || 0;
-                
-                const finalHora = precioBase + sobreCostes;
-                const costeEstancia = reserva.horasReserva * finalHora;
-                
-                document.getElementById('summary-base-price').innerHTML = `${costeEstancia.toFixed(2)} € <span class="text-[10px] block opacity-60 font-bold text-azul uppercase tracking-wider">${sobreCostes > 0 ? '+ Extras incl.' : ''}</span>`;
-                const total = costeEstancia + reserva.gastosGestion;
-                document.getElementById('summary-total').textContent = `${total.toFixed(2)} €`;
-                document.getElementById('summary-total-btn').textContent = `${total.toFixed(2)} €`;
-            } else {
-                // UI PARA APARCAMIENTOS IMPORTADOS / OPACOS (Ej. Zona Azul Zaragoza)
-                document.getElementById('summary-base-price').innerHTML = `<span class="text-[12px] font-bold text-naranja">Regulación Municipal</span>`;
-                document.getElementById('summary-total').innerHTML = `Sujeto a Zona`;
-                document.getElementById('summary-total-btn').textContent = `Autorizar Reserva`;
-            }
-
+        if (reserva.modo === 0) {
+            estancia = reserva.horasReserva * precioH;
+            suplReserva = Number(tarifa.reservationSurcharge || 0);
+            const inF = document.getElementById('input-arrival-date').value;
+            const inH = document.getElementById('input-arrival-time').value;
+            document.getElementById('summary-checkin').textContent = `${inF} ${inH}`;
+            const outD = new Date(new Date(`${inF}T${inH}`).getTime() + (reserva.horasReserva * 3600000));
+            document.getElementById('summary-checkout').textContent = `${outD.toLocaleDateString()} ${outD.getHours()}:${String(outD.getMinutes()).padStart(2,'0')}`;
         } else {
-            document.getElementById('summary-checkout').innerHTML = `<span class="text-[var(--naranja)] material-symbols-outlined mt-0.5 text-base animate-spin">refresh</span>`;
-            document.getElementById('summary-base-price').innerHTML = `<code class="bg-[var(--borde)] px-2 py-0.5 rounded text-xs">${tarifaFija ? tarifaFija.pricePerHour.toFixed(2) + '€ / h' : 'Tarifa Activa'}</code>`;
-            document.getElementById('summary-total').textContent = `En vivo`;
-            document.getElementById('summary-total-btn').textContent = `Iniciar Modo En Vivo`;
+            estancia = (estanciaMinutosFinal / 60) * precioH;
+            document.getElementById('summary-checkin').textContent = "Inicio Tiempo Real";
+            document.getElementById('summary-checkout').textContent = estanciaMinutosFinal > 0 ? "Fin Tiempo Real" : "En curso...";
         }
+
+        const total = estancia + reserva.gastosGestion + suplReserva;
+        document.getElementById('summary-base-price').textContent = `${estancia.toFixed(2)} €`;
+        document.getElementById('summary-total').textContent = `${total.toFixed(2)} €`;
+        document.getElementById('summary-total-btn').textContent = `${total.toFixed(2)} €`;
     }
 
-    // ── INSERCIÓN MAGISTRAL EN BBDD QUE UNIFICA PRECIOS ──
-    async function procesarReservaYPagoEnBBDD() {
-        if (!parkingActivo || !cocheSeleccionado || !metodoPagoSeleccionadoId) {
-            mostrarToast("Faltan datos de Vehículo o Tarjeta seleccionados", "aviso");
-            return;
-        }
-
+    async function procesarPagoFinal() {
         const btn = document.getElementById('btn-complete-booking');
         btn.disabled = true;
-        btn.innerHTML = `<span class="material-symbols-outlined text-xl animate-spin">refresh</span> Reclamando Plaza en Sistema...`;
+        btn.textContent = "Procesando...";
 
         try {
-            const horaIn = new Date();
-            const [h, m] = document.getElementById('input-arrival-time').value.split(':').map(Number);
-            horaIn.setHours(h, m, 0, 0);
+            const tarifa = parkingActivo.tarifs?.[0];
+            const extra = (cocheSeleccionado?.largeVehicle ? Number(tarifa.largeVehicleSurcharge) : 0) + (cocheSeleccionado?.electricVehicle ? Number(tarifa.electricVehicleSurcharge) : 0);
+            const precioH = Number(tarifa.pricePerHour) + extra;
+            const suplReserva = reserva.modo === 0 ? Number(tarifa.reservationSurcharge || 0) : 0;
             
-            // Si es Vivo, forzamos fecha final 30 días para evitar cruces
-            const horaOut = reserva.modo === 0 ? new Date(horaIn.getTime() + (reserva.horasReserva * 60*60*1000)) : new Date(horaIn.getTime() + (30*24*60*60*1000));
+            const totalEstancia = reserva.modo === 0 ? (reserva.horasReserva * precioH) : ((estanciaMinutosFinal / 60) * precioH);
+            const totalPagar = totalEstancia + reserva.gastosGestion + suplReserva;
 
-            // Buscador de Plazas Flexibles (Para external data de Zaragoza sin mapping)
-            let spotId = 0;
-            if (parkingActivo.spots && parkingActivo.spots.length > 0) {
-                const disponible = parkingActivo.spots.find(s => s.status === 0);
-                spotId = disponible ? disponible.id : parkingActivo.spots[0].id;
-            } else {
-                throw new Error("El parking (o la zona importada) carece de plazas asignables cargadas localmente.");
-            }
+            // 1. Crear Reserva en Backend
+            const start = reserva.modo === 0 ? new Date(`${document.getElementById('input-arrival-date').value}T${document.getElementById('input-arrival-time').value}`) : new Date(timerStartMs);
+            const end = reserva.modo === 0 ? new Date(start.getTime() + (reserva.horasReserva * 3600000)) : new Date();
 
-            // ================= 1. PEDIMOS LA RESERVA AL BACKEND =================
-            const payloadReserva = {
-                userId: AUTH.obtenerUsuario().id, 
-                parkingSpotId: spotId,
-                startTime: horaIn.toISOString(),
-                endTime: horaOut.toISOString(),
-                carId: cocheSeleccionado.id,
-                status: 0 
-            };
-
-            const reservaAPI = await fetch(`${API}/api/Reservation`, {
+            const resCreada = await apiFetch(`${API}/api/Reservation`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', ...AUTH.cabecerasAuth() },
-                body: JSON.stringify(payloadReserva)
+                body: JSON.stringify({
+                    userId: AUTH.obtenerUsuario().id,
+                    parkingSpotId: parkingActivo.spots?.[0]?.id,
+                    startTime: start.toISOString(),
+                    endTime: end.toISOString(),
+                    carId: cocheSeleccionado.id,
+                    status: 0
+                })
             });
 
-            if (!reservaAPI.ok) throw new Error("Backend rechazó la Reserva (La plaza tal vez esté ocupada).");
-            
-            // OJO AQUÍ: Extraemos lo que ".NET" determinó que cuesta la estancia (Los 1.8€)
-            const reservaCreada = await reservaAPI.json();
-
-            // ================= 2. PAGAMOS EXACTAMENTE LO QUE DICTÓ .NET =================
-            btn.innerHTML = `<span class="material-symbols-outlined text-xl animate-spin">price_check</span> Pasando Tarjeta...`;
-            
-            // Hacemos que Payments = TotalAmount dictado por la Reserva (Así NUNCA descuadran tus tablas en BD)
-            const cantidadPagar = reserva.modo === 0 ? reservaCreada.totalAmount : 0.00;
-            
-            const payloadPago = {
-                reservationId: reservaCreada.id, 
-                amount: cantidadPagar,
-                status: 1, // Confirmado
-                currency: "EUR",
-                externalTransactionId: `CREDITCARD_${metodoPagoSeleccionadoId}`
-            };
-
-            const pagoAPI = await fetch(`${API}/api/Payments`, {
+            // 2. Crear Pago
+            await apiFetch(`${API}/api/Payments`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', ...AUTH.cabecerasAuth() },
-                body: JSON.stringify(payloadPago)
+                body: JSON.stringify({
+                    reservationId: resCreada.id,
+                    amount: totalPagar,
+                    status: 1,
+                    currency: "EUR",
+                    externalTransactionId: `CARD_${metodoPagoSeleccionadoId}`
+                })
             });
 
-            if (!pagoAPI.ok) throw new Error("Reserva Creada PERO la tarjeta de crédito denegó el saldo.");
+            // 3. Guardar para confirmación
+            localStorage.setItem('confirmedReservation', JSON.stringify({
+                reservationId: resCreada.id,
+                parkingName: parkingActivo.name,
+                parkingAddress: parkingActivo.address,
+                spotNumber: resCreada.spotNumber || 'Asignada',
+                startTime: start.toISOString(),
+                endTime: end.toISOString(),
+                baseFee: totalEstancia,
+                serviceFee: reserva.gastosGestion,
+                reservationSurcharge: suplReserva,
+                cancellationFee: Number(tarifa.cancellationFee || 0),
+                totalAmount: totalPagar,
+                paymentMethodId: metodoPagoSeleccionadoId,
+                parkingLat: parkingActivo.latitude,
+                parkingLng: parkingActivo.longitude,
+                timestamp: new Date().toISOString()
+            }));
 
-            mostrarToast("Transacción sellada por el Banco.", "exito");
-            btn.classList.replace('bg-azul', 'bg-[var(--verde)]');
-            btn.classList.replace('hover:bg-azul-oscuro', 'hover:bg-green-600');
-            btn.innerHTML = `<span class="material-symbols-outlined text-xl">check_circle</span> ¡Plaza Pagada y Lista!`;
-            
-            setTimeout(() => { window.location.href = "reservas.html"; }, 1500);
-
-        } catch (error) {
-            console.error(error);
-            mostrarToast(error.message, "error");
+            mostrarToast("Pago realizado con éxito");
+            setTimeout(() => window.location.href = "confirmacionpago.html", 1500);
+        } catch (e) {
+            mostrarToast("Error en el pago: " + e.message, "error");
             btn.disabled = false;
-            btn.innerHTML = `<span class="material-symbols-outlined text-xl">lock</span> Reintentar Checkout`;
         }
     }
 

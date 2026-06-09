@@ -7,27 +7,31 @@ namespace PARKit.Backend.Models
     public class Tarif
     {
         [Key]
-        public int Id {get;set;}
+        public int Id { get; set; }
 
-        [ForeignKey("Parkings")]
-        public int ParkingId {get;set;}
+        public int ParkingId { get; set; }
+
+        // Propiedad de navegación añadida y enlazada correctamente
+        [ForeignKey("ParkingId")]
+        public virtual Parkings? Parking { get; set; }
 
         [Required]
-        public decimal PricePerHour {get;set;}
+        public decimal PricePerHour { get; set; }
         public decimal LargeVehicleSurcharge { get; set; } = 0;
         public decimal ElectricVehicleSurcharge { get; set; } = 0;  
+        public decimal ReservationSurcharge { get; set; } = 0;
+        public decimal CancellationFee { get; set; } = 0;
 
         [Required]
-        public string NameTarif {get;set;} = string.Empty;
+        public string NameTarif { get; set; } = string.Empty;
 
-        public DateTime? StartDate {get;set;}
-        public DateTime? EndDate {get;set;}
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [Required]
-        public bool IsHoliday {get;set;}
+        public bool IsHoliday { get; set; }
 
-        public TimeSpan? StarTime {get;set;}
-        public TimeSpan? EndTime {get;set;}
-
+        public TimeSpan? StarTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
     }
 }

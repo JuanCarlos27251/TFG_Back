@@ -56,7 +56,7 @@ namespace PARKit.Backend.Repositories
             return await CreateWithSecretAsync(dtin, string.Empty);
         }
 
-        public async Task<PaymentDto> CreateWithSecretAsync(PaymentDtin dtin, string clientSecret)
+                public async Task<PaymentDto> CreateWithSecretAsync(PaymentDtin dtin, string clientSecret)
         {
             var payment = new Payment
             {
@@ -66,7 +66,8 @@ namespace PARKit.Backend.Repositories
                 Currency = dtin.Currency,
                 ClientSecret = clientSecret,
                 ExternalTransactionId = dtin.ExternalTransactionId,
-                PaymentDate = DateTime.UtcNow
+                // AHORA REGISTRA LA HORA DE ESPAÑA (del Sistema) EN VEZ DE LA UTC:
+                PaymentDate = DateTime.Now 
             };
 
             await _context.Payments.AddAsync(payment);
@@ -83,6 +84,7 @@ namespace PARKit.Backend.Repositories
                 PaymentDate = payment.PaymentDate
             };
         }
+
 
         public async Task<bool> UpdateStatusAsync(int id, PaymentStatus status, string? externalId = null)
         {

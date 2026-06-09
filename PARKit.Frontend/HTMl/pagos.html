@@ -93,29 +93,55 @@
                 </div>
             </div>
 
-            <!-- TIEMPO Y DURACIÓN -->
+           <!-- TIEMPO Y DURACIÓN -->
             <div class="card p-6 space-y-6">
-                <div>
-                    <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-azul">schedule</span> Hora de llegada estimada
+                <div id="fixed-time-selector">
+                    <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-azul">schedule</span> Fecha y hora de llegada estimada
                     </h3>
-                    <input type="time" id="input-arrival-time"
-                           class="w-full sm:w-auto p-3 border border-[var(--borde)] rounded-xl text-sm font-bold dark:bg-[#0e1120] focus:ring-1 focus:ring-azul focus:border-azul transition-all" />
-                    <p class="text-xs text-[var(--texto-suave)] mt-2">Establecida automáticamente según tu hora actual.</p>
-                </div>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="flex flex-col gap-1 flex-1">
+                            <label class="text-xs font-extrabold uppercase tracking-wider text-[var(--texto-suave)]">Fecha</label>
+                            <input type="date" id="input-arrival-date" class="w-full p-3 border border-[var(--borde)] rounded-xl text-sm font-bold dark:bg-[#0e1120]" />
+                        </div>
+                        <div class="flex flex-col gap-1 flex-1">
+                            <label class="text-xs font-extrabold uppercase tracking-wider text-[var(--texto-suave)]">Hora</label>
+                            <input type="time" id="input-arrival-time" class="w-full p-3 border border-[var(--borde)] rounded-xl text-sm font-bold dark:bg-[#0e1120]" />
+                        </div>
+                    </div>
 
-                <div class="border-t border-[var(--borde)] pt-6">
-                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-azul">hourglass_top</span> Duración de la Reserva
-                    </h3>
-                    <div id="duration-selector" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold active bg-azul/10 border-azul text-azul hover:bg-azul/5 hover:border-azul transition-all" data-hours="1">1 Hora</button>
-                        <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold hover:bg-azul/5 hover:border-azul transition-all" data-hours="2">2 Horas</button>
-                        <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold hover:bg-azul/5 hover:border-azul transition-all" data-hours="4">4 Horas</button>
-                        <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold hover:bg-azul/5 hover:border-azul transition-all" data-hours="8">8 Horas</button>
+                    <div class="border-t border-[var(--borde)] pt-6 mt-6">
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-azul">hourglass_top</span> Duración de la Reserva
+                        </h3>
+                        <div id="duration-selector" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold active bg-azul/10 border-azul text-azul" data-hours="1">1 Hora</button>
+                            <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold" data-hours="2">2 Horas</button>
+                            <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold" data-hours="4">4 Horas</button>
+                            <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold" data-hours="8">8 Horas</button>
+                        </div>
                     </div>
                 </div>
+
+                <!-- PANEL TIEMPO REAL (Oculto por defecto) -->
+                <div id="dynamic-time-controls" class="hidden border-2 border-azul/20 bg-azul/5 p-6 rounded-2xl space-y-4">
+                    <h4 class="font-bold text-azul flex items-center gap-2 text-base">
+                        <span class="material-symbols-outlined animate-spin text-xl" style="animation-duration: 3s">timer</span> Control de Tiempo Real
+                    </h4>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button id="btn-start-timer" class="flex-1 bg-azul hover:bg-azul-oscuro text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md">
+                            <span class="material-symbols-outlined text-xl">play_arrow</span> Registrar Entrada
+                        </button>
+                        <button id="btn-stop-timer" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md hidden">
+                            <span class="material-symbols-outlined text-xl">stop</span> Registrar Salida
+                        </button>
+                    </div>
+                    <p id="timer-display" class="text-sm font-black text-center text-[#111318] dark:text-white">⏱ 00:00:00</p>
+                    <p id="timer-status-msg" class="text-xs text-[var(--texto-suave)] text-center">Pulsa entrada al llegar al parking.</p>
+                </div>
             </div>
+
+
 
             <!-- VEHÍCULOS -->
             <div class="card p-6">
@@ -175,6 +201,10 @@
                         <div class="flex justify-between text-sm items-center">
                             <span class="text-[var(--texto-suave)]">Gastos PARKit</span>
                             <span class="font-bold text-[#111318] dark:text-white">1,50 €</span>
+                        </div>
+                        <div id="row-reservation-surcharge" class="flex justify-between text-sm items-center hidden">
+                            <span class="text-[var(--texto-suave)]">Suplemento reserva</span>
+                            <span id="summary-reservation-surcharge" class="font-bold text-[#111318] dark:text-white">0,00 €</span>
                         </div>
                         <div class="flex justify-between items-center pt-4 border-t border-[var(--borde)]">
                             <span class="font-black text-base uppercase tracking-wider text-[#111318] dark:text-white">Total (IVA inc.)</span>

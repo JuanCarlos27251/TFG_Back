@@ -206,15 +206,20 @@
                     </div>
 
                     <div class="card overflow-hidden">
-                        <!-- Cabecera columnas -->
-                        <div class="hidden md:grid grid-cols-[1fr_80px_80px_100px_100px_56px] gap-3 px-5 py-3 border-b border-[var(--borde)] bg-[var(--fondo)]/50">
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)]">Nombre de la Tarifa</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)] text-center">€/hora</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)] text-center">Festivo</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)] text-center">Hora inicio</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-[var(--texto-suave)] text-center">Hora fin</span>
-                            <span></span>
+                        <!-- Cabecera columnas optimizada (10 columnas) -->
+                        <div class="hidden md:grid grid-cols-[1fr_55px_55px_55px_55px_55px_80px_80px_40px_80px] gap-2 px-4 py-3 border-b border-slate-800 bg-[#0f172a]/50">
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-slate-500">Tarifa</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-slate-500 text-center">€/h</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-[var(--azul)] text-center">Res.</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-[var(--azul)] text-center">Can.</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-[var(--azul)] text-center">Grd.</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-[var(--azul)] text-center">Elc.</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-slate-500 text-center">Inicio</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-slate-500 text-center">Fin</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-slate-500 text-center">Fes.</span>
+                            <span class="text-[9px] font-bold uppercase tracking-widest text-slate-500 text-center">Acción</span>
                         </div>
+
                         <!-- Filas dinámicas -->
                         <div id="tarifs-body">
                             <p class="text-center py-6 text-xs text-[var(--texto-suave)] italic">Guarda el parking primero para poder añadir tarifas.</p>

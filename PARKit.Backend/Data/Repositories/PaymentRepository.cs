@@ -53,10 +53,24 @@ namespace PARKit.Backend.Repositories
 
         public async Task<PaymentDto> CreateAsync(PaymentDtin dtin)
         {
-            return await CreateWithSecretAsync(dtin, string.Empty);
+            var payment = new Payment
+            {
+                ReservationId = dtin.ReservationId,
+                Amount = dtin.Amount,
+                Status = dtin.Status != 0 ? dtin.Status : PaymentStatus.Pending, // Usar el del DTO si viene
+                Currency = dtin.Currency,
+                ExternalTransactionId = dtin.ExternalTransactionId,
+                PaymentDate = DateTime.Now 
+            };
+
+            await _context.Payments.AddAsync(payment);
+            await _context.SaveChangesAsync();
+
+            return new PaymentDto { Id = payment.Id, Amount = payment.Amount, Status = payment.Status };
         }
 
-                public async Task<PaymentDto> CreateWithSecretAsync(PaymentDtin dtin, string clientSecret)
+
+        public async Task<PaymentDto> CreateWithSecretAsync(PaymentDtin dtin, string clientSecret)
         {
             var payment = new Payment
             {

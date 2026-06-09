@@ -1,5 +1,6 @@
 using PARKit.Backend.DTOs;
 using PARKit.Backend.DTOs.ReservationDtin;
+using PARKit.Backend.DTOs.PaymentDtin;
 using PARKit.Backend.Enums;
 using PARKit.Backend.Repositories;
 using PARKit.Backend.Services.Interfaces;
@@ -28,7 +29,7 @@ namespace PARKit.Backend.Services
             _paymentRepo = paymentRepo;
         }
 
-                private async Task<decimal> CalculatePriceAsync(ReservationDtin dtin)
+        private async Task<decimal> CalculatePriceAsync(ReservationDtin dtin)
         {
             var spot = await _spotRepo.GetByIdAsync(dtin.ParkingSpotId)
                 ?? throw new KeyNotFoundException($"No se encontró la plaza con ID {dtin.ParkingSpotId}.");
@@ -37,9 +38,8 @@ namespace PARKit.Backend.Services
                 ?? throw new KeyNotFoundException($"No se encontró el vehículo con ID {dtin.CarId}.");
 
             var tarifs = await _tarifRepo.GetByParkingIdAsync(spot.ParkingId);
-
             var tarif = tarifs.FirstOrDefault()
-                ?? throw new InvalidOperationException($"El parking con ID {spot.ParkingId} no tiene tarifas configuradas.");
+                ?? throw new InvalidOperationException($"El parking no tiene tarifas configuradas.");
 
             decimal pricePerHour = tarif.PricePerHour;
             if (car.LargeVehicle)    pricePerHour += tarif.LargeVehicleSurcharge;
@@ -47,79 +47,76 @@ namespace PARKit.Backend.Services
 
             var duration = dtin.EndTime - dtin.StartTime;
             if (duration.TotalHours <= 0)
-                throw new ArgumentException("La hora de fin debe ser posterior a la hora de inicio.");
+                throw new ArgumentException("La hora de fin debe ser posterior a la de inicio.");
 
-            // 1. Calculamos la estancia bruta base
+            // 1. Estancia base
             decimal estanciaBruta = (decimal)duration.TotalHours * pricePerHour;
             
-            // 2. AÑADIMOS los 1.50€ fijos de gastos de gestión del sistema a la reserva total.
-            // Para que BD y Frontend sean exactamente 100% simétricos.
-            return estanciaBruta + 1.50m;
-        }
+            // 2. NUEVO: Sumar Suplemento de Reserva (si existe)
+            decimal suplementoReserva = tarif.ReservationSurcharge;
 
+            // 3. Gastos de gestión PARKit (1.50€)
+            return estanciaBruta + suplementoReserva + 1.50m;
+        }
 
         public async Task<ReservationDto> CreateReservationAsync(ReservationDtin dtin)
         {
             bool isAvailable = await _resRepo.IsSpotAvailableAsync(dtin.ParkingSpotId, dtin.StartTime, dtin.EndTime);
             if (!isAvailable)
-                throw new InvalidOperationException("La plaza ya está ocupada en el horario seleccionado.");
+                throw new InvalidOperationException("La plaza ya está ocupada.");
 
             decimal total = await CalculatePriceAsync(dtin);
             return await _resRepo.CreateAsync(dtin, total);
         }
 
-        public async Task<bool> UpdateReservationAsync(int id, ReservationDtin dtin)
-        {
-            var existing = await _resRepo.GetByIdAsync(id);
-            if (existing == null) return false;
-
-            if (existing.StartTime != dtin.StartTime || existing.EndTime != dtin.EndTime)
-            {
-                bool isAvailable = await _resRepo.IsSpotAvailableAsync(dtin.ParkingSpotId, dtin.StartTime, dtin.EndTime);
-                if (!isAvailable)
-                    throw new InvalidOperationException("El nuevo horario no está disponible.");
-            }
-
-            decimal newTotal = await CalculatePriceAsync(dtin);
-            return await _resRepo.UpdateAsync(id, dtin, newTotal);
-        }
-
-        /// <summary>
-        /// Cancela la reserva y, si existe un pago en estado Paid,
-        /// lo marca como Refunded para reflejar la devolución pendiente.
-        /// En producción este método también llamaría a la API de Stripe/PayPal
-        /// para emitir el refund real antes de actualizar el estado local.
-        /// </summary>
         public async Task<bool> CancelReservationAsync(int id)
         {
-            // 1. Cancelar la reserva
+            // 1. Obtener la reserva y su tarifa
+            var res = await _resRepo.GetByIdAsync(id);
+            if (res == null || res.Status == ReservationStatus.Cancelled) return false;
+
+            var spot = await _spotRepo.GetByIdAsync(res.ParkingSpotId);
+            var tarifs = await _tarifRepo.GetByParkingIdAsync(spot.ParkingId);
+            var tarif = tarifs.FirstOrDefault();
+
+            // 2. Cambiar estado de reserva
             var cancelled = await _resRepo.UpdateStatusAsync(id, ReservationStatus.Cancelled);
             if (!cancelled) return false;
 
-            // 2. Buscar el pago asociado
-            var payment = await _paymentRepo.GetByReservationIdAsync(id);
-
-            // 3. Si hay un pago confirmado, marcarlo como reembolsado
-            if (payment != null && payment.Status == PaymentStatus.Paid)
+            // 3. Lógica de Devolución
+            var originalPayment = await _paymentRepo.GetByReservationIdAsync(id);
+            if (originalPayment != null)
             {
-                // TODO (Fase 4): antes de esta línea, llamar a Stripe/PayPal
-                // para emitir el refund real y obtener el refundTransactionId.
-                await _paymentRepo.UpdateStatusAsync(payment.Id, PaymentStatus.Refundend);
+                decimal feeCancelacion = tarif?.CancellationFee ?? 0;
+                // La devolución es el importe original (negativo) + la penalización (que el usuario NO recupera)
+                // Ej: Pagó 10€. Penalty 2€. Devolvemos -8€. (El balance global es 2€ pagados).
+                decimal importeDevolucion = -(originalPayment.Amount - feeCancelacion);
+
+                if (importeDevolucion < 0)
+                {
+                    await _paymentRepo.CreateAsync(new PaymentDtin
+                    {
+                        ReservationId = id,
+                        Amount = importeDevolucion,
+                        Currency = originalPayment.Currency,
+                        Status = PaymentStatus.Paid, // Marcamos como pagado el refund
+                        ExternalTransactionId = $"REFUND_{id}_{DateTime.Now.Ticks}"
+                    });
+                }
             }
 
             return true;
         }
 
-        public async Task<IEnumerable<ReservationDto>> GetByCompanyAsync(int companyId) =>
-            await _resRepo.GetByCompanyIdAsync(companyId);
+        public async Task<bool> UpdateReservationAsync(int id, ReservationDtin dtin)
+        {
+            decimal newTotal = await CalculatePriceAsync(dtin);
+            return await _resRepo.UpdateAsync(id, dtin, newTotal);
+        }
 
-        public async Task<IEnumerable<ReservationDto>> GetUserReservationsAsync(int userId) =>
-            await _resRepo.GetByUserIdAsync(userId);
-
-        public async Task<ReservationDto?> GetReservationByIdAsync(int id) =>
-            await _resRepo.GetByIdAsync(id);
-
-        public async Task<IEnumerable<ReservationDto>> GetAllReservationsAsync() =>
-            await _resRepo.GetAllAsync();
+        public async Task<IEnumerable<ReservationDto>> GetByCompanyAsync(int companyId) => await _resRepo.GetByCompanyIdAsync(companyId);
+        public async Task<IEnumerable<ReservationDto>> GetUserReservationsAsync(int userId) => await _resRepo.GetByUserIdAsync(userId);
+        public async Task<ReservationDto?> GetReservationByIdAsync(int id) => await _resRepo.GetByIdAsync(id);
+        public async Task<IEnumerable<ReservationDto>> GetAllReservationsAsync() => await _resRepo.GetAllAsync();
     }
 }

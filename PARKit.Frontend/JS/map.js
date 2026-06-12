@@ -131,6 +131,18 @@ class ParkingMap {
             this.iniciarHUDConduccion();
         });
 
+        document.getElementById('btn-exportar-gmaps')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (this.userLocation && this.selectedParking) {
+                // Mapbox usa [longitud, latitud], pero Google Maps requiere "latitud,longitud"
+                const origin = `${this.userLocation[1]},${this.userLocation[0]}`;
+                const dest = `${this.selectedParking.latitude},${this.selectedParking.longitude}`;
+                // Creamos la URL mágica de Google Maps
+                const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}&travelmode=driving`;
+                window.open(url, '_blank'); // Abre en nueva pestaña
+            }
+        });
+
         document.getElementById('btn-salir-navegacion')?.addEventListener('click', (e) => {
             e.stopPropagation(); 
             this.salirHUDConduccion();
@@ -242,7 +254,7 @@ class ParkingMap {
                 this.updateStatus(`Ruta: ${(data.routes[0].duration / 60).toFixed(0)} min`);
 
                 // ¡Plop! Aparece el botón de iniciar HUD.
-                document.getElementById('btn-iniciar-navegacion').classList.remove('hidden');
+                document.getElementById('contenedor-rutas')?.classList.remove('hidden');
             }
         } catch (e) {
             console.error(e);
@@ -269,7 +281,7 @@ class ParkingMap {
             this.map.removeLayer('route-line');
             this.map.removeSource('route-src');
         }
-        document.getElementById('btn-iniciar-navegacion')?.classList.add('hidden');
+        document.getElementById('contenedor-rutas')?.classList.add('hidden');
     }
 
     // ── MOTOR DE CONDUCCIÓN HUD AUTOMÁTICA ──
@@ -280,7 +292,7 @@ class ParkingMap {
 
         // Limpiar pantalla al estilo Android Auto
         document.getElementById('panel-detalles')?.classList.remove('abierto');
-        document.getElementById('btn-iniciar-navegacion').classList.add('hidden');
+        document.getElementById('contenedor-rutas')?.classList.add('hidden');
         document.getElementById('geocoder-container').style.display = 'none';
 
         // Botón rojo de salida

@@ -122,11 +122,18 @@
                 </div>
             </div>
 
-            <!-- Modo HUD: Iniciar Navegación -->
-            <button id="btn-iniciar-navegacion" class="hidden absolute bottom-12 left-1/2 -translate-x-1/2 btn btn-primario px-8 py-3.5 rounded-full flex items-center justify-center gap-3 shadow-lg shadow-[var(--azul)]/30 z-40 transition-all hover:scale-105 active:scale-95 border border-[var(--azul)]/50">
-                <span class="material-symbols-outlined text-[20px] text-white">assistant_navigation</span>
-                <span class="text-sm font-black tracking-widest uppercase text-white">Iniciar Ruta</span>
-            </button>
+            <!-- Contenedor para Iniciar Ruta y Google Maps -->
+            <div id="contenedor-rutas" class="hidden absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3 z-40">
+                <button id="btn-iniciar-navegacion" class="btn btn-primario px-6 py-3.5 rounded-full flex items-center justify-center gap-2 shadow-lg shadow-[var(--azul)]/30 transition-all hover:scale-105 active:scale-95 border border-[var(--azul)]/50">
+                    <span class="material-symbols-outlined text-[20px] text-white">assistant_navigation</span>
+                    <span class="text-sm font-black tracking-widest uppercase text-white">Iniciar Ruta</span>
+                </button>
+                <button id="btn-exportar-gmaps" class="bg-white dark:bg-[#161b2e] border border-[var(--borde)] px-5 py-3.5 rounded-full flex items-center justify-center gap-2 shadow-lg shadow-black/5 hover:bg-gray-50 dark:hover:bg-[#1e243d] transition-all hover:scale-105 active:scale-95 text-[#111318] dark:text-white">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg" alt="Google Maps" class="w-5 h-5">
+                    <span class="text-sm font-bold tracking-tight">Maps</span>
+                </button>
+            </div>
+
             
             <!-- Botón oculto para SALIR de la navegación -->
             <button id="btn-salir-navegacion" class="hidden absolute top-24 right-4 bg-[var(--rojo)] text-white px-5 py-2.5 rounded-xl shadow-lg flex items-center gap-2 z-40 font-bold hover:bg-red-600 transition-all">

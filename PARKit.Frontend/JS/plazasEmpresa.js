@@ -89,6 +89,8 @@
 
             await recargarPlazas();
 
+            conectarSignalR(parkingId);
+
         } catch (e) {
             mostrarToast('Error cargando el panel: ' + e.message, 'error');
         }
@@ -284,6 +286,39 @@
             mostrarToast('Error cambiando estado: ' + e.message, 'error');
         }
     }
+
+    function conectarSignalR(pId) {
+        if (typeof signalR === 'undefined') return;
+
+        const connection = new signalR.HubConnectionBuilder()
+        .withUrl(`${API}/hubs/parking`)
+        .withAutomaticReconnect()
+        .build();
+
+        // 1. Escuchar si un empleado/sensor cambia el estado directamente (SpotStatusChanged)
+        connection.on("SpotStatusChanged", (payload) => {
+            console.log("[SignalR] Estado de plaza modificado:", payload);
+            recargarPlazas(); // Recargamos para refrescar grid y contadores
+            mostrarToast(`Plaza ${payload.spotNumber} actualizada`, 'aviso');
+        });
+
+        // 2. Escuchar si un usuario hace un pago/reserva online (UpdateSpots)
+        connection.on("UpdateSpots", (hubParkingId, newCount) => {
+            if (hubParkingId == pId) {
+                console.log("[SignalR] Nueva reserva online. Actualizando plazas...");
+                recargarPlazas();
+            }
+        });
+
+        connection.start()
+            .then(() => {
+                console.log('[SignalR] Conectado al grid de plazas');
+                // Nos suscribimos al grupo exclusivo de ESTE parking usando el método de tu Hub
+                connection.invoke("JoinParking", parseInt(pId)).catch(e => console.error(e));
+            })
+            .catch(err => console.error('[SignalR] Error:', err));
+    }
+
 
     document.addEventListener('DOMContentLoaded', initGestionPlazas);
 

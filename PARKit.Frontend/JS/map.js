@@ -27,6 +27,7 @@ class ParkingMap {
         this.setupUIEventListeners();
         this.updateStatus('Cargando mapa...');
         this.comprobarRutaPendiente();
+         this.setupSignalR();
 
     }
 
@@ -401,6 +402,55 @@ class ParkingMap {
             console.error('[Map] Error al leer pendingRoute:', e);
         }
     }
+
+    setupSignalR() {
+        // Validación de seguridad para que no casque si olvidaste el script en el HTML
+        if (typeof signalR === 'undefined') {
+            console.warn('[SignalR] No detectado. Añade la librería CDN en tu HTML.');
+            return;
+        }
+
+        const url = `${this.API_BASE}/hubs/parking`;
+        
+        const connection = new signalR.HubConnectionBuilder()
+        .withUrl(url)
+        .withAutomaticReconnect()
+        .build();
+
+        // Escuchamos el evento exacto que mandamos desde .NET
+        connection.on("UpdateSpots", (parkingId, newCount) => {
+            console.log(`[SignalR] Actualización recibida para Parking ${parkingId}. Nuevas plazas: ${newCount}`);
+            
+            // 1. Actualizamos la memoria caché del frontend para próximos clics
+            const parking = this.parkings.find(p => p.id === parkingId);
+            if (parking) {
+                parking.availableSpots = newCount;
+            }
+
+            // 2. Si resulta que el usuario está viendo ahora mismo ESE parking, actualizamos el número mágico
+            if (this.selectedParking && this.selectedParking.id === parkingId) {
+                const plazasEl = document.getElementById('detalle-plazas');
+                if (plazasEl) {
+                    plazasEl.textContent = newCount;
+                    
+                    // Efecto visual (Destello verde) para que se note en directo
+                    plazasEl.style.transition = 'all 0.3s ease';
+                    plazasEl.style.color = '#10b981'; // Verde llamativo
+                    plazasEl.style.transform = 'scale(1.3)';
+                    
+                    setTimeout(() => {
+                        plazasEl.style.color = '';
+                        plazasEl.style.transform = 'scale(1)';
+                    }, 500);
+                }
+            }
+        });
+
+        connection.start()
+        .then(() => console.log('[SignalR] Conectado al Hub exitosamente para tiempo real 🟢'))
+        .catch(err => console.error('[SignalR] Error de conexión:', err));
+    }
+
 
 
 }

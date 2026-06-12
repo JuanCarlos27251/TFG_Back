@@ -5,6 +5,8 @@ using PARKit.Backend.Enums;
 using PARKit.Backend.Repositories;
 using PARKit.Backend.Services.Interfaces;
 using Stripe;
+using Microsoft.AspNetCore.SignalR;
+using PARKit.Backend.Hubs;
 
 namespace PARKit.Backend.Services
 {
@@ -13,20 +15,28 @@ namespace PARKit.Backend.Services
         private readonly IPaymentRepository _paymentRepo;
         private readonly IPaymentMethodRepository _methodRepo;
         private readonly IReservationRepository _resRepo;
+        private readonly IParkingRepository _parkingRepo;
+        private readonly IParkingSpotRepository _spotRepo;
+        private readonly IHubContext<ParkingHub> _hubContext;
         private readonly IConfiguration _configuration;
 
         public PaymentService(
             IPaymentRepository paymentRepo,
             IPaymentMethodRepository methodRepo,
             IReservationRepository resRepo,
+            IParkingRepository parkingRepo,
+            IParkingSpotRepository spotRepo,
+            IHubContext<ParkingHub> hubContext,
             IConfiguration configuration)
         {
-            _paymentRepo = paymentRepo;
+              _paymentRepo = paymentRepo;
             _methodRepo = methodRepo;
             _resRepo = resRepo;
+            _parkingRepo = parkingRepo;
+            _spotRepo = spotRepo;
+            _hubContext = hubContext;
             _configuration = configuration;
 
-            // Inicializamos Stripe con la clave secreta del appsettings
             StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
         }
 
@@ -89,9 +99,33 @@ namespace PARKit.Backend.Services
             if (payment != null)
             {
                 await _resRepo.UpdateStatusAsync(payment.ReservationId, ReservationStatus.Confirmed);
+                try 
+                {
+                    var reservation = await _resRepo.GetByIdAsync(payment.ReservationId);
+                    if (reservation != null) 
+                    {
+                        var spot = await _spotRepo.GetByIdAsync(reservation.ParkingSpotId);
+                        if (spot != null)
+                        {
+                            var parking = await _parkingRepo.GetByIdAsync(spot.ParkingId);
+                            if (parking != null)
+                            {
+                                int newCount = parking.AvailableSpots;
+                                // Envía el evento UpdateSpots a todo el mundo conectado
+                                await _hubContext.Clients.All.SendAsync("UpdateSpots", parking.Id, newCount);
+                            }
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    // Evitamos que un fallo de red o SignalR bloquee el pago del cliente
+                    Console.WriteLine("Error enviando actualización por SignalR: " + ex.Message);
+                }
             }
 
             return true;
         }
+
     }
 }

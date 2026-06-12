@@ -1,8 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using PARKit.Backend.Data;
 using PARKit.Backend.Enums;
+using PARKit.Backend.Hubs;
 
 namespace PARKit.Backend.Worker
 {
@@ -11,6 +13,7 @@ namespace PARKit.Backend.Worker
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<ZaragozaOccupancyWorker> _logger;
         private readonly HttpClient _httpClient;
+        private readonly IHubContext<ParkingHub> _hubContext;
  
         private const string OccupancyUrl =
             "https://www.zaragoza.es/trafico/estacionamientoots/Occupation.json";
@@ -26,11 +29,13 @@ namespace PARKit.Backend.Worker
         public ZaragozaOccupancyWorker(
             IServiceScopeFactory scopeFactory,
             ILogger<ZaragozaOccupancyWorker> logger,
-            IHttpClientFactory httpClientFactory)
+            IHttpClientFactory httpClientFactory,
+            IHubContext<ParkingHub> hubContext)
         {
             _scopeFactory = scopeFactory;
             _logger       = logger;
             _httpClient   = httpClientFactory.CreateClient("ZaragozaApi");
+            _hubContext   = hubContext;
         }
  
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -132,6 +137,22 @@ namespace PARKit.Backend.Worker
  
             var changed = await context.SaveChangesAsync(ct);
             _logger.LogInformation("Ocupación actualizada: {Changed} plazas modificadas.", changed);
+
+            if (changed > 0)
+            {
+                foreach (var zonaApi in apiData)
+                {
+                    var parking = await context.Parkings.FirstOrDefaultAsync(p => p.ExternalZoneId == zonaApi.Id, ct);
+                    if (parking != null)
+                    {
+                        // Calculamos las plazas libres contando directamente en la tabla ParkingSpots
+                        int freeSpots = await context.ParkingSpots
+                            .CountAsync(s => s.ParkingId == parking.Id && s.Status == SpotStatus.Free, ct);
+                        
+                        await _hubContext.Clients.All.SendAsync("UpdateSpots", parking.Id, freeSpots, ct);
+                    }
+                }
+            }
         }
  
         // ─────────────────────────────────────────────────────────

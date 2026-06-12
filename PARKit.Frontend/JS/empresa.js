@@ -103,11 +103,26 @@
     function renderGraficoIngresosPanel(ingresos) {
         const svgContainer = document.getElementById('grafico-ingresos');
         const etiquetas    = document.getElementById('grafico-etiquetas');
-        if (!svgContainer || !ingresos || ingresos.length === 0) return;
+        if (!svgContainer) return;
 
-        const datos = [...ingresos].sort((a, b) => a.year !== b.year ? a.year - b.year : a.month - b.month);
-        const maxVal = Math.max(...datos.map(d => d.totalRevenue || 0), 1);
+        // BUG FIX: Si no hay ventas, dibujamos una línea "plana" a 0€ para rellenar el espacio
+        let datos = ingresos && ingresos.length > 0 
+            ? [...ingresos].sort((a, b) => a.year !== b.year ? a.year - b.year : a.month - b.month)
+            : [];
+
         const meses  = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+        if (datos.length === 0) {
+            const d = new Date();
+            for(let i = 5; i >= 0; i--) {
+                let m = d.getMonth() - i;
+                let y = d.getFullYear();
+                if (m < 0) { m += 12; y -= 1; }
+                datos.push({ year: y, month: m + 1, totalRevenue: 0 });
+            }
+        }
+
+        const maxVal = Math.max(...datos.map(d => d.totalRevenue || 0), 1);
         const n      = datos.length;
         const padX   = 20, width = 1000 - padX * 2, height = 200, padY = 20;
 
@@ -133,36 +148,35 @@
         if (etiquetas) etiquetas.innerHTML = datos.map(d => `<span>${meses[(d.month || 1) - 1]}</span>`).join('');
     }
 
+
     async function cargarActividadReciente() {
         const tbody = document.getElementById('tabla-actividad-body');
         if (!tbody) return;
         try {
-            const parkings = await apiFetch(`${API}/api/Parking/manager/${companyId}`).catch(() => []);
-            if (!parkings || parkings.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-[var(--texto-suave)] italic text-sm">No hay parkings registrados.</td></tr>`;
-                return;
-            }
-            const reservasPorParking = await Promise.all(
-                parkings.slice(0, 3).map(p => apiFetch(`${API}/api/ReservationManagement/parking/${p.id}`).catch(() => []))
-            );
-            const todasReservas = reservasPorParking.flat().sort((a, b) => new Date(b.startTime) - new Date(a.startTime)).slice(0, 10);
+            // BUG FIX: Traemos todas las reservas de la empresa en una sola petición
+            const todasReservas = await apiFetch(`${API}/api/ReservationManagement/company/${companyId}`).catch(() => []);
             
-            if (todasReservas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-[var(--texto-suave)] italic text-sm">No hay actividad reciente.</td></tr>`;
+            if (!todasReservas || todasReservas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-[var(--texto-suave)] italic text-sm">Aún no hay reservas registradas.</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = todasReservas.map(r => {
+            // Ordenar por las más recientes primero
+            const recientes = todasReservas
+                .sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
+                .slice(0, 10);
+
+                    tbody.innerHTML = recientes.map(r => {
                 const estado  = obtenerBadgeEstado(r.status);
                 const llegada = r.startTime ? new Date(r.startTime).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '--';
                 return `
                     <tr>
-                        <td><div class="badge badge-azul font-mono text-sm uppercase">${r.vehiclePlate || '--'}</div></td>
-                        <td>${r.userName || 'Invitado'}</td>
-                        <td><span class="font-mono text-[var(--texto-suave)]">${r.spotCode || '--'}</span></td>
+                        <td><div class="badge badge-azul font-mono text-sm uppercase">--</div></td>
+                        <td>Invitado</td>
+                        <td><span class="font-mono text-[var(--texto-suave)]">${r.spotNumber || '--'}</span></td>
                         <td class="text-[var(--texto-suave)]">${llegada}</td>
                         <td><span class="badge ${estado.clase}">${estado.texto}</span></td>
-                        <td class="text-right font-bold text-[var(--texto)]">${r.totalPrice ? Number(r.totalPrice).toFixed(2)+'€' : '--'}</td>
+                        <td class="text-right font-bold text-[var(--texto)]">${r.totalAmount !== undefined ? Number(r.totalAmount).toFixed(2)+'€' : '--'}</td>
                     </tr>`;
             }).join('');
         } catch (e) {
@@ -170,12 +184,14 @@
         }
     }
 
+
     function obtenerBadgeEstado(status) {
         const mapa = {
-            'Active': { clase: 'badge-verde', texto: 'Aparcado' },
-            'Pending': { clase: 'badge-naranja', texto: 'Reservado' },
-            'Completed': { clase: 'badge-azul', texto: 'Completado' },
-            'Cancelled': { clase: 'badge-rojo', texto: 'Cancelado' }
+            0: { clase: 'badge-verde', texto: 'Activa' },
+            1: { clase: 'badge-rojo', texto: 'Cancelada' },
+            2: { clase: 'badge-azul', texto: 'Finalizada' },
+            3: { clase: 'badge-naranja', texto: 'Pendiente' },
+            4: { clase: 'badge-naranja', texto: 'Confirmada' }
         };
         return mapa[status] || { clase: 'badge-azul', texto: status || '--' };
     }
@@ -433,6 +449,37 @@
         }
     });
 
+
+    function conectarSignalREmpresa() {
+        if (typeof signalR === 'undefined') return;
+
+        const connection = new signalR.HubConnectionBuilder()
+        .withUrl(`${API}/hubs/parking`)
+        .withAutomaticReconnect()
+        .build();
+
+        // Cada vez que entre un pago (UpdateSpots se dispara globalmente)
+        connection.on("UpdateSpots", (parkingId, newCount) => {
+            console.log("[SignalR] ¡Nueva venta detectada! Actualizando dashboard...");
+            
+            const path = window.location.pathname.toLowerCase();
+            
+            // Re-ejecutamos la carga inicial de forma silenciosa para actualizar los números
+            // (Chart.js se destruye y reconstruye gracias a tu objeto chartInstancias)
+            if (path.includes('panelempresa')) {
+                initPanel();
+                mostrarToast('¡Nuevos ingresos recibidos!', 'exito');
+            } else if (path.includes('estadisticas')) {
+                initEstadisticas();
+            }
+        });
+
+        connection.start()
+        .then(() => console.log('[SignalR] Dashboard conectado para actualizaciones en vivo'))
+        .catch(err => console.error('[SignalR] Error Dashboard:', err));
+    }
+
+
     // ── Arranque ──
     document.addEventListener('DOMContentLoaded', () => {
         if(typeof Chart !== 'undefined'){
@@ -440,6 +487,8 @@
             Chart.defaults.borderColor = '#1e293b';
             Chart.defaults.font.family = "'DM Sans', sans-serif";
         }
+
+        conectarSignalREmpresa();
 
         const path = window.location.pathname.toLowerCase();
         if (path.includes('panelempresa'))        initPanel();

@@ -96,6 +96,8 @@
                 aplicarFiltrosYBusqueda();
             });
         });
+
+         conectarSignalRParkings();
     }
 
     function aplicarFiltrosYBusqueda() {
@@ -137,13 +139,14 @@
             const tipoProp = tipoMap[p.type] || { nombre: 'Desconocido', clase: 'badge-azul' };
             const img = p.imageUrl ? p.imageUrl : 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=600&q=70';
 
-            let total = 0, ocupadas = 0;
+            let total = 0, ocupadas = 0, libres = 0;
             if (p.spots && p.spots.length > 0) {
                 total = p.spots.length;
-                ocupadas = p.spots.filter(s => s.status === 'Occupied' || s.status === 'Reserved').length; 
+                // Usamos el dato maestro de plazas libres que viene del servidor
+                libres = p.availableSpots !== undefined ? p.availableSpots : total;
+                ocupadas = total - libres; 
             }
             
-            const libres = total - ocupadas;
             const pct = total > 0 ? Math.round((ocupadas / total) * 100) : 0;
 
             const estadoBadge = p.isActive 
@@ -217,6 +220,58 @@
             </a>
         `);
     }
+
+    // Hace una petición limpia al servidor y repinta la pantalla respetando lo que el usuario esté buscando
+    async function refrescarDatosSilencioso() {
+        try {
+            const parkingsActualizados = await apiFetch(`${API}/api/Parking/manager/${companyId}`);
+            todosLosParkings = parkingsActualizados; 
+            
+            // Repintamos las tarjetas aplicando el texto o filtro que el usuario tenga marcado
+            aplicarFiltrosYBusqueda();   
+        } catch(e) {
+            console.error("[SignalR] Error refrescando parkings en vivo", e);
+        }
+    }
+
+    function conectarSignalRParkings() {
+        // Por si acaso te olvidas el script en el HTML
+        if (typeof signalR === 'undefined') {
+            console.warn('[SignalR] No cargado. Faltan las actualizaciones en tiempo real.');
+            return;
+        }
+
+        const connection = new signalR.HubConnectionBuilder()
+        .withUrl(`${API}/hubs/parking`)
+        .withAutomaticReconnect()
+        .build();
+
+        // 1. Si el estado de una sola plaza cambia (sensor o panel interno)
+        connection.on("SpotStatusChanged", (payload) => {
+            console.log("[SignalR] Movimiento de plaza detectado. Actualizando tarjetas...");
+            refrescarDatosSilencioso();
+        });
+
+        // 2. Si entra un nuevo pago online de un cliente
+        connection.on("UpdateSpots", (hubParkingId, newCount) => {
+            // Comprobamos que el pago es de uno de nuestros parkings
+            if (todosLosParkings.some(p => p.id == hubParkingId)) {
+                console.log("[SignalR] Reserva completada. Actualizando tarjetas...");
+                refrescarDatosSilencioso();
+            }
+        });
+
+        connection.start()
+            .then(() => {
+                console.log('[SignalR] Conectado. Suscribiéndose a los parkings de la empresa...');
+                // Magia: Nos metemos en la sala de chat de TODOS los parkings que nos pertenecen
+                todosLosParkings.forEach(p => {
+                    connection.invoke("JoinParking", parseInt(p.id)).catch(e => console.error(e));
+                });
+            })
+            .catch(err => console.error('[SignalR] Error de conexión:', err));
+    }
+
 
     // ── Log Out de esta pantalla ──
     document.addEventListener('click', (e) => {

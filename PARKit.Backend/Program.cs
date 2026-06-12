@@ -62,6 +62,8 @@ builder.Services.AddHttpClient("ZaragozaApi", client =>
 // 5. WORKER (Background Service)
 // ─────────────────────────────────────────
 builder.Services.AddHostedService<ZaragozaOccupancyWorker>();
+builder.Services.AddHostedService<PARKit.Backend.Worker.ReservationStatusWorker>();
+
 
 // ─────────────────────────────────────────
 // 6. AUTENTICACIÓN JWT

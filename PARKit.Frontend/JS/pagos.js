@@ -228,7 +228,7 @@
             });
 
             // 2. Crear Pago
-            await apiFetch(`${API}/api/Payments`, {
+            const pagoCreado = await apiFetch(`${API}/api/Payments`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', ...AUTH.cabecerasAuth() },
                 body: JSON.stringify({
@@ -238,6 +238,11 @@
                     currency: "EUR",
                     externalTransactionId: `CARD_${metodoPagoSeleccionadoId}`
                 })
+            });
+
+            await apiFetch(`${API}/api/Payments/${pagoCreado.id}/confirm?transactionId=${pagoCreado.externalTransactionId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', ...AUTH.cabecerasAuth() }
             });
 
             // 3. Guardar para confirmación

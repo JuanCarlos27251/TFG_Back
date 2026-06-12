@@ -4,6 +4,8 @@ using PARKit.Backend.DTOs.PaymentDtin;
 using PARKit.Backend.Enums;
 using PARKit.Backend.Repositories;
 using PARKit.Backend.Services.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using PARKit.Backend.Hubs;
 
 namespace PARKit.Backend.Services
 {
@@ -14,19 +16,25 @@ namespace PARKit.Backend.Services
         private readonly ITarifRepository _tarifRepo;
         private readonly ICarRepository _carRepo;
         private readonly IPaymentRepository _paymentRepo;
+        private readonly IParkingRepository _parkingRepo; 
+        private readonly IHubContext<ParkingHub> _hubContext; 
 
         public ReservationService(
             IReservationRepository resRepo,
             IParkingSpotRepository spotRepo,
             ITarifRepository tarifRepo,
             ICarRepository carRepo,
-            IPaymentRepository paymentRepo)
+            IPaymentRepository paymentRepo,
+            IParkingRepository parkingRepo, 
+            IHubContext<ParkingHub> hubContext) 
         {
             _resRepo = resRepo;
             _spotRepo = spotRepo;
             _tarifRepo = tarifRepo;
             _carRepo = carRepo;
             _paymentRepo = paymentRepo;
+            _parkingRepo = parkingRepo;
+            _hubContext = hubContext; 
         }
 
         private async Task<decimal> CalculatePriceAsync(ReservationDtin dtin)
@@ -65,6 +73,8 @@ namespace PARKit.Backend.Services
             if (!isAvailable)
                 throw new InvalidOperationException("La plaza ya está ocupada.");
 
+                dtin.Status = ReservationStatus.Pending;
+
             decimal total = await CalculatePriceAsync(dtin);
             return await _resRepo.CreateAsync(dtin, total);
         }
@@ -76,6 +86,7 @@ namespace PARKit.Backend.Services
             if (res == null || res.Status == ReservationStatus.Cancelled) return false;
 
             var spot = await _spotRepo.GetByIdAsync(res.ParkingSpotId);
+            if (spot == null) return false; 
             var tarifs = await _tarifRepo.GetByParkingIdAsync(spot.ParkingId);
             var tarif = tarifs.FirstOrDefault();
 
@@ -103,6 +114,18 @@ namespace PARKit.Backend.Services
                         ExternalTransactionId = $"REFUND_{id}_{DateTime.Now.Ticks}"
                     });
                 }
+            }
+            try
+            {
+                var parking = await _parkingRepo.GetByIdAsync(spot.ParkingId);
+                if (parking != null)
+                {
+                    await _hubContext.Clients.All.SendAsync("UpdateSpots", parking.Id, parking.AvailableSpots);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error enviando aviso SignalR al cancelar: " + ex.Message);
             }
 
             return true;

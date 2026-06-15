@@ -80,9 +80,8 @@ const AUTH = (() => {
 
     function extraerDatosDeToken(token, esEmpresaLogin) {
         const payload = decodificarToken(token);
-        if (!payload) return { nombre: 'Usuario', inicial: 'U' };
+        if (!payload) return { nombre: 'Usuario', inicial: 'U', rol: esEmpresaLogin ? 'empresa' : 'usuario' };
 
-        // El claim de nombre puede variar según el proveedor JWT de .NET
         const nombre =
             payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ||
             payload['name'] ||
@@ -97,8 +96,17 @@ const AUTH = (() => {
             payload['nameid'] ||
             null;
 
-        return { nombre, inicial, id: id ? parseInt(id) : null };
+        // --- NUEVO: Extraer rol real del JWT ---
+        const rolJwt = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || payload['role'];
+        let rolFinal = esEmpresaLogin ? 'empresa' : 'usuario';
+        
+        if (rolJwt === 'Admin') {
+            rolFinal = 'Admin'; // Reconocemos al superusuario
+        }
+
+        return { nombre, inicial, id: id ? parseInt(id) : null, rol: rolFinal };
     }
+
 
     // ── Llamada genérica a la API ──────────────────────────────────
 
@@ -132,9 +140,11 @@ const AUTH = (() => {
         if (!token) throw new Error('Respuesta inesperada del servidor.');
 
         const infoUsuario = extraerDatosDeToken(token, false);
-        guardarSesion(token, 'usuario', infoUsuario);
+        // Ahora guardará 'usuario' o 'Admin' dependiendo del token
+        guardarSesion(token, infoUsuario.rol, infoUsuario); 
         return infoUsuario;
     }
+
 
     // ── Login de empresa ───────────────────────────────────────────
 

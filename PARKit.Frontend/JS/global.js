@@ -20,6 +20,39 @@ window.tailwind.config = {
     },
 };
 
+// ── SISTEMA GLOBAL DE NOTIFICACIONES (TOAST PREMIUM) ──
+window.mostrarToast = function(msg, tipo = 'exito') {
+    // Buscar contenedor o crearlo automáticamente
+    let cont = document.getElementById('contenedor-toast');
+    if (!cont) {
+        cont = document.createElement('div');
+        cont.id = 'contenedor-toast';
+        document.body.appendChild(cont);
+    }
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${tipo}`;
+    
+    // Iconografía material dinámica
+    const iconos = {
+        exito: 'check_circle',
+        error: 'error',
+        aviso: 'warning',
+        info: 'info'
+    };
+    const icono = iconos[tipo] || 'info';
+    toast.innerHTML = `
+        <span class="material-symbols-outlined icono-toast text-[22px]">${icono}</span>
+        <span class="pr-2 tracking-tight">${msg}</span>
+    `;
+    
+    cont.appendChild(toast);
+    // Salida sincronizada con la barra (2 segundos)
+    setTimeout(() => {
+        toast.classList.add('toast-saliendo');
+        setTimeout(() => toast.remove(), 300); // 300ms de la animación CSS final
+    }, 2000);
+};
+
 // ── Lógica de header dinámico ──────────────────
 // Se ejecuta al cargar el DOM en todas las páginas que incluyan este script.
 // Adapta los botones y la navegación según el estado de sesión del usuario.
@@ -31,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // En páginas donde no, usamos acceso directo a localStorage.
 
     const token      = localStorage.getItem('parkit_token');
-    const rol        = localStorage.getItem('parkit_rol');
     const rawUsuario = localStorage.getItem('parkit_usuario');
     let usuario      = null;
 
@@ -59,89 +91,75 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ── Estado: CON sesión activa ──────────────────
-    const esEmpresa = rol === 'empresa';
+    const rol       = localStorage.getItem('parkit_rol');
+    const esEmpresa = (rol === 'empresa');
+    const esAdmin   = (rol === 'Admin'); // Nueva validación
     const inicial   = usuario?.inicial || (usuario?.nombre?.charAt(0).toUpperCase()) || 'U';
     const nombre    = usuario?.nombre  || 'Usuario';
-
-    // 1. Ocultar enlace "Para empresas" en la navegación si es usuario normal
-    if (!esEmpresa && navEmpresa) {
+    // 1. Ocultar enlace "Para empresas" en la navegación si es usuario o admin
+    if ((!esEmpresa && !esAdmin) && navEmpresa) {
         navEmpresa.style.display = 'none';
     }
-
     // 2. Transformar el bloque de botones login/registro → avatar + menú
     if (enlacesAuth) {
-        const destino = esEmpresa ? 'EMPRESA/panelEmpresa.html' : 'perfil.html';
-
+        let destino = 'perfil.html';
+        let textoDestino = 'Mi perfil';
+        let iconoDestino = 'person';
+        
+        if (esEmpresa) {
+            destino = 'EMPRESA/panelEmpresa.html';
+            textoDestino = 'Mi Empresa';
+            iconoDestino = 'store';
+        } else if (esAdmin) {
+            destino = 'panelAdmin.html';
+            textoDestino = 'Panel Global (Admin)';
+            iconoDestino = 'admin_panel_settings';
+        }
         enlacesAuth.innerHTML = `
             <div class="flex items-center gap-2 relative" id="menu-usuario">
-                <button
-                    id="btn-avatar-menu"
-                    class="avatar-btn"
-                    title="${nombre}"
-                    aria-label="Menú de usuario"
-                >
-                    ${inicial}
-                </button>
-
+                <button id="btn-avatar-menu" class="avatar-btn hover:scale-105 transition-transform" title="${nombre}" aria-label="Menú de usuario">${inicial}</button>
                 <!-- Menú desplegable -->
-                <div
-                    id="dropdown-usuario"
-                    class="absolute right-0 top-full mt-2 w-48 bg-[var(--fondo-card)] border border-[var(--borde)] rounded-xl shadow-xl z-50 overflow-hidden hidden aparecer"
-                >
+                <div id="dropdown-usuario" class="absolute right-0 top-full mt-2 w-56 bg-[var(--fondo-card)] border border-[var(--borde)] rounded-xl shadow-xl z-50 overflow-hidden hidden aparecer">
                     <div class="px-4 py-3 border-b border-[var(--borde)]">
                         <p class="text-xs font-bold text-[var(--texto-suave)] uppercase tracking-wider">Conectado como</p>
                         <p class="text-sm font-bold text-[var(--texto)] truncate mt-0.5">${nombre}</p>
                     </div>
-                    <a href="${destino}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--texto)] hover:bg-[var(--primario-claro)] hover:text-[var(--primario)] transition-colors">
-                        <span class="material-symbols-outlined text-base">person</span>
-                        ${esEmpresa ? 'Panel de empresa' : 'Mi perfil'}
+                    <a href="${destino}" class="flex items-center gap-2 px-4 py-3 text-sm text-[var(--texto)] hover:bg-[var(--primario-claro)] hover:text-[var(--primario)] transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">${iconoDestino}</span>
+                        ${textoDestino}
                     </a>
-                    ${!esEmpresa ? `
-                    <a href="reservas.html" class="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--texto)] hover:bg-[var(--primario-claro)] hover:text-[var(--primario)] transition-colors">
-                        <span class="material-symbols-outlined text-base">history</span>
+                    ${(!esEmpresa && !esAdmin) ? `
+                    <a href="reservas.html" class="flex items-center gap-2 px-4 py-3 text-sm text-[var(--texto)] hover:bg-[var(--primario-claro)] hover:text-[var(--primario)] transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">history</span>
                         Mis reservas
                     </a>` : ''}
                     <div class="border-t border-[var(--borde)] mt-1">
-                        <button
-                            id="btn-cerrar-sesion"
-                            class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--rojo)] hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
-                        >
-                            <span class="material-symbols-outlined text-base">logout</span>
+                        <button id="btn-cerrar-sesion" class="w-full flex items-center gap-2 px-4 py-3 text-sm text-[var(--rojo)] hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">logout</span>
                             Cerrar sesión
                         </button>
                     </div>
                 </div>
             </div>
         `;
-
-        // Toggle del menú desplegable
         const btnAvatar  = document.getElementById('btn-avatar-menu');
         const dropdown   = document.getElementById('dropdown-usuario');
-
         btnAvatar?.addEventListener('click', (e) => {
             e.stopPropagation();
             dropdown?.classList.toggle('hidden');
         });
-
-        // Cerrar al hacer clic fuera
-        document.addEventListener('click', () => {
-            dropdown?.classList.add('hidden');
-        });
-
-        // Cerrar sesión
+        document.addEventListener('click', () => dropdown?.classList.add('hidden'));
         document.getElementById('btn-cerrar-sesion')?.addEventListener('click', () => {
-            localStorage.removeItem('parkit_token');
-            localStorage.removeItem('parkit_rol');
-            localStorage.removeItem('parkit_usuario');
-            window.location.href = 'index.html';
+            AUTH.cerrarSesion();
         });
     }
-
-    // 3. Actualizar el avatar del header en páginas internas (perfil, reservas, pagos…)
+    // 3. Actualizar el avatar del header en páginas internas
     if (avatarBtn) {
         avatarBtn.textContent = inicial;
         avatarBtn.title       = nombre;
-        avatarBtn.href        = esEmpresa ? 'panelEmpresa.html' : 'perfil.html';
+        if (esAdmin) avatarBtn.href = 'panelAdmin.html';
+        else if (esEmpresa) avatarBtn.href = 'EMPRESA/panelEmpresa.html';
+        else avatarBtn.href = 'perfil.html';
     }
 
 });

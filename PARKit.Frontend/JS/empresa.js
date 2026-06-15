@@ -10,20 +10,6 @@
 
     // ── Utilidades ──────────────────────────────
 
-    function mostrarToast(msg, tipo = 'exito') {
-        const cont = document.getElementById('contenedor-toast');
-        if (!cont) return;
-        const toast = document.createElement('div');
-        const iconos  = { exito: 'check_circle', error: 'error', aviso: 'warning' };
-        const colores = { exito: 'verde', error: 'rojo', aviso: 'naranja' };
-        toast.className = `toast toast-${tipo}`;
-        toast.innerHTML = `
-            <span class="material-symbols-outlined icono-relleno" style="color:var(--${colores[tipo] || 'primario'})">${iconos[tipo] || 'info'}</span>
-            <span class="text-sm font-medium">${msg}</span>`;
-        cont.appendChild(toast);
-        setTimeout(() => toast.remove(), 3500);
-    }
-
     function headers() { return AUTH.cabecerasAuth(); }
 
     async function apiFetch(url, opciones = {}) {

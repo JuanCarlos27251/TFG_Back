@@ -220,35 +220,71 @@ button { cursor: pointer; font-family: var(--fuente); }
 /* ── Toast ───────────────────────────────────── */
 #contenedor-toast {
     position:       fixed;
-    bottom:         1.5rem;
+    top:            5.5rem; /* Esquina superior derecha, bajo el header */
     right:          1.5rem;
-    z-index:        9999;
+    z-index:        99999;
     display:        flex;
     flex-direction: column;
-    gap:            0.5rem;
+    gap:            0.75rem;
+    pointer-events: none; /* Permite clics por debajo de la notificación invisible */
 }
 .toast {
-    display:       flex;
-    align-items:   center;
-    gap:           0.75rem;
-    padding:       0.875rem 1.25rem;
-    background:    var(--fondo-card);
-    border:        1px solid var(--borde);
-    border-radius: var(--radio-lg);
-    box-shadow:    0 8px 24px rgba(0, 0, 0, 0.12);
-    font-size:     0.9rem;
-    min-width:     280px;
-    max-width:     380px;
-    animation:     entrarToast 0.3s var(--transicion) forwards;
+    position:       relative;
+    display:        flex;
+    align-items:    center;
+    gap:            0.75rem;
+    padding:        0.875rem 1.25rem;
+    background:     rgba(22, 20, 19, 0.85); /* Carbón translúcido */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border:         1px solid rgba(255, 255, 255, 0.1);
+    border-radius:  9999px; /* Forma de píldora */
+    box-shadow:     0 12px 36px rgba(0, 0, 0, 0.35);
+    color:          #f2efe9;
+    font-size:      0.85rem;
+    font-weight:    600;
+    min-width:      260px;
+    max-width:      380px;
+    overflow:       hidden; 
+    transform-origin: right center;
+    animation:      entrarToast 0.5s cubic-bezier(0.2, 1.2, 0.3, 1) forwards; /* Efecto rebote (Spring) */
 }
-.toast-exito  { border-left: 4px solid var(--verde); }
-.toast-error  { border-left: 4px solid var(--rojo); }
-.toast-aviso  { border-left: 4px solid var(--naranja); }
-.toast-info   { border-left: 4px solid var(--primario); }
-
+/* Barra inferior luminosa */
+.toast::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    animation: barraProgreso 2s linear forwards; /* Exactamente 2 segundos */
+}
+/* Colores dinámicos */
+.toast-exito::after  { background: var(--verde); }
+.toast-error::after  { background: var(--rojo); }
+.toast-aviso::after  { background: var(--naranja); }
+.toast-info::after   { background: var(--primario); }
+.toast-exito .icono-toast  { color: var(--verde); }
+.toast-error .icono-toast  { color: var(--rojo); }
+.toast-aviso .icono-toast  { color: var(--naranja); }
+.toast-info .icono-toast   { color: var(--primario); }
+/* Animación Entrada (Rebote) */
 @keyframes entrarToast {
-    from { opacity: 0; transform: translateX(1rem); }
-    to   { opacity: 1; transform: translateX(0); }
+    0%   { opacity: 0; transform: translateX(100%) scale(0.85); }
+    100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+/* Animación Barra */
+@keyframes barraProgreso {
+    0%   { width: 100%; }
+    100% { width: 0%; }
+}
+/* Animación Salida Suave */
+.toast-saliendo {
+    animation: salirToast 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+@keyframes salirToast {
+    0%   { opacity: 1; transform: translateX(0) scale(1); }
+    100% { opacity: 0; transform: translateX(120%) scale(0.85); }
 }
 
 /* ── Responsive ──────────────────────────────── */

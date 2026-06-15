@@ -23,19 +23,6 @@
         gastosGestion: 1.50
     };
 
-    function mostrarToast(msg, tipo = 'exito') {
-        const cont = document.getElementById('contenedor-toast');
-        if (!cont) return;
-        const toast = document.createElement('div');
-        const colores = { exito: 'verde', error: 'rojo', aviso: 'naranja' };
-        toast.className = `toast toast-${tipo}`;
-        toast.innerHTML = `
-            <span class="material-symbols-outlined icono-relleno mb-0.5" style="color:var(--${colores[tipo]||'primario'})">${tipo === 'exito' ? 'check_circle' : 'error'}</span>
-            <span class="text-sm font-medium pr-4">${msg}</span>`;
-        cont.appendChild(toast);
-        setTimeout(() => toast.remove(), 4000);
-    }
-
     async function apiFetch(url, opciones = {}) {
         const resp = await fetch(url, { headers: AUTH.cabecerasAuth(), ...opciones });
         if (!resp.ok) throw new Error(`Error HTTP: ${resp.status}`);

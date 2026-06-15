@@ -174,9 +174,10 @@
 
         // ── Redirigir si ya hay sesión activa ─────────────
         if (AUTH.estaAutenticado()) {
-            window.location.href = AUTH.esEmpresa()
-                ? './EMPRESA/panelEmpresa.html'
-                : 'index.html';
+            const rolActual = localStorage.getItem('parkit_rol');
+            if (rolActual === 'empresa') window.location.href = './EMPRESA/panelEmpresa.html';
+            else if (rolActual === 'Admin') window.location.href = 'panelAdmin.html';
+            else window.location.href = 'index.html';
         }
 
         // ── Referencias ───────────────────────────────────
@@ -267,8 +268,13 @@
 
             try {
                 if (modoActual === 'usuario') {
-                    await AUTH.loginUsuario(email, password);
-                    window.location.href = 'index.html';
+                    const info = await AUTH.loginUsuario(email, password);
+                    // Si el usuario recién logueado tiene rol Admin, va al panel global
+                    if (info.rol === 'Admin') {
+                        window.location.href = 'panelAdmin.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
                 } else {
                     await AUTH.loginEmpresa(email, password);
                     window.location.href = 'EMPRESA/panelEmpresa.html';

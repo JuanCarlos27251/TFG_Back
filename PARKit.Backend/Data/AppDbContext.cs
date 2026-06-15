@@ -83,6 +83,17 @@ namespace PARKit.Backend.Data
                     Role = "User",
                     CreatedAT = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                     Phone = "689745213",
+                },
+                 new User
+                {
+                    Id = 3,
+                    Name = "Super Admin",
+                    Email = "admin@parkit.com",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+                    IsActive = true,
+                    Role = "Admin", 
+                    CreatedAT = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    Phone = "000000000",
                 }
             );
             modelBuilder.Entity<Car>().ToTable("Car");

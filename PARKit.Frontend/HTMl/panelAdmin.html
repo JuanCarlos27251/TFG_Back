@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Global Admin — PARKit</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link rel="stylesheet" href="../STYLES/global.css" />
+    <link rel="stylesheet" href="../STYLES/empresas.css" />
+    <script src="../JS/global.js"></script>
+    <script src="../JS/auth.js"></script>
+</head>
+<body class="layout-base bg-[var(--fondo)]">
+    <!-- Header -->
+    <header class="header-base sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+            <a href="index.html" class="flex items-center gap-2 text-[var(--texto)] font-black text-xl tracking-tight">
+                <span class="material-symbols-outlined text-[var(--primario)] text-3xl">admin_panel_settings</span>
+                PARKit <span class="text-[var(--primario)]">Admin</span>
+            </a>
+            <div id="enlaces-auth" class="flex items-center gap-4"></div>
+        </div>
+    </header>
+
+    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="md:w-64 flex-shrink-0 flex flex-col gap-2">
+            <button class="nav-admin text-left px-4 py-3 rounded-xl font-bold flex items-center gap-3 transition-all bg-[var(--primario)] text-white shadow-lg shadow-[var(--primario)]/30" data-tab="tab-empresas">
+                <span class="material-symbols-outlined">store</span>
+                Empresas
+            </button>
+            <button class="nav-admin text-left px-4 py-3 rounded-xl font-bold flex items-center gap-3 text-[var(--texto-suave)] hover:text-[var(--texto)] hover:bg-[var(--primario-claro)] transition-all" data-tab="tab-usuarios">
+                <span class="material-symbols-outlined">group</span>
+                Usuarios
+            </button>
+            <button class="nav-admin text-left px-4 py-3 rounded-xl font-bold flex items-center gap-3 text-[var(--texto-suave)] hover:text-[var(--texto)] hover:bg-[var(--primario-claro)] transition-all" data-tab="tab-reservas">
+                <span class="material-symbols-outlined">public</span>
+                Reservas Globales
+            </button>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="flex-1 flex flex-col gap-6">
+            
+            <!-- SECCIÓN EMPRESAS -->
+            <section id="tab-empresas" class="tab-content block aparecer">
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <h2 class="text-3xl font-black text-[var(--texto)] tracking-tight">Gestión de Empresas</h2>
+                        <p class="text-sm text-[var(--texto-suave)] mt-1">Directorio de todas las empresas asociadas a la plataforma.</p>
+                    </div>
+                </div>
+                <div class="card overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-[var(--fondo-card)] border-b border-[var(--borde)] text-[var(--texto-suave)]">
+                                <tr>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">ID</th>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Empresa</th>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Email</th>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px] text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-empresas" class="divide-y divide-[var(--borde)]">
+                                <!-- Se inyecta con JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN USUARIOS -->
+            <section id="tab-usuarios" class="tab-content hidden aparecer">
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <h2 class="text-3xl font-black text-[var(--texto)] tracking-tight">Directorio de Usuarios</h2>
+                        <p class="text-sm text-[var(--texto-suave)] mt-1">Personas físicas registradas en la app.</p>
+                    </div>
+                </div>
+                <div class="card overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-[var(--fondo-card)] border-b border-[var(--borde)] text-[var(--texto-suave)]">
+                                <tr>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">ID</th>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Nombre</th>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Email</th>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Teléfono</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-usuarios" class="divide-y divide-[var(--borde)]">
+                                <!-- Se inyecta con JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN RESERVAS GLOBALES -->
+            <section id="tab-reservas" class="tab-content hidden aparecer">
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <h2 class="text-3xl font-black text-[var(--texto)] tracking-tight">Monitor Global de Reservas</h2>
+                        <p class="text-sm text-[var(--texto-suave)] mt-1">Supervisión en tiempo real de todas las transacciones de la red.</p>
+                    </div>
+                </div>
+                <div class="card overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-[var(--fondo-card)] border-b border-[var(--borde)] text-[var(--texto-suave)]">
+                                <tr>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">ID Reserva</th>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Plaza (ID)</th>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Estado</th>
+                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Importe</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-reservas" class="divide-y divide-[var(--borde)]">
+                                <!-- Se inyecta con JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <div id="contenedor-toast"></div>
+    <script src="../JS/admin.js"></script>
+</body>
+</html>

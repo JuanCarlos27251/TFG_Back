@@ -123,6 +123,7 @@ namespace PARKit.Backend.Repositories
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null) return false;
+            user.IsActive = false;
 
             _context.Users.Remove(user);
             return await _context.SaveChangesAsync() > 0;

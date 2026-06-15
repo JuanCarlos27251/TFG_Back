@@ -200,20 +200,23 @@
             // 1. Crear Reserva en Backend
             const start = reserva.modo === 0 ? new Date(`${document.getElementById('input-arrival-date').value}T${document.getElementById('input-arrival-time').value}`) : new Date(timerStartMs);
             const end = reserva.modo === 0 ? new Date(start.getTime() + (reserva.horasReserva * 3600000)) : new Date();
-
+            const timezoneOffsetStart = start.getTimezoneOffset() * 60000;
+            const timezoneOffsetEnd = end.getTimezoneOffset() * 60000;
+            
+            const startLocal = new Date(start.getTime() - timezoneOffsetStart).toISOString().slice(0, -1);
+            const endLocal = new Date(end.getTime() - timezoneOffsetEnd).toISOString().slice(0, -1);
             const resCreada = await apiFetch(`${API}/api/Reservation`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', ...AUTH.cabecerasAuth() },
                 body: JSON.stringify({
                     userId: AUTH.obtenerUsuario().id,
                     parkingSpotId: parkingActivo.spots?.[0]?.id,
-                    startTime: start.toISOString(),
-                    endTime: end.toISOString(),
+                    startTime: startLocal, // Usamos la hora de España
+                    endTime: endLocal,     // Usamos la hora de España
                     carId: cocheSeleccionado.id,
-                    status: 0
+                    status: 0 // 0 = Pendiente
                 })
             });
-
             // 2. Crear Pago
             const pagoCreado = await apiFetch(`${API}/api/Payments`, {
                 method: 'POST',

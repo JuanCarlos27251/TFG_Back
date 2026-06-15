@@ -121,9 +121,37 @@ namespace PARKit.Backend.Repositories
  
         public async Task<IEnumerable<ReservationDto>> GetAllAsync()
         {
-            return await _context.Reservations
+            // 1. Obtenemos todas las reservas con sus Spots
+            var reservations = await _context.Reservations
                 .Include(r => r.ParkingSpot)
-                .Select(r => new ReservationDto
+                .ToListAsync();
+
+            // 2. Extraemos los Parkings implicados
+            var parkingIds = reservations
+                .Where(r => r.ParkingSpot != null)
+                .Select(r => r.ParkingSpot.ParkingId)
+                .Distinct()
+                .ToList();
+
+            var parkings = await _context.Parkings
+                .Where(p => parkingIds.Contains(p.Id))
+                .ToDictionaryAsync(p => p.Id);
+
+            // 3. Extraemos las Empresas implicadas
+            var companyIds = parkings.Values
+                .Where(p => p.CompanyId.HasValue)
+                .Select(p => p.CompanyId.Value)
+                .Distinct()
+                .ToList();
+
+            var companies = await _context.Companies
+                .Where(c => companyIds.Contains(c.Id))
+                .ToDictionaryAsync(c => c.Id);
+
+            // 4. Mapeamos todo en memoria (súper rápido y sin errores de SQL)
+            var result = reservations.Select(r =>
+            {
+                var dto = new ReservationDto
                 {
                     Id = r.Id,
                     UserId = r.UserId,
@@ -132,10 +160,29 @@ namespace PARKit.Backend.Repositories
                     StartTime = r.StartTime,
                     EndTime = r.EndTime,
                     Status = r.Status,
-                    TotalAmount = r.TotalAmount
-                })
-                .ToListAsync();
+                    TotalAmount = r.TotalAmount,
+                    ParkingName = "N/A"
+                };
+
+                if (r.ParkingSpot != null && parkings.TryGetValue(r.ParkingSpot.ParkingId, out var parking))
+                {
+                    // Si el parking pertenece a una empresa (ej: Zaragoza Municipal) lo concatenamos
+                    if (parking.CompanyId.HasValue && companies.TryGetValue(parking.CompanyId.Value, out var company))
+                    {
+                        dto.ParkingName = $"{company.NameCompany} - {parking.Name}";
+                    }
+                    else
+                    {
+                        dto.ParkingName = parking.Name;
+                    }
+                }
+
+                return dto;
+            });
+
+            return result;
         }
+
  
         public async Task<bool> UpdateAsync(int id, ReservationDtin dtin, decimal totalAmount)
         {

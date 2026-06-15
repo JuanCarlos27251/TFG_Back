@@ -80,8 +80,7 @@ namespace PARKit.Backend.Repositories
                 Currency = dtin.Currency,
                 ClientSecret = clientSecret,
                 ExternalTransactionId = dtin.ExternalTransactionId,
-                // AHORA REGISTRA LA HORA DE ESPAÑA (del Sistema) EN VEZ DE LA UTC:
-                PaymentDate = DateTime.Now 
+                PaymentDate = DateTime.Now // Guarda la hora de tu servidor (España)
             };
 
             await _context.Payments.AddAsync(payment);
@@ -95,9 +94,13 @@ namespace PARKit.Backend.Repositories
                 Status = payment.Status,
                 Currency = payment.Currency,
                 ClientSecret = payment.ClientSecret,
-                PaymentDate = payment.PaymentDate
+                PaymentDate = payment.PaymentDate,
+                
+                // ¡ESTA ES LA LÍNEA QUE FALTABA PARA QUE NO DEVUELVA NULL AL FRONTEND!
+                ExternalTransactionId = payment.ExternalTransactionId 
             };
         }
+
 
 
         public async Task<bool> UpdateStatusAsync(int id, PaymentStatus status, string? externalId = null)

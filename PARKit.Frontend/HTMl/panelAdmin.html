@@ -10,123 +10,95 @@
     <script src="../JS/global.js"></script>
     <script src="../JS/auth.js"></script>
 </head>
-<body class="layout-base bg-[var(--fondo)]">
-    <!-- Header -->
-    <header class="header-base sticky top-0 z-50 shadow-sm">
+<body class="min-h-screen text-gray-900">
+    
+    <!-- HEADER LIMPIO (Sin Icono de Escudo) -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-[#e05d47]/20">
         <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-            <a href="index.html" class="flex items-center gap-2 text-[var(--texto)] font-black text-xl tracking-tight">
-                <span class="material-symbols-outlined text-[var(--primario)] text-3xl">admin_panel_settings</span>
-                PARKit <span class="text-[var(--primario)]">Admin</span>
+            <a href="index.html" class="flex items-center gap-2 text-black font-black text-2xl tracking-tight">
+                PARKit <span class="text-[#e05d47] font-light">Admin</span>
             </a>
             <div id="enlaces-auth" class="flex items-center gap-4"></div>
         </div>
     </header>
 
-    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row gap-8">
+    <main class="w-full max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row gap-8">
         
-        <!-- Sidebar Navigation -->
+        <!-- NAVEGACIÓN LATERAL -->
         <aside class="md:w-64 flex-shrink-0 flex flex-col gap-2">
-            <button class="nav-admin text-left px-4 py-3 rounded-xl font-bold flex items-center gap-3 transition-all bg-[var(--primario)] text-white shadow-lg shadow-[var(--primario)]/30" data-tab="tab-empresas">
+            <button class="nav-admin text-left px-4 py-3 rounded-xl font-bold flex items-center gap-3 transition-all bg-[#e05d47] text-white shadow-lg shadow-[#e05d47]/30" data-tab="tab-empresas">
                 <span class="material-symbols-outlined">store</span>
                 Empresas
             </button>
-            <button class="nav-admin text-left px-4 py-3 rounded-xl font-bold flex items-center gap-3 text-[var(--texto-suave)] hover:text-[var(--texto)] hover:bg-[var(--primario-claro)] transition-all" data-tab="tab-usuarios">
+            <button class="nav-admin text-left px-4 py-3 rounded-xl font-bold flex items-center gap-3 text-black/70 hover:text-black hover:bg-black/5 transition-all" data-tab="tab-usuarios">
                 <span class="material-symbols-outlined">group</span>
                 Usuarios
             </button>
-            <button class="nav-admin text-left px-4 py-3 rounded-xl font-bold flex items-center gap-3 text-[var(--texto-suave)] hover:text-[var(--texto)] hover:bg-[var(--primario-claro)] transition-all" data-tab="tab-reservas">
-                <span class="material-symbols-outlined">public</span>
-                Reservas Globales
+            <button class="nav-admin text-left px-4 py-3 rounded-xl font-bold flex items-center gap-3 text-black/70 hover:text-black hover:bg-black/5 transition-all" data-tab="tab-res-usuarios">
+                <span class="material-symbols-outlined">person_pin</span>
+                Reservas por Usuario
+            </button>
+            <button class="nav-admin text-left px-4 py-3 rounded-xl font-bold flex items-center gap-3 text-black/70 hover:text-black hover:bg-black/5 transition-all" data-tab="tab-res-empresas">
+                <span class="material-symbols-outlined">business</span>
+                Reservas por Empresa
             </button>
         </aside>
 
-        <!-- Content Area -->
+        <!-- ÁREA DE CONTENIDO -->
         <div class="flex-1 flex flex-col gap-6">
             
-            <!-- SECCIÓN EMPRESAS -->
             <section id="tab-empresas" class="tab-content block aparecer">
-                <div class="flex justify-between items-end mb-6">
-                    <div>
-                        <h2 class="text-3xl font-black text-[var(--texto)] tracking-tight">Gestión de Empresas</h2>
-                        <p class="text-sm text-[var(--texto-suave)] mt-1">Directorio de todas las empresas asociadas a la plataforma.</p>
-                    </div>
-                </div>
-                <div class="card overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm whitespace-nowrap">
-                            <thead class="bg-[var(--fondo-card)] border-b border-[var(--borde)] text-[var(--texto-suave)]">
-                                <tr>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">ID</th>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Empresa</th>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Email</th>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px] text-right">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="lista-empresas" class="divide-y divide-[var(--borde)]">
-                                <!-- Se inyecta con JS -->
-                            </tbody>
-                        </table>
-                    </div>
+                <h2 class="text-3xl font-black tracking-tight mb-4">Gestión de Empresas</h2>
+                <div class="bg-white rounded-2xl shadow-xl shadow-[#e05d47]/10 border border-[#e05d47]/10 overflow-hidden">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-50 border-b border-gray-100 text-gray-500">
+                            <tr>
+                                <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Nombre</th>
+                                <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">CIF</th>
+                                <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Contacto</th>
+                                <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Estado</th>
+                                <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px] text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-empresas" class="divide-y divide-gray-100"></tbody>
+                    </table>
                 </div>
             </section>
 
-            <!-- SECCIÓN USUARIOS -->
             <section id="tab-usuarios" class="tab-content hidden aparecer">
-                <div class="flex justify-between items-end mb-6">
-                    <div>
-                        <h2 class="text-3xl font-black text-[var(--texto)] tracking-tight">Directorio de Usuarios</h2>
-                        <p class="text-sm text-[var(--texto-suave)] mt-1">Personas físicas registradas en la app.</p>
-                    </div>
-                </div>
-                <div class="card overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm whitespace-nowrap">
-                            <thead class="bg-[var(--fondo-card)] border-b border-[var(--borde)] text-[var(--texto-suave)]">
-                                <tr>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">ID</th>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Nombre</th>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Email</th>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Teléfono</th>
-                                </tr>
-                            </thead>
-                            <tbody id="lista-usuarios" class="divide-y divide-[var(--borde)]">
-                                <!-- Se inyecta con JS -->
-                            </tbody>
-                        </table>
-                    </div>
+                <h2 class="text-3xl font-black tracking-tight mb-4">Directorio de Usuarios</h2>
+                <div class="bg-white rounded-2xl shadow-xl shadow-[#e05d47]/10 border border-[#e05d47]/10 overflow-hidden">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-gray-50 border-b border-gray-100 text-gray-500">
+                            <tr>
+                                <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Nombre</th>
+                                <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Email</th>
+                                <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Teléfono</th>
+                                <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Estado</th>
+                                <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px] text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-usuarios" class="divide-y divide-gray-100"></tbody>
+                    </table>
                 </div>
             </section>
 
-            <!-- SECCIÓN RESERVAS GLOBALES -->
-            <section id="tab-reservas" class="tab-content hidden aparecer">
-                <div class="flex justify-between items-end mb-6">
-                    <div>
-                        <h2 class="text-3xl font-black text-[var(--texto)] tracking-tight">Monitor Global de Reservas</h2>
-                        <p class="text-sm text-[var(--texto-suave)] mt-1">Supervisión en tiempo real de todas las transacciones de la red.</p>
-                    </div>
+            <section id="tab-res-usuarios" class="tab-content hidden aparecer">
+                <h2 class="text-3xl font-black tracking-tight mb-4">Reservas Clasificadas por Usuario</h2>
+                <div class="bg-white rounded-2xl shadow-xl shadow-[#e05d47]/10 border border-[#e05d47]/10 p-6">
+                    <div id="lista-reservas-usuarios" class="flex flex-col gap-6"></div>
                 </div>
-                <div class="card overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm whitespace-nowrap">
-                            <thead class="bg-[var(--fondo-card)] border-b border-[var(--borde)] text-[var(--texto-suave)]">
-                                <tr>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">ID Reserva</th>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Plaza (ID)</th>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Estado</th>
-                                    <th class="px-6 py-4 font-bold uppercase tracking-wider text-[10px]">Importe</th>
-                                </tr>
-                            </thead>
-                            <tbody id="lista-reservas" class="divide-y divide-[var(--borde)]">
-                                <!-- Se inyecta con JS -->
-                            </tbody>
-                        </table>
-                    </div>
+            </section>
+
+            <section id="tab-res-empresas" class="tab-content hidden aparecer">
+                <h2 class="text-3xl font-black tracking-tight mb-4">Reservas Clasificadas por Empresa</h2>
+                <div class="bg-white rounded-2xl shadow-xl shadow-[#e05d47]/10 border border-[#e05d47]/10 p-6">
+                    <div id="lista-reservas-empresas" class="flex flex-col gap-6"></div>
                 </div>
             </section>
 
         </div>
     </main>
-
     <div id="contenedor-toast"></div>
     <script src="../JS/admin.js"></script>
 </body>

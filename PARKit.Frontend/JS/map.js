@@ -66,7 +66,7 @@ class ParkingMap {
         this.geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl,
-            placeholder: 'Buscar dirección...',
+            placeholder: '    Buscar dirección...',
             countries: 'es',
             bbox: [-1.0, 41.5, -0.7, 41.8], 
             marker: true
@@ -152,6 +152,31 @@ class ParkingMap {
             e.stopPropagation();
             this.ejecutarReserva();
         });
+
+        this.filtrosActivos = [];
+        
+        document.querySelectorAll('.filtro-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const tipoFiltro = btn.dataset.filtro;
+                
+                // 1. Si el filtro ya estaba activo, lo quitamos. Si no, lo añadimos.
+                if (this.filtrosActivos.includes(tipoFiltro)) {
+                    this.filtrosActivos = this.filtrosActivos.filter(f => f !== tipoFiltro);
+                    // Apagamos visualmente el botón
+                    btn.classList.remove('bg-[var(--azul)]', 'text-white', 'border-[var(--azul)]');
+                    btn.classList.add('bg-white', 'dark:bg-[#161b2e]', 'text-[var(--texto-suave)]');
+                } else {
+                    this.filtrosActivos.push(tipoFiltro);
+                    // Encendemos visualmente el botón
+                    btn.classList.add('bg-[var(--azul)]', 'text-white', 'border-[var(--azul)]');
+                    btn.classList.remove('bg-white', 'dark:bg-[#161b2e]', 'text-[var(--texto-suave)]');
+                }
+                
+                // 2. Aplicamos la lógica a las chinchetas
+                this.aplicarFiltrosMapa();
+            });
+        });
     }
 
     // ── GESTIÓN DE PARKINGS Y RUTAS ──
@@ -172,15 +197,24 @@ class ParkingMap {
         this.parkings.forEach(p => {
             if (!p.latitude || !p.longitude) return;
 
-            const el = document.createElement('div');
-            el.className = 'w-10 h-10 bg-[var(--azul)] text-white rounded-full flex items-center justify-center border-2 border-white shadow-lg cursor-pointer hover:scale-110 transition-transform';
-            el.innerHTML = '<span class="material-symbols-outlined text-xl">local_parking</span>';
+            // 1. Contenedor neutro (evita el temblor de Mapbox al hacer zoom/pan)
+            const wrapper = document.createElement('div');
+            wrapper.className = 'w-10 h-10 cursor-pointer';
 
-            const marker = new mapboxgl.Marker({ element: el })
-                .setLngLat([p.longitude, p.latitude])
-                .addTo(this.map);
+            // 2. Interior con diseño y animaciones
+            const innerEl = document.createElement('div');
+            innerEl.className = 'w-full h-full bg-[var(--azul)] text-white rounded-full flex items-center justify-center border-2 border-white shadow-lg hover:scale-110 transition-transform';
+            innerEl.innerHTML = '<span class="material-symbols-outlined text-xl">local_parking</span>';
+            
+            wrapper.appendChild(innerEl);
 
-            el.addEventListener('click', (e) => {
+            const marker = new mapboxgl.Marker({ element: wrapper })
+            .setLngLat([p.longitude, p.latitude])
+            .addTo(this.map);
+
+            marker.parking = p;
+
+            wrapper.addEventListener('click', (e) => {
                 e.stopPropagation();
                 this.abrirPanelDetalles(p);
             });
@@ -188,6 +222,38 @@ class ParkingMap {
             this.markers.push(marker);
         });
     }
+
+    aplicarFiltrosMapa() {
+        this.markers.forEach(marker => {
+            const p = marker.parking;
+            let mostrar = false;
+
+            // Si no hay ningún filtro pulsado, mostramos TODOS por defecto
+            if (this.filtrosActivos.length === 0) {
+                mostrar = true;
+            } else {
+                // Comprobamos la tipología del parking
+                const esPublico = p.type === 0;
+                const esPrivado = p.type === 1;
+                 const esAyuntamiento = p.type === 2;
+
+                // Si encaja con ALGUNO de los filtros activos, lo mostramos
+                if (this.filtrosActivos.includes('publico') && esPublico) mostrar = true;
+                if (this.filtrosActivos.includes('privado') && esPrivado) mostrar = true;
+                if (this.filtrosActivos.includes('ayuntamiento') && esAyuntamiento) mostrar = true;
+            }
+
+            // Ocultar/Mostrar la chincheta mediante CSS instantáneo (súper fluido)
+            const element = marker.getElement();
+            if (mostrar) {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        });
+    }
+
+
 
     async abrirPanelDetalles(parking) {
         this.selectedParking = parking;

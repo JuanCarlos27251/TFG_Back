@@ -88,3 +88,69 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
+
+/* ── Ajustes Buscador Mapbox (Geocoder) para Tema Oscuro ── */
+
+/* Caja principal */
+.mapboxgl-ctrl-geocoder {
+    max-width: none !important;
+    width: 100% !important;
+    background-color: var(--fondo) !important;
+    border: none !important;
+    box-shadow: none !important;
+    min-width: 100% !important;
+}
+
+/* Texto del buscador */
+.mapboxgl-ctrl-geocoder--input {
+    background-color: transparent !important;
+    color: var(--texto) !important;
+    font-weight: 600 !important;
+    height: 46px !important;
+}
+
+/* Eliminar borde azul feo al hacer clic */
+.mapboxgl-ctrl-geocoder--input:focus {
+    outline: none !important;
+}
+
+/* Icono de la lupa de Mapbox */
+.mapboxgl-ctrl-geocoder--icon-search {
+    fill: var(--texto-suave) !important;
+    top: 13px !important;
+}
+
+/* Icono de la X para borrar */
+.mapboxgl-ctrl-geocoder--icon-close {
+    margin-top: 5px !important;
+}
+
+/* ── Desplegable de Sugerencias (Z-Index alto para estar por encima) ── */
+.mapboxgl-ctrl-geocoder .suggestions {
+    background-color: var(--fondo-card) !important;
+    border: 1px solid var(--borde) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: var(--sombra) !important;
+    z-index: 99999 !important;
+    margin-top: 5px !important;
+}
+
+/* Cada calle en la lista */
+.mapboxgl-ctrl-geocoder .suggestions > li > a {
+    color: var(--texto-suave) !important;
+    transition: all var(--transicion) !important;
+    padding: 10px 15px !important;
+}
+
+/* Al pasar el ratón por la lista */
+.mapboxgl-ctrl-geocoder .suggestions > .active > a,
+.mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
+    background-color: var(--azul-claro) !important;
+    color: var(--texto) !important;
+}
+
+/* Letras exactas de tu búsqueda resaltadas en azul */
+.mapboxgl-ctrl-geocoder .suggestions > li > a .mapboxgl-ctrl-geocoder--suggestion-match {
+    color: var(--azul) !important;
+    font-weight: 800 !important;
+}

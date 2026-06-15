@@ -69,6 +69,42 @@
         document.getElementById('btn-generar-plazas')?.addEventListener('click', generarPlazas);
         document.getElementById('btn-desactivar')?.addEventListener('click', desactivarParking);
         document.getElementById('btn-eliminar')?.addEventListener('click', eliminarParking);
+
+        mapboxgl.accessToken = 'pk.eyJ1IjoianVhbnBpbmEiLCJhIjoiY21sNzA3Mm4zMDJqeTNjc2k3MjBneHlpZiJ9.GXx1qQF4RW_EinsiHzTAIA';
+        
+        const geocoderContainer = document.getElementById('geocoder-container');
+        if (geocoderContainer && typeof MapboxGeocoder !== 'undefined') {
+            const geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                types: 'address,poi',
+                placeholder: '    Ej: Calle Mayor 12, Zaragoza...',
+                language: 'es',
+                country: 'ES',
+                mapboxgl: mapboxgl
+            });
+            // Inyectarlo en la vista
+            geocoderContainer.appendChild(geocoder.onAdd());
+            
+            // Escuchar cuando el usuario elige una dirección del desplegable
+            geocoder.on('result', (e) => {
+                const coordenadas = e.result.center; // [longitud, latitud]
+                const direccionCompleta = e.result.place_name;
+                
+                // Rellenar nuestros campos ocultos y bloqueados mágicamente
+                document.getElementById('p-address').value = direccionCompleta;
+                document.getElementById('p-lng').value = coordenadas[0];
+                document.getElementById('p-lat').value = coordenadas[1];
+                
+                mostrarToast('Coordenadas capturadas correctamente');
+            });
+            // Si estamos editando, rellenar el buscador con la dirección guardada
+            if (modoEdicion) {
+                setTimeout(() => {
+                    const addrGuardada = document.getElementById('p-address').value;
+                    if (addrGuardada) geocoder.setInput(addrGuardada);
+                }, 800); 
+            }
+        }
         
         document.addEventListener('click', (e) => {
             if (e.target.closest('#btn-logout-empresa')) AUTH.cerrarSesion(true);

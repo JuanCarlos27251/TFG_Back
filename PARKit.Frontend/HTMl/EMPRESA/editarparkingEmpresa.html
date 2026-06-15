@@ -9,6 +9,12 @@
     <script src="../../JS/global.js"></script>
     <link rel="stylesheet" href="../../STYLES/global.css" />
     <link rel="stylesheet" href="../../STYLES/empresas.css" />
+        <!-- Mapbox Geocoder para buscador de direcciones -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.2/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.2/mapbox-gl-geocoder.css" type="text/css" />
+
 </head>
 
 <body class="layout-base tema-business md:flex-row">
@@ -134,11 +140,10 @@
                             </div>
                             <div class="flex flex-col gap-1.5">
                                 <label class="label-settings">Dirección</label>
-                                <div class="relative">
-                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-lg">location_on</span>
-                                    <input id="p-address" type="text" placeholder="Calle Ejemplo, 12, Zaragoza"
-                                        class="input-base input-con-icono bg-[var(--fondo)]" required />
-                                </div>
+                                <!-- Aquí se inyectará el buscador de Mapbox -->
+                                <div id="geocoder-container" class="w-full rounded-xl border border-[var(--borde)] relative z-50"></div>
+                                <!-- Campo oculto donde guardaremos el texto de la calle -->
+                                <input id="p-address" type="hidden" />
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="flex flex-col gap-1.5">
@@ -204,50 +209,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- BLOQUE 2: Recargos por vehículo -->
-                <div class="card overflow-hidden">
-                    <div class="px-6 py-4 border-b border-[var(--borde)] bg-[var(--azul)]/5 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[var(--azul)] text-base">directions_car</span>
-                        <h3 class="text-xs font-bold uppercase tracking-widest text-[var(--azul)]">Recargos por Tipo de Vehículo</h3>
-                        <span class="ml-auto text-[10px] text-[var(--texto-suave)] font-medium">Plus añadido al precio por hora</span>
-                    </div>
-                    <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="flex flex-col gap-3">
-                            <div class="flex items-center gap-3 mb-1">
-                                <div class="w-8 h-8 rounded-lg bg-[var(--naranja)]/10 flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[var(--naranja)] text-base">local_shipping</span>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold text-[var(--texto)]">Vehículo Grande</p>
-                                    <p class="text-[11px] text-[var(--texto-suave)]">Furgonetas, SUVs, camiones ligeros</p>
-                                </div>
-                            </div>
-                            <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-sm font-bold">€</span>
-                                <input id="large-plus" type="text" placeholder="1.00"
-                                    class="input-base bg-[var(--fondo)] pl-8 font-bold" />
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-3">
-                            <div class="flex items-center gap-3 mb-1">
-                                <div class="w-8 h-8 rounded-lg bg-[var(--verde)]/10 flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[var(--verde)] text-base">electric_car</span>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold text-[var(--texto)]">Vehículo Eléctrico</p>
-                                    <p class="text-[11px] text-[var(--texto-suave)] ">Cargador incluido en la tarifa</p>                                   
-                                </div>
-                            </div>
-                            <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] text-sm font-bold">€</span>
-                                <input id="electric-plus" type="text" placeholder="0.50"
-                                    class="input-base bg-[var(--fondo)] pl-8 font-bold" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- BLOQUE 3: Tarifas horarias -->
                 <div class="flex flex-col gap-4">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -283,12 +244,30 @@
                         </div>
                     </div>
 
-                    <div class="flex items-start gap-3 px-4 py-3 rounded-lg bg-[var(--azul)]/5 border border-[var(--azul)]/15">
-                        <span class="material-symbols-outlined text-[var(--azul)] text-base flex-shrink-0 mt-0.5">info</span>
-                        <p class="text-xs text-[var(--texto-suave)] leading-relaxed">
-                            Las tarifas se aplican por orden de prioridad. Si un horario coincide con una tarifa festiva, esta tiene preferencia sobre las tarifas diurna y nocturna.
-                        </p>
+                    <!-- Leyenda de Abreviaturas y Prioridad -->
+                    <div class="flex flex-col md:flex-row gap-6 items-start px-5 py-4 rounded-xl bg-[var(--fondo)]/50 border border-[var(--borde)]">
+                        <div class="flex items-start gap-3 flex-1">
+                            <span class="material-symbols-outlined text-[var(--azul)] text-lg flex-shrink-0">menu_book</span>
+                            <div class="text-xs text-[var(--texto-suave)] leading-relaxed w-full">
+                                <p class="font-bold text-[var(--texto)] mb-2 uppercase tracking-wider text-[10px]">Suplementos</p>
+                                <ul class="grid grid-cols-2 gap-x-2 gap-y-1.5">
+                                    <li><strong class="text-[var(--azul)]">Res.</strong> Suplemento por Reserva</li>
+                                    <li><strong class="text-[var(--azul)]">Can.</strong> Suplemento por Cancelación</li>
+                                    <li><strong class="text-[var(--azul)]">Grd.</strong> Vehículo Grande</li>
+                                    <li><strong class="text-[var(--azul)]">Elc.</strong> Vehículo Eléctrico</li>
+                                    <li><strong class="text-[var(--azul)]">Fes.</strong> Tarifa en Festivo</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 flex-1 md:pl-6 md:border-l border-[var(--borde)]">
+                            <span class="material-symbols-outlined text-[var(--naranja)] text-lg flex-shrink-0">priority_high</span>
+                            <div class="text-xs text-[var(--texto-suave)] leading-relaxed">
+                                <p class="font-bold text-[var(--texto)] mb-1 uppercase tracking-wider text-[10px]">Importante: Prioridad</p>
+                                <p>Las tarifas se aplican por orden de prioridad. Si un horario coincide con una tarifa festiva, esta tiene preferencia sobre las tarifas estándar (diurnas/nocturnas).</p>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
 
                 <!-- BLOQUE 4: Generador de Plazas -->

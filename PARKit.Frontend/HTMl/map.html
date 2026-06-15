@@ -43,8 +43,24 @@
 
     <div class="flex-1 flex relative overflow-hidden">
 
-        <div class="absolute top-4 left-4 z-50 w-[328px] max-w-[calc(100vw-2rem)]">
+        <!-- Buscador y Filtros -->
+        <div class="absolute top-4 left-4 z-50 w-[328px] max-w-[calc(100vw-2rem)] flex flex-col gap-3">
+            <!-- Barra de Mapbox -->
             <div id="geocoder-container" class="w-full"></div>
+            
+            <!-- Botonera de Filtros -->
+            <div id="filtros-mapa" class="flex items-center gap-2 overflow-x-auto pb-1" style="scrollbar-width: none; -ms-overflow-style: none;">
+                <style> #filtros-mapa::-webkit-scrollbar { display: none; } </style>
+                <button data-filtro="publico" class="filtro-btn px-4 py-1.5 rounded-full bg-white dark:bg-[#161b2e] border border-[var(--borde)] text-[11px] font-bold text-[var(--texto-suave)] shadow-md transition-all whitespace-nowrap hover:bg-gray-50 dark:hover:bg-[#1e243d]">
+                    Público
+                </button>
+                <button data-filtro="privado" class="filtro-btn px-4 py-1.5 rounded-full bg-white dark:bg-[#161b2e] border border-[var(--borde)] text-[11px] font-bold text-[var(--texto-suave)] shadow-md transition-all whitespace-nowrap hover:bg-gray-50 dark:hover:bg-[#1e243d]">
+                    Privado
+                </button>
+                <button data-filtro="ayuntamiento" class="filtro-btn px-4 py-1.5 rounded-full bg-white dark:bg-[#161b2e] border border-[var(--borde)] text-[11px] font-bold text-[var(--texto-suave)] shadow-md transition-all whitespace-nowrap hover:bg-gray-50 dark:hover:bg-[#1e243d]">
+                    Ayuntamiento
+                </button>
+            </div>
         </div>
 
         <aside id="panel-detalles" class="panel-detalles">

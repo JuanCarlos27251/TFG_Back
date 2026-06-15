@@ -9,52 +9,40 @@
 
 /* ── Variables: modo claro (defecto) ─────────── */
 :root {
-    /* Colores de marca */
-    --azul:        #135bec;
-    --azul-oscuro: #0a3bbf;
-    --azul-claro:  #e8effd;
-    --verde:       #22c55e;
-    --rojo:        #ef4444;
-    --naranja:     #f97316;
-
-      /* --azul:        #d66d51;
-    --azul-oscuro: #b15c45;
-    --azul-claro:  #e7c7bd; */
-
-    /* Fondos y superficies */
-    --fondo:        #f5f6fa;
+    /* Colores de marca Salmón/Terracota */
+    --primario:        #e05d47;
+    --primario-oscuro: #bd4a36;
+    --primario-claro:  #fceae6;
+    --verde:           #22c55e;
+    --rojo:            #ef4444;
+    --naranja:         #f97316;
+    /* Fondos y superficies cálidas */
+    --fondo:        #fafafa;
     --fondo-card:   #ffffff;
-    --fondo-header: rgba(255, 255, 255, 0.8);
-
+    --fondo-header: rgb(245, 245, 245);
     /* Bordes, texto y sombras */
-    --borde:       #e4e7ef;
-    --texto:       #111318;
-    --texto-suave: #6b7280;
-    --sombra:      0 2px 16px 0 rgba(19, 91, 236, 0.07);
-
-    /* Radios */
+    --borde:       #e8e4e2;
+    --texto:       #1a1818;
+    --texto-suave: #736d6a;
+    --sombra:      0 4px 16px 0 rgba(224, 93, 71, 0.08);
+    /* Radios y tipografía */
     --radio:      0.5rem;
     --radio-lg:   1rem;
     --radio-xl:   1.5rem;
     --radio-pill: 9999px;
-
-    /* Tipografía */
     --fuente:      'DM Sans', sans-serif;
     --fuente-mono: 'DM Mono', monospace;
-
-    /* Transición estándar */
-    --transicion: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transicion: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* ── Variables: modo oscuro ──────────────────── */
+/* ── Variables: modo oscuro (Gris Carbón Cálido) */
 .dark {
-    --fondo:        #0e1120;
-    --fondo-card:   #161b2e;
-    --fondo-header: rgba(14, 17, 32, 0.8);
-    --borde:        #1e2540;
-    --texto:        #f0f2fa;
-    --texto-suave:  #8892b0;
-    --sombra:       0 2px 16px 0 rgba(0, 0, 0, 0.4);
+    --fondo:        #161413;
+    --fondo-card:   #1e1c1b;
+    --fondo-header: rgba(22, 20, 19, 0.85);
+    --borde:        #2c2827;
+    --texto:        #f2efe9;
+    --texto-suave:  #948d8a;
+    --sombra:       0 6px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
 /* ── Reset base ──────────────────────────────── */
@@ -97,6 +85,10 @@ button { cursor: pointer; font-family: var(--fuente); }
     box-shadow:       var(--sombra);
     transition:       transform var(--transicion), box-shadow var(--transicion);
 }
+.card:hover {
+    transform:  translateY(-4px);
+    box-shadow: 0 12px 30px rgba(224, 93, 71, 0.12); /* Resplandor salmón */
+}
 
 /* ── Inputs ──────────────────────────────────── */
 .input-base {
@@ -111,7 +103,7 @@ button { cursor: pointer; font-family: var(--fuente); }
 }
 .input-base:focus {
     outline:    none;
-    border-color: var(--azul);
+    border-color: var(--primario);
     box-shadow: 0 0 0 2px rgba(19, 91, 236, 0.2);
 }
 .input-base::placeholder {
@@ -129,10 +121,10 @@ button { cursor: pointer; font-family: var(--fuente); }
 .icono-relleno { font-variation-settings: 'FILL' 1; }
 
 /* ── Utilidades de color (CSS nativo) ────────── */
-/* Usar text-azul (Tailwind) o texto-azul (CSS) indistintamente;
+/* Usar text-primario (Tailwind) o texto-primario (CSS) indistintamente;
    ambas clases producen el mismo resultado. */
 .texto-suave,   .text-suave   { color: var(--texto-suave); }
-.texto-azul,    .text-azul    { color: var(--azul); }
+.texto-primario,    .text-primario    { color: var(--primario); }
 .texto-verde,   .text-verde   { color: var(--verde); }
 .texto-rojo,    .text-rojo    { color: var(--rojo); }
 .texto-naranja, .text-naranja { color: var(--naranja); }
@@ -153,22 +145,21 @@ button { cursor: pointer; font-family: var(--fuente); }
 }
 
 .btn-primario {
-    background: var(--azul);
+    background: var(--primario);
     color:      white;
-    box-shadow: 0 4px 14px rgba(19, 91, 236, 0.3);
+    box-shadow: 0 4px 14px rgba(224, 93, 71, 0.3);
 }
 .btn-primario:hover {
-    background: var(--azul-oscuro);
-    transform:  translateY(-1px);
-    box-shadow: 0 6px 20px rgba(19, 91, 236, 0.4);
+    background: var(--primario-oscuro);
+    transform:  translateY(-2px);
+    box-shadow: 0 6px 20px rgba(224, 93, 71, 0.45);
 }
-
 .btn-contorno {
     background: transparent;
-    color:      var(--azul);
-    border:     1.5px solid var(--azul);
+    color:      var(--primario);
+    border:     1.5px solid var(--primario);
 }
-.btn-contorno:hover { background: var(--azul-claro); }
+.btn-contorno:hover { background: var(--primario-claro); }
 
 .btn-ghost { background: transparent; color: var(--texto); padding: 0.5rem 0.875rem; }
 .btn-ghost:hover { background: var(--borde); border-radius: var(--radio); }
@@ -184,15 +175,15 @@ button { cursor: pointer; font-family: var(--fuente); }
     width:            2.25rem;
     height:           2.25rem;
     border-radius:    var(--radio-pill);
-    background-color: var(--azul-claro);
-    color:            var(--azul);
+    background-color: var(--primario-claro);
+    color:            var(--primario);
     font-weight:      700;
     font-size:        0.9rem;
     border:           1px solid var(--borde);
     transition:       background-color var(--transicion);
     cursor:           pointer;
 }
-.avatar-btn:hover { background-color: var(--azul); color: white; }
+.avatar-btn:hover { background-color: var(--primario); color: white; }
 
 /* ── Badges ──────────────────────────────────── */
 .badge {
@@ -207,12 +198,12 @@ button { cursor: pointer; font-family: var(--fuente); }
 
 .badge-verde   { background: #dcfce7; color: #166534; }
 .badge-rojo    { background: #fee2e2; color: #991b1b; }
-.badge-azul    { background: var(--azul-claro); color: var(--azul-oscuro); }
+.badge-primario    { background: var(--primario-claro); color: var(--primario-oscuro); }
 .badge-naranja { background: #ffedd5; color: #9a3412; }
 
 .dark .badge-verde   { background: #14532d; color: #86efac; }
 .dark .badge-rojo    { background: #7f1d1d; color: #fca5a5; }
-.dark .badge-azul    { background: #1e3a8a; color: #93c5fd; }
+.dark .badge-primario    { background: #1e3a8a; color: #93c5fd; }
 .dark .badge-naranja { background: #7c2d12; color: #fdba74; }
 
 /* ── Animaciones ─────────────────────────────── */
@@ -253,7 +244,7 @@ button { cursor: pointer; font-family: var(--fuente); }
 .toast-exito  { border-left: 4px solid var(--verde); }
 .toast-error  { border-left: 4px solid var(--rojo); }
 .toast-aviso  { border-left: 4px solid var(--naranja); }
-.toast-info   { border-left: 4px solid var(--azul); }
+.toast-info   { border-left: 4px solid var(--primario); }
 
 @keyframes entrarToast {
     from { opacity: 0; transform: translateX(1rem); }

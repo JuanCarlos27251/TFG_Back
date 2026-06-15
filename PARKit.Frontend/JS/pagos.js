@@ -30,7 +30,7 @@
         const colores = { exito: 'verde', error: 'rojo', aviso: 'naranja' };
         toast.className = `toast toast-${tipo}`;
         toast.innerHTML = `
-            <span class="material-symbols-outlined icono-relleno mb-0.5" style="color:var(--${colores[tipo]||'azul'})">${tipo === 'exito' ? 'check_circle' : 'error'}</span>
+            <span class="material-symbols-outlined icono-relleno mb-0.5" style="color:var(--${colores[tipo]||'primario'})">${tipo === 'exito' ? 'check_circle' : 'error'}</span>
             <span class="text-sm font-medium pr-4">${msg}</span>`;
         cont.appendChild(toast);
         setTimeout(() => toast.remove(), 4000);
@@ -67,7 +67,7 @@
         try {
             parkingActivo = await apiFetch(`${API}/api/Parking/${id}`);
             document.getElementById('summary-parking-name').textContent = parkingActivo.name;
-            document.getElementById('summary-parking-address').innerHTML = `<span class="material-symbols-outlined text-base text-azul">location_on</span> ${parkingActivo.address}`;
+            document.getElementById('summary-parking-address').innerHTML = `<span class="material-symbols-outlined text-base text-primario">location_on</span> ${parkingActivo.address}`;
             if (parkingActivo.imageUrl) document.getElementById('parking-preview-img').style.backgroundImage = `url('${parkingActivo.imageUrl}')`;
         } catch (e) { mostrarToast("Error cargando parking.", "error"); }
     }
@@ -85,7 +85,7 @@
             cocheSeleccionado = vehiculosGlobal[0];
             vehiculosGlobal.forEach((car, i) => {
                 const label = document.createElement('label');
-                label.className = `flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all ${i===0?'border-azul bg-azul/5':'border-[var(--borde)]'}`;
+                label.className = `flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all ${i===0?'border-primario bg-primario/5':'border-[var(--borde)]'}`;
                 label.innerHTML = `<div><p class="text-sm font-bold">${car.matricule}</p><p class="text-xs text-gray-500">${car.name}</p></div><input type="radio" name="car" ${i===0?'checked':''}>`;
                 label.onclick = () => { cocheSeleccionado = car; actualizarResumenMatematico(); };
                 cont.appendChild(label);
@@ -134,8 +134,8 @@
         // Duración (Botones)
         document.querySelectorAll('.duration-btn').forEach(btn => {
             btn.onclick = () => {
-                document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active','bg-azul/10','border-azul','text-azul'));
-                btn.classList.add('active','bg-azul/10','border-azul','text-azul');
+                document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active','bg-primario/10','border-primario','text-primario'));
+                btn.classList.add('active','bg-primario/10','border-primario','text-primario');
                 reserva.horasReserva = parseInt(btn.dataset.hours);
                 actualizarResumenMatematico();
             };

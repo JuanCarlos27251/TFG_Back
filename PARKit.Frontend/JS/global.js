@@ -9,9 +9,9 @@ window.tailwind.config = {
     theme: {
         extend: {
             colors: {
-                azul:           '#135bec',
-                'azul-oscuro':  '#0a3bbf',
-                'fondo-oscuro': '#0e1120',
+                primario:           '#e05d47',
+                'primario-oscuro':  '#bd4a36',
+                'fondo-oscuro':     '#161413',
             },
             fontFamily: {
                 sans: ['DM Sans', 'sans-serif'],
@@ -92,12 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="text-xs font-bold text-[var(--texto-suave)] uppercase tracking-wider">Conectado como</p>
                         <p class="text-sm font-bold text-[var(--texto)] truncate mt-0.5">${nombre}</p>
                     </div>
-                    <a href="${destino}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--texto)] hover:bg-[var(--azul-claro)] hover:text-[var(--azul)] transition-colors">
+                    <a href="${destino}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--texto)] hover:bg-[var(--primario-claro)] hover:text-[var(--primario)] transition-colors">
                         <span class="material-symbols-outlined text-base">person</span>
                         ${esEmpresa ? 'Panel de empresa' : 'Mi perfil'}
                     </a>
                     ${!esEmpresa ? `
-                    <a href="reservas.html" class="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--texto)] hover:bg-[var(--azul-claro)] hover:text-[var(--azul)] transition-colors">
+                    <a href="reservas.html" class="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--texto)] hover:bg-[var(--primario-claro)] hover:text-[var(--primario)] transition-colors">
                         <span class="material-symbols-outlined text-base">history</span>
                         Mis reservas
                     </a>` : ''}

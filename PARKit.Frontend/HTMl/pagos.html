@@ -14,7 +14,7 @@
 <body class="layout-base">
     <header class="header-base">
         <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-            <a href="index.html" class="flex items-center gap-2 texto-azul font-black text-xl tracking-tight">
+            <a href="index.html" class="flex items-center gap-2 texto-primario font-black text-xl tracking-tight">
                 <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 48 48" aria-hidden="true">
                     <path clip-rule="evenodd" fill-rule="evenodd"
                           d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z"/>
@@ -24,8 +24,8 @@
                 PARKit
             </a>
             <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-                <a href="map.html" class="texto-suave hover:text-azul transition-colors">Mapa</a>
-                <a href="reservas.html" class="texto-suave hover:text-azul transition-colors">Mis Reservas</a>
+                <a href="map.html" class="texto-suave hover:text-primario transition-colors">Mapa</a>
+                <a href="reservas.html" class="texto-suave hover:text-primario transition-colors">Mis Reservas</a>
             </nav>
             <a href="perfil.html" id="header-user-avatar" class="avatar-btn" title="Mi Perfil">
                 <span class="material-symbols-outlined text-lg leading-none">person</span>
@@ -66,10 +66,10 @@
             <!-- TIPO DE ESTACIONAMIENTO -->
             <div class="card p-6 space-y-4">
                 <h3 class="text-lg font-bold flex items-center gap-2">
-                    <span class="material-symbols-outlined text-azul">tune</span> Tipo de Estacionamiento
+                    <span class="material-symbols-outlined text-primario">tune</span> Tipo de Estacionamiento
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <label id="label-type-fixed" class="relative flex cursor-pointer rounded-xl border p-4 shadow-sm focus:outline-none border-azul bg-azul/5 transition-all">
+                    <label id="label-type-fixed" class="relative flex cursor-pointer rounded-xl border p-4 shadow-sm focus:outline-none border-primario bg-primario/5 transition-all">
                         <input type="radio" name="reservation-type" value="0" class="sr-only" checked />
                         <span class="flex flex-1">
                             <span class="flex flex-col">
@@ -77,7 +77,7 @@
                                 <span class="mt-1 text-xs text-[var(--texto-suave)] leading-relaxed">Pagas por adelantado el tramo de tiempo seleccionado.</span>
                             </span>
                         </span>
-                        <span id="icon-type-fixed" class="material-symbols-outlined text-azul select-none">check_circle</span>
+                        <span id="icon-type-fixed" class="material-symbols-outlined text-primario select-none">check_circle</span>
                     </label>
 
                     <label id="label-type-dynamic" class="relative flex cursor-pointer rounded-xl border p-4 shadow-sm focus:outline-none border-[var(--borde)] bg-transparent transition-all hover:bg-[#f5f6fa]">
@@ -97,7 +97,7 @@
             <div class="card p-6 space-y-6">
                 <div id="fixed-time-selector">
                     <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-azul">schedule</span> Fecha y hora de llegada estimada
+                        <span class="material-symbols-outlined text-primario">schedule</span> Fecha y hora de llegada estimada
                     </h3>
                     <div class="flex flex-col sm:flex-row gap-3">
                         <div class="flex flex-col gap-1 flex-1">
@@ -112,10 +112,10 @@
 
                     <div class="border-t border-[var(--borde)] pt-6 mt-6">
                         <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-azul">hourglass_top</span> Duración de la Reserva
+                            <span class="material-symbols-outlined text-primario">hourglass_top</span> Duración de la Reserva
                         </h3>
                         <div id="duration-selector" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold active bg-azul/10 border-azul text-azul" data-hours="1">1 Hora</button>
+                            <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold active bg-primario/10 border-primario text-primario" data-hours="1">1 Hora</button>
                             <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold" data-hours="2">2 Horas</button>
                             <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold" data-hours="4">4 Horas</button>
                             <button class="duration-btn p-3 border border-[var(--borde)] rounded-xl text-sm font-bold" data-hours="8">8 Horas</button>
@@ -124,12 +124,12 @@
                 </div>
 
                 <!-- PANEL TIEMPO REAL (Oculto por defecto) -->
-                <div id="dynamic-time-controls" class="hidden border-2 border-azul/20 bg-azul/5 p-6 rounded-2xl space-y-4">
-                    <h4 class="font-bold text-azul flex items-center gap-2 text-base">
+                <div id="dynamic-time-controls" class="hidden border-2 border-primario/20 bg-primario/5 p-6 rounded-2xl space-y-4">
+                    <h4 class="font-bold text-primario flex items-center gap-2 text-base">
                         <span class="material-symbols-outlined animate-spin text-xl" style="animation-duration: 3s">timer</span> Control de Tiempo Real
                     </h4>
                     <div class="flex flex-col sm:flex-row gap-3">
-                        <button id="btn-start-timer" class="flex-1 bg-azul hover:bg-azul-oscuro text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md">
+                        <button id="btn-start-timer" class="flex-1 bg-primario hover:bg-primario-oscuro text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md">
                             <span class="material-symbols-outlined text-xl">play_arrow</span> Registrar Entrada
                         </button>
                         <button id="btn-stop-timer" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md hidden">
@@ -146,7 +146,7 @@
             <!-- VEHÍCULOS -->
             <div class="card p-6">
                 <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-azul">directions_car</span> Vehículo a vincular
+                    <span class="material-symbols-outlined text-primario">directions_car</span> Vehículo a vincular
                 </h3>
                 <div id="vehicles-list" class="space-y-3">
                     <p class="text-sm text-[var(--texto-suave)] italic bg-[#f5f6fa]/50 dark:bg-[#161b2e]/30 p-4 rounded-xl text-center animate-pulse">
@@ -157,7 +157,7 @@
 
             <div class="flex flex-col gap-3">
                 <button id="btn-complete-booking"
-                        class="w-full bg-azul hover:bg-azul-oscuro text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-[var(--azul)]/20 hover:scale-[1.01] active:scale-[0.99]">
+                        class="w-full bg-primario hover:bg-primario-oscuro text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-[var(--primario)]/20 hover:scale-[1.01] active:scale-[0.99]">
                     <span class="material-symbols-outlined text-xl">lock</span>
                     Confirmar y Pagar <span id="summary-total-btn" class="ml-1 bg-white/20 px-2 py-0.5 rounded text-sm font-black">---</span>
                 </button>
@@ -177,7 +177,7 @@
                     <div>
                         <h3 id="summary-parking-name" class="text-xl font-black tracking-tight text-[#111318] dark:text-white">Cargando parking...</h3>
                         <p id="summary-parking-address" class="text-sm text-[var(--texto-suave)] flex items-center gap-1 mt-1">
-                            <span class="material-symbols-outlined text-base text-azul">location_on</span> ---
+                            <span class="material-symbols-outlined text-base text-primario">location_on</span> ---
                         </p>
                     </div>
 
@@ -208,7 +208,7 @@
                         </div>
                         <div class="flex justify-between items-center pt-4 border-t border-[var(--borde)]">
                             <span class="font-black text-base uppercase tracking-wider text-[#111318] dark:text-white">Total (IVA inc.)</span>
-                            <span id="summary-total" class="font-black text-3xl text-azul tracking-tight">---</span>
+                            <span id="summary-total" class="font-black text-3xl text-primario tracking-tight">---</span>
                         </div>
                     </div>
                 </div>
@@ -223,7 +223,7 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-10">
 
             <div class="col-span-2 md:col-span-1">
-                <a href="index.html" class="flex items-center gap-2 text-azul font-black text-lg mb-4">
+                <a href="index.html" class="flex items-center gap-2 text-primario font-black text-lg mb-4">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 48 48">
                         <path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill-rule="evenodd"/>
                         <path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill-rule="evenodd"/>
@@ -238,26 +238,26 @@
             <div>
                 <h6 class="font-bold text-sm mb-4">Producto</h6>
                 <ul class="flex flex-col gap-3 text-sm text-[var(--texto-suave)]">
-                    <li><a href="map.html" class="hover:text-azul transition-colors">Mapa en vivo</a></li>
-                    <li><a href="BussinessDashboard.html" class="hover:text-azul transition-colors">Para empresas</a></li>
-                    <li><a href="#" class="hover:text-azul transition-colors">API docs</a></li>
+                    <li><a href="map.html" class="hover:text-primario transition-colors">Mapa en vivo</a></li>
+                    <li><a href="BussinessDashboard.html" class="hover:text-primario transition-colors">Para empresas</a></li>
+                    <li><a href="#" class="hover:text-primario transition-colors">API docs</a></li>
                 </ul>
             </div>
 
             <div>
                 <h6 class="font-bold text-sm mb-4">Cuenta</h6>
                 <ul class="flex flex-col gap-3 text-sm text-[var(--texto-suave)]">
-                    <li><a href="login.html" class="hover:text-azul transition-colors">Iniciar sesión</a></li>
-                    <li><a href="register.html" class="hover:text-azul transition-colors">Registrarse</a></li>
-                    <li><a href="perfil.html" class="hover:text-azul transition-colors">Mi perfil</a></li>
+                    <li><a href="login.html" class="hover:text-primario transition-colors">Iniciar sesión</a></li>
+                    <li><a href="register.html" class="hover:text-primario transition-colors">Registrarse</a></li>
+                    <li><a href="perfil.html" class="hover:text-primario transition-colors">Mi perfil</a></li>
                 </ul>
             </div>
 
             <div>
                 <h6 class="font-bold text-sm mb-4">Legal</h6>
                 <ul class="flex flex-col gap-3 text-sm text-[var(--texto-suave)]">
-                    <li><a href="#" class="hover:text-azul transition-colors">Privacidad</a></li>
-                    <li><a href="#" class="hover:text-azul transition-colors">Términos de uso</a></li>
+                    <li><a href="#" class="hover:text-primario transition-colors">Privacidad</a></li>
+                    <li><a href="#" class="hover:text-primario transition-colors">Términos de uso</a></li>
                 </ul>
             </div>
 

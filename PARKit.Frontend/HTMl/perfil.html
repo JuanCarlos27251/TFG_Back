@@ -14,7 +14,7 @@
 <body class="layout-base">
     <header class="header-base">
         <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-            <a href="index.html" class="flex items-center gap-2 texto-azul font-black text-xl tracking-tight">
+            <a href="index.html" class="flex items-center gap-2 texto-primario font-black text-xl tracking-tight">
                 <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 48 48" aria-hidden="true">
                     <path clip-rule="evenodd" fill-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z"/>
                     <path clip-rule="evenodd" fill-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z"/>
@@ -22,8 +22,8 @@
                 PARKit
             </a>
             <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-                <a href="map.html" class="texto-suave hover:text-azul transition-colors">Mapa</a>
-                <a href="reservas.html" class="texto-suave hover:text-azul transition-colors">Mis Reservas</a>
+                <a href="map.html" class="texto-suave hover:text-primario transition-colors">Mapa</a>
+                <a href="reservas.html" class="texto-suave hover:text-primario transition-colors">Mis Reservas</a>
             </nav>
             <a href="perfil.html" id="header-user-avatar" class="avatar-btn" title="Mi Perfil">
                 <span class="material-symbols-outlined text-lg leading-none">person</span>
@@ -37,14 +37,14 @@
         <aside class="w-full md:w-64 shrink-0">
             <div class="flex flex-col gap-6 bg-[var(--fondo-card)] p-5 rounded-xl border border-[var(--borde)] shadow-sm">
                 <div class="flex items-center gap-3 border-b border-[var(--borde)] pb-4">
-                    <div id="user-avatar" class="w-12 h-12 rounded-full bg-azul text-white flex items-center justify-center font-black text-xl uppercase shadow-md shadow-azul/10">U</div>
+                    <div id="user-avatar" class="w-12 h-12 rounded-full bg-primario text-white flex items-center justify-center font-black text-xl uppercase shadow-md shadow-primario/10">U</div>
                     <div class="flex flex-col min-w-0">
                         <h1 id="sidebar-name" class="text-sm font-bold leading-tight truncate">Cargando...</h1>
                         <p class="text-[var(--texto-suave)] text-xs font-medium mt-0.5">Socio Conductor</p>
                     </div>
                 </div>
                 <nav class="flex flex-col gap-1">
-                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-azul/10 text-azul font-bold text-sm" href="#">
+                    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primario/10 text-primario font-bold text-sm" href="#">
                         <span class="material-symbols-outlined text-lg">person</span>Mi Perfil
                     </a>
                     <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[var(--texto-suave)] hover:bg-gray-100 dark:hover:bg-[#161b2e] font-medium text-sm transition-all" href="reservas.html">
@@ -64,7 +64,7 @@
             <div class="bg-[var(--fondo-card)] p-6 rounded-xl border border-[var(--borde)] shadow-sm">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
                     <div class="flex items-center gap-5 w-full sm:w-auto">
-                        <div id="profile-avatar-large" class="w-20 h-20 rounded-full bg-azul text-white flex items-center justify-center text-3xl font-black uppercase shrink-0 shadow-lg shadow-azul/15">U</div>
+                        <div id="profile-avatar-large" class="w-20 h-20 rounded-full bg-primario text-white flex items-center justify-center text-3xl font-black uppercase shrink-0 shadow-lg shadow-primario/15">U</div>
                         <div class="flex flex-col">
                             <h2 id="client-greeting" class="text-xl font-black tracking-tight">¡Bienvenido!</h2>
                             <p class="text-[var(--texto-suave)] text-sm mt-0.5 font-medium">Gestiona tus datos, vehículos y métodos de pago.</p>
@@ -75,7 +75,7 @@
                             <span class="material-symbols-outlined text-base">lock_reset</span>
                             Cambiar contraseña
                         </button>
-                        <button id="btn-save-profile" class="btn btn-primario px-6 py-3 shadow-lg shadow-azul/20 text-sm font-bold">
+                        <button id="btn-save-profile" class="btn btn-primario px-6 py-3 shadow-lg shadow-primario/20 text-sm font-bold">
                             Guardar Perfil
                         </button>
                     </div>
@@ -90,7 +90,7 @@
                 <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="flex flex-col gap-1.5">
                         <label class="text-xs font-bold text-[var(--texto-suave)] uppercase tracking-wider">Nombre Completo</label>
-                        <input id="input-name" class="w-full rounded-lg border-[var(--borde)] bg-transparent focus:border-azul focus:ring-azul text-sm" type="text" />
+                        <input id="input-name" class="w-full rounded-lg border-[var(--borde)] bg-transparent focus:border-primario focus:ring-primario text-sm" type="text" />
                     </div>
                     <div class="flex flex-col gap-1.5">
                         <label class="text-xs font-bold text-[var(--texto-suave)] uppercase tracking-wider">Email</label>
@@ -98,7 +98,7 @@
                     </div>
                     <div class="flex flex-col gap-1.5">
                         <label class="text-xs font-bold text-[var(--texto-suave)] uppercase tracking-wider">Teléfono</label>
-                        <input id="input-phone" class="w-full rounded-lg border-[var(--borde)] bg-transparent focus:border-azul focus:ring-azul text-sm" type="tel" />
+                        <input id="input-phone" class="w-full rounded-lg border-[var(--borde)] bg-transparent focus:border-primario focus:ring-primario text-sm" type="tel" />
                     </div>
                 </div>
             </div>
@@ -107,7 +107,7 @@
             <div class="bg-[var(--fondo-card)] rounded-xl border border-[var(--borde)] shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-[var(--borde)] bg-gray-50/50 dark:bg-[#161b2e]/20 flex justify-between items-center">
                     <h3 class="font-bold text-sm tracking-tight text-gray-800 dark:text-gray-200 uppercase">Mis Vehículos</h3>
-                    <button id="btn-add-vehicle" class="text-azul text-xs font-bold flex items-center gap-1 hover:text-azul-oscuro transition-colors">
+                    <button id="btn-add-vehicle" class="text-primario text-xs font-bold flex items-center gap-1 hover:text-primario-oscuro transition-colors">
                         <span class="material-symbols-outlined text-base">add_circle</span> Añadir vehículo
                     </button>
                 </div>
@@ -118,7 +118,7 @@
             <div class="bg-[var(--fondo-card)] rounded-xl border border-[var(--borde)] shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-[var(--borde)] bg-gray-50/50 dark:bg-[#161b2e]/20 flex justify-between items-center">
                     <h3 class="font-bold text-sm tracking-tight text-gray-800 dark:text-gray-200 uppercase">Métodos de Pago</h3>
-                    <button id="btn-add-payment" class="text-azul text-xs font-bold flex items-center gap-1 hover:text-azul-oscuro transition-colors">
+                    <button id="btn-add-payment" class="text-primario text-xs font-bold flex items-center gap-1 hover:text-primario-oscuro transition-colors">
                         <span class="material-symbols-outlined text-base">add_circle</span> Añadir tarjeta
                     </button>
                 </div>
@@ -135,25 +135,25 @@
             <div class="space-y-4">
                 <div class="flex flex-col gap-1.5">
                     <label class="text-xs font-bold text-[var(--texto-suave)] uppercase">Matrícula</label>
-                    <input id="vehicle-plate" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-azul focus:ring-azul uppercase" placeholder="1234ABC" />
+                    <input id="vehicle-plate" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-primario focus:ring-primario uppercase" placeholder="1234ABC" />
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="flex flex-col gap-1.5">
                         <label class="text-xs font-bold text-[var(--texto-suave)] uppercase">Marca</label>
-                        <input id="vehicle-brand" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-azul focus:ring-azul" placeholder="Seat" />
+                        <input id="vehicle-brand" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-primario focus:ring-primario" placeholder="Seat" />
                     </div>
                     <div class="flex flex-col gap-1.5">
                         <label class="text-xs font-bold text-[var(--texto-suave)] uppercase">Modelo</label>
-                        <input id="vehicle-model" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-azul focus:ring-azul" placeholder="Ibiza" />
+                        <input id="vehicle-model" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-primario focus:ring-primario" placeholder="Ibiza" />
                     </div>
                 </div>
                 <div class="flex items-center gap-6 pt-2">
                     <label class="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" id="vehicle-is-large" class="rounded border-gray-300 dark:border-gray-700 text-azul focus:ring-azul" />
+                        <input type="checkbox" id="vehicle-is-large" class="rounded border-gray-300 dark:border-gray-700 text-primario focus:ring-primario" />
                         <span class="text-xs font-bold text-gray-600 dark:text-gray-400">¿Es Coche Grande?</span>
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer select-none">
-                        <input type="checkbox" id="vehicle-is-electric" class="rounded border-gray-300 dark:border-gray-700 text-azul focus:ring-azul" />
+                        <input type="checkbox" id="vehicle-is-electric" class="rounded border-gray-300 dark:border-gray-700 text-primario focus:ring-primario" />
                         <span class="text-xs font-bold text-gray-600 dark:text-gray-400">¿Es Eléctrico?</span>
                     </label>
                 </div>
@@ -172,20 +172,20 @@
             <div class="space-y-4">
                 <div class="flex flex-col gap-1.5">
                     <label class="text-xs font-bold text-[var(--texto-suave)] uppercase">Titular de la tarjeta</label>
-                    <input id="card-holder" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-azul focus:ring-azul" placeholder="Juan Pérez" />
+                    <input id="card-holder" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-primario focus:ring-primario" placeholder="Juan Pérez" />
                 </div>
                 <div class="flex flex-col gap-1.5">
                     <label class="text-xs font-bold text-[var(--texto-suave)] uppercase">Número de tarjeta</label>
-                    <input id="card-number" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-azul focus:ring-azul font-mono" placeholder="0000 0000 0000 0000" />
+                    <input id="card-number" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-primario focus:ring-primario font-mono" placeholder="0000 0000 0000 0000" />
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="flex flex-col gap-1.5">
                         <label class="text-xs font-bold text-[var(--texto-suave)] uppercase">Expiración</label>
-                        <input id="card-expiry" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-azul focus:ring-azul" placeholder="MM/YY" />
+                        <input id="card-expiry" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-primario focus:ring-primario" placeholder="MM/YY" />
                     </div>
                     <div class="flex flex-col gap-1.5">
                         <label class="text-xs font-bold text-[var(--texto-suave)] uppercase">CVV</label>
-                        <input id="card-cvv" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-azul focus:ring-azul" placeholder="***" type="password" />
+                        <input id="card-cvv" class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-primario focus:ring-primario" placeholder="***" type="password" />
                     </div>
                 </div>
             </div>
@@ -206,7 +206,7 @@
                     <label class="text-xs font-bold text-[var(--texto-suave)] uppercase">Nueva contraseña</label>
                     <div class="relative">
                         <input id="password-new" type="password" minlength="8" placeholder="Mín. 8 caracteres"
-                            class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-azul focus:ring-azul pr-10" />
+                            class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-primario focus:ring-primario pr-10" />
                         <button id="btn-ver-password-new" type="button"
                             class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] hover:text-[var(--texto)] transition-colors">
                             <span class="material-symbols-outlined text-sm">visibility</span>
@@ -217,7 +217,7 @@
                     <label class="text-xs font-bold text-[var(--texto-suave)] uppercase">Confirmar contraseña</label>
                     <div class="relative">
                         <input id="password-confirm" type="password" minlength="8" placeholder="Repite la contraseña"
-                            class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-azul focus:ring-azul pr-10" />
+                            class="w-full rounded-lg border-[var(--borde)] bg-transparent text-sm focus:border-primario focus:ring-primario pr-10" />
                         <button id="btn-ver-password-confirm" type="button"
                             class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--texto-suave)] hover:text-[var(--texto)] transition-colors">
                             <span class="material-symbols-outlined text-sm">visibility</span>

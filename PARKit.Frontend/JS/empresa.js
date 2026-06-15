@@ -18,7 +18,7 @@
         const colores = { exito: 'verde', error: 'rojo', aviso: 'naranja' };
         toast.className = `toast toast-${tipo}`;
         toast.innerHTML = `
-            <span class="material-symbols-outlined icono-relleno" style="color:var(--${colores[tipo] || 'azul'})">${iconos[tipo] || 'info'}</span>
+            <span class="material-symbols-outlined icono-relleno" style="color:var(--${colores[tipo] || 'primario'})">${iconos[tipo] || 'info'}</span>
             <span class="text-sm font-medium">${msg}</span>`;
         cont.appendChild(toast);
         setTimeout(() => toast.remove(), 3500);
@@ -137,13 +137,13 @@
         svgContainer.innerHTML = `
             <defs>
                 <linearGradient id="revenue_grad" x1="500" x2="500" y1="0" y2="240" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="var(--azul)" stop-opacity="0.25"></stop>
-                    <stop offset="1" stop-color="var(--azul)" stop-opacity="0"></stop>
+                    <stop stop-color="var(--primario)" stop-opacity="0.25"></stop>
+                    <stop offset="1" stop-color="var(--primario)" stop-opacity="0"></stop>
                 </linearGradient>
             </defs>
             <path d="${areaD}" fill="url(#revenue_grad)"></path>
-            <path d="${pathD}" stroke="var(--azul)" stroke-linecap="round" stroke-width="4" fill="none"></path>
-            ${puntos.map((p, i) => `<circle cx="${p.x}" cy="${p.y}" r="5" fill="var(--azul)"><title>${meses[(datos[i].month || 1) - 1]} ${datos[i].year}: ${(datos[i].totalRevenue || 0).toFixed(2)}€</title></circle>`).join('')}
+            <path d="${pathD}" stroke="var(--primario)" stroke-linecap="round" stroke-width="4" fill="none"></path>
+            ${puntos.map((p, i) => `<circle cx="${p.x}" cy="${p.y}" r="5" fill="var(--primario)"><title>${meses[(datos[i].month || 1) - 1]} ${datos[i].year}: ${(datos[i].totalRevenue || 0).toFixed(2)}€</title></circle>`).join('')}
         `;
         if (etiquetas) etiquetas.innerHTML = datos.map(d => `<span>${meses[(d.month || 1) - 1]}</span>`).join('');
     }
@@ -171,7 +171,7 @@
                 const llegada = r.startTime ? new Date(r.startTime).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '--';
                 return `
                     <tr>
-                        <td><div class="badge badge-azul font-mono text-sm uppercase">--</div></td>
+                        <td><div class="badge badge-primario font-mono text-sm uppercase">--</div></td>
                         <td>Invitado</td>
                         <td><span class="font-mono text-[var(--texto-suave)]">${r.spotNumber || '--'}</span></td>
                         <td class="text-[var(--texto-suave)]">${llegada}</td>
@@ -189,11 +189,11 @@
         const mapa = {
             0: { clase: 'badge-verde', texto: 'Activa' },
             1: { clase: 'badge-rojo', texto: 'Cancelada' },
-            2: { clase: 'badge-azul', texto: 'Finalizada' },
+            2: { clase: 'badge-primario', texto: 'Finalizada' },
             3: { clase: 'badge-naranja', texto: 'Pendiente' },
             4: { clase: 'badge-naranja', texto: 'Confirmada' }
         };
-        return mapa[status] || { clase: 'badge-azul', texto: status || '--' };
+        return mapa[status] || { clase: 'badge-primario', texto: status || '--' };
     }
 
 
@@ -318,7 +318,7 @@
                     data: dataRevenues,
                     fill: true,
                     backgroundColor: 'rgba(19,91,236,0.12)',
-                    borderColor: '#135bec', // Azul
+                    borderColor: '#135bec', // primario
                     borderWidth: 2.5,
                     pointBackgroundColor: '#135bec',
                     pointRadius: 4,
@@ -438,7 +438,7 @@
         
         container.innerHTML = horasTop.map(h => {
             const hFormat = h.hour.toString().padStart(2, '0');
-            return `<span class="badge badge-azul text-[10px]">${hFormat}:00 – ${hFormat}:59</span>`;
+            return `<span class="badge badge-primario text-[10px]">${hFormat}:00 – ${hFormat}:59</span>`;
         }).join('');
     }
 

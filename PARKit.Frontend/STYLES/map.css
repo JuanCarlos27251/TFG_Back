@@ -26,7 +26,7 @@
 
 .marcador-parking.publico           { background: var(--verde); }
 .marcador-parking.privado           { background: var(--rojo); }
-.marcador-parking.zona-regulada     { background: var(--azul); }
+.marcador-parking.zona-regulada     { background: var(--primario); }
 .marcador-parking.zona-naranja      { background: var(--naranja); }
 
 /* Tooltip del marcador */
@@ -101,7 +101,7 @@
 .mapboxgl-ctrl-geocoder .suggestions > .active > a,
 .mapboxgl-ctrl-geocoder .suggestions > li > a:hover {
     background-color: rgba(19, 91, 236, 0.08) !important;
-    color: var(--azul) !important;
+    color: var(--primario) !important;
 }
 
 /* Popup  */

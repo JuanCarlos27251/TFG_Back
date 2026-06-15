@@ -16,7 +16,7 @@
         const colores = { exito: 'verde', error: 'rojo', aviso: 'naranja' };
         toast.className = `toast toast-${tipo}`;
         toast.innerHTML = `
-            <span class="material-symbols-outlined icono-relleno" style="color:var(--${colores[tipo] || 'azul'})">${iconos[tipo] || 'info'}</span>
+            <span class="material-symbols-outlined icono-relleno" style="color:var(--${colores[tipo] || 'primario'})">${iconos[tipo] || 'info'}</span>
             <span class="text-sm font-medium">${msg}</span>`;
         cont.appendChild(toast);
         setTimeout(() => toast.remove(), 3500);
@@ -153,7 +153,7 @@
 
     async function cargarVehiculos() {
         const cont = document.getElementById('vehicles-list');
-        cont.innerHTML = `<div class="col-span-2 flex justify-center py-4"><span class="w-6 h-6 border-2 border-azul border-t-transparent rounded-full animate-spin"></span></div>`;
+        cont.innerHTML = `<div class="col-span-2 flex justify-center py-4"><span class="w-6 h-6 border-2 border-primario border-t-transparent rounded-full animate-spin"></span></div>`;
         try {
             const cars = await apiFetch(`${API}/api/Car/MyCars`);
             renderVehiculos(cars);
@@ -171,7 +171,7 @@
         cont.innerHTML = cars.map(c => `
             <div class="flex items-center justify-between gap-3 p-4 rounded-xl border border-[var(--borde)] bg-gray-50/50 dark:bg-[#161b2e]/40 group">
                 <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-10 h-10 rounded-lg bg-azul/10 text-azul flex items-center justify-center flex-shrink-0">
+                    <div class="w-10 h-10 rounded-lg bg-primario/10 text-primario flex items-center justify-center flex-shrink-0">
                         <span class="material-symbols-outlined text-lg">${c.electricVehicle ? 'electric_car' : c.largeVehicle ? 'local_shipping' : 'directions_car'}</span>
                     </div>
                     <div class="min-w-0">
@@ -185,7 +185,7 @@
                 </div>
                 <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
                     <button onclick="editarVehiculo(${c.id})" title="Editar"
-                        class="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--texto-suave)] hover:bg-azul/10 hover:text-azul transition-colors">
+                        class="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--texto-suave)] hover:bg-primario/10 hover:text-primario transition-colors">
                         <span class="material-symbols-outlined text-base">edit</span>
                     </button>
                     <button onclick="eliminarVehiculo(${c.id})" title="Eliminar"
@@ -270,7 +270,7 @@
     async function cargarMetodosPago() {
         if (!userId) return;
         const cont = document.getElementById('payment-methods-list');
-        cont.innerHTML = `<div class="col-span-2 flex justify-center py-4"><span class="w-6 h-6 border-2 border-azul border-t-transparent rounded-full animate-spin"></span></div>`;
+        cont.innerHTML = `<div class="col-span-2 flex justify-center py-4"><span class="w-6 h-6 border-2 border-primario border-t-transparent rounded-full animate-spin"></span></div>`;
         try {
             const methods = await apiFetch(`${API}/api/PaymentMethod/user/${userId}`);
             renderMetodosPago(methods);

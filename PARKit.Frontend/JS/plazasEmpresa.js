@@ -17,7 +17,7 @@
     const STATUS = {
         0: { name: 'Libre',         color: 'verde',   bgClass: 'bg-[#22c55e] text-white border-transparent shadow shadow-[#22c55e]/40' },
         1: { name: 'En Uso',        color: 'naranja', bgClass: 'bg-[#eab308] text-white border-transparent shadow shadow-[#eab308]/40' }, // Amarillo
-        2: { name: 'Reservada',     color: 'azul',    bgClass: 'bg-[#3b82f6] text-white border-transparent shadow shadow-[#3b82f6]/40' }, // Azul
+        2: { name: 'Reservada',     color: 'primario',    bgClass: 'bg-[#3b82f6] text-white border-transparent shadow shadow-[#3b82f6]/40' }, // primario
         3: { name: 'Mantenimiento', color: 'rojo',    bgClass: 'bg-[#ef4444] text-white border-transparent shadow shadow-[#ef4444]/40' }  // Rojo
     };
 
@@ -29,7 +29,7 @@
         const colores = { exito: 'verde', error: 'rojo', aviso: 'naranja' };
         toast.className = `toast toast-${tipo}`;
         toast.innerHTML = `
-            <span class="material-symbols-outlined icono-relleno" style="color:var(--${colores[tipo] || 'azul'})">${iconos[tipo] || 'info'}</span>
+            <span class="material-symbols-outlined icono-relleno" style="color:var(--${colores[tipo] || 'primario'})">${iconos[tipo] || 'info'}</span>
             <span class="text-sm font-medium">${msg}</span>`;
         cont.appendChild(toast);
         setTimeout(() => toast.remove(), 3500);

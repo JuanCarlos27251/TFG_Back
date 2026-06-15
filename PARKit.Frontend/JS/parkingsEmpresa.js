@@ -18,7 +18,7 @@
         const colores = { exito: 'verde', error: 'rojo', aviso: 'naranja' };
         toast.className = `toast toast-${tipo}`;
         toast.innerHTML = `
-            <span class="material-symbols-outlined icono-relleno" style="color:var(--${colores[tipo] || 'azul'})">${iconos[tipo] || 'info'}</span>
+            <span class="material-symbols-outlined icono-relleno" style="color:var(--${colores[tipo] || 'primario'})">${iconos[tipo] || 'info'}</span>
             <span class="text-sm font-medium">${msg}</span>`;
         cont.appendChild(toast);
         setTimeout(() => toast.remove(), 3500);
@@ -85,12 +85,12 @@
             btn.addEventListener('click', (e) => {
                 // Quitar color a los demás
                 document.querySelectorAll('.filtro-btn').forEach(b => {
-                    b.classList.remove('activo', 'bg-[var(--azul)]', 'text-white');
+                    b.classList.remove('activo', 'bg-[var(--primario)]', 'text-white');
                     b.classList.add('bg-[var(--fondo-card)]', 'text-[var(--texto-suave)]');
                 });
                 // Darle color al clickado
                 const clicked = e.currentTarget;
-                clicked.classList.add('activo', 'bg-[var(--azul)]', 'text-white');
+                clicked.classList.add('activo', 'bg-[var(--primario)]', 'text-white');
                 clicked.classList.remove('bg-[var(--fondo-card)]', 'text-[var(--texto-suave)]');
                 
                 aplicarFiltrosYBusqueda();
@@ -130,13 +130,13 @@
 
         lista.forEach(p => {
             const tipoMap = {
-                0: { nombre: 'Público', clase: 'badge-azul' },
+                0: { nombre: 'Público', clase: 'badge-primario' },
                 1: { nombre: 'Privado', clase: 'badge-naranja' },
-                2: { nombre: 'Zona Regulada', clase: 'badge-azul-claro' },
+                2: { nombre: 'Zona Regulada', clase: 'badge-primario-claro' },
                 3: { nombre: 'Zona Naranja', clase: 'badge-naranja' } 
             };
             
-            const tipoProp = tipoMap[p.type] || { nombre: 'Desconocido', clase: 'badge-azul' };
+            const tipoProp = tipoMap[p.type] || { nombre: 'Desconocido', clase: 'badge-primario' };
             const img = p.imageUrl ? p.imageUrl : 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=600&q=70';
 
             let total = 0, ocupadas = 0, libres = 0;
@@ -182,22 +182,22 @@
                                 <p class="text-[10px] text-[var(--texto-suave)] font-bold uppercase tracking-wider mt-0.5">Total</p>
                             </div>
                             <div class="bg-[var(--fondo)] rounded-lg p-2.5">
-                                <p class="text-lg font-black text-[var(--azul)]">${total > 0 ? pct + '%' : '--'}</p>
+                                <p class="text-lg font-black text-[var(--primario)]">${total > 0 ? pct + '%' : '--'}</p>
                                 <p class="text-[10px] text-[var(--texto-suave)] font-bold uppercase tracking-wider mt-0.5">Ocup.</p>
                             </div>
                         </div>
 
                         <div>
                             <div class="w-full h-1.5 bg-[var(--borde)] rounded-full overflow-hidden">
-                                <div class="h-full bg-[var(--azul)] rounded-full" style="width: ${pct}%"></div>
+                                <div class="h-full bg-[var(--primario)] rounded-full" style="width: ${pct}%"></div>
                             </div>
                         </div>
 
                         <div class="flex gap-2 mt-auto pt-1">
-                            <a href="gestionplazasEmpresa.html?id=${p.id}" class="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-[var(--borde)] text-xs font-bold text-[var(--texto-suave)] hover:border-[var(--azul)] hover:text-[var(--azul)] transition-all">
+                            <a href="gestionplazasEmpresa.html?id=${p.id}" class="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-[var(--borde)] text-xs font-bold text-[var(--texto-suave)] hover:border-[var(--primario)] hover:text-[var(--primario)] transition-all">
                                 <span class="material-symbols-outlined text-[16px]">garage</span> Plazas
                             </a>
-                            <a href="editarparkingEmpresa.html?id=${p.id}" class="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-[var(--azul)] text-white text-xs font-bold hover:bg-[var(--azul-oscuro)] transition-all shadow-md shadow-[var(--azul)]/20">
+                            <a href="editarparkingEmpresa.html?id=${p.id}" class="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-[var(--primario)] text-white text-xs font-bold hover:bg-[var(--primario-oscuro)] transition-all shadow-md shadow-[var(--primario)]/20">
                                 <span class="material-symbols-outlined text-[16px]">edit</span> Editar
                             </a>
                         </div>
@@ -209,12 +209,12 @@
 
         // Botón grande final "Añadir Parking"
         grid.insertAdjacentHTML('beforeend', `
-             <a href="addparkingEmpresa.html" class="card flex flex-col items-center justify-center gap-4 p-8 border-dashed border-2 border-[var(--borde)] bg-transparent hover:border-[var(--azul)] hover:bg-[var(--azul)]/5 cursor-pointer group transition-all duration-200 min-h-[320px]">
-                <div class="w-14 h-14 rounded-full border-2 border-dashed border-[var(--borde)] group-hover:border-[var(--azul)] flex items-center justify-center text-[var(--texto-suave)] group-hover:text-[var(--azul)] transition-all">
+             <a href="addparkingEmpresa.html" class="card flex flex-col items-center justify-center gap-4 p-8 border-dashed border-2 border-[var(--borde)] bg-transparent hover:border-[var(--primario)] hover:bg-[var(--primario)]/5 cursor-pointer group transition-all duration-200 min-h-[320px]">
+                <div class="w-14 h-14 rounded-full border-2 border-dashed border-[var(--borde)] group-hover:border-[var(--primario)] flex items-center justify-center text-[var(--texto-suave)] group-hover:text-[var(--primario)] transition-all">
                     <span class="material-symbols-outlined text-2xl">add</span>
                 </div>
                 <div class="text-center">
-                    <p class="font-bold text-sm text-[var(--texto-suave)] group-hover:text-[var(--azul)] transition-colors">Añadir nuevo parking</p>
+                    <p class="font-bold text-sm text-[var(--texto-suave)] group-hover:text-[var(--primario)] transition-colors">Añadir nuevo parking</p>
                     <p class="text-xs text-[var(--texto-suave)] mt-1 opacity-70">Registra una nueva instalación</p>
                 </div>
             </a>

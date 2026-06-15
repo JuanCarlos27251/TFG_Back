@@ -18,12 +18,12 @@
     <aside class="w-full md:w-64 bg-[var(--fondo-card)] border-r border-[var(--borde)] flex flex-col justify-between p-5 md:sticky md:top-0 md:h-screen z-40 shadow-lg md:shadow-none">
         <div class="flex flex-col gap-8">
             <a href="../index.html" class="flex items-center gap-3 px-2 text-[var(--texto)] font-black text-xl tracking-tight">
-                <div class="bg-[var(--azul)] rounded-xl w-10 h-10 flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-[var(--azul)]/30">
+                <div class="bg-[var(--primario)] rounded-xl w-10 h-10 flex items-center justify-center text-white flex-shrink-0 shadow-lg shadow-[var(--primario)]/30">
                     <span class="material-symbols-outlined icono-relleno">local_parking</span>
                 </div>
                 <div class="flex flex-col">
                     <span class="leading-none">PARKit</span>
-                    <span class="text-[10px] text-[var(--azul)] uppercase tracking-wider mt-1">Negocios</span>
+                    <span class="text-[10px] text-[var(--primario)] uppercase tracking-wider mt-1">Negocios</span>
                 </div>
             </a>
 
@@ -91,7 +91,7 @@
                         <p id="header-empresa-nombre" class="text-sm font-bold leading-none">Cargando...</p>
                         <p id="header-empresa-subtitulo" class="text-[11px] text-[var(--texto-suave)] mt-1"></p>
                     </div>
-                    <div id="header-empresa-avatar" class="w-10 h-10 rounded-full bg-[var(--azul)] flex items-center justify-center text-white font-bold">A</div>
+                    <div id="header-empresa-avatar" class="w-10 h-10 rounded-full bg-[var(--primario)] flex items-center justify-center text-white font-bold">A</div>
                 </div>
             </div>
         </header>
@@ -105,7 +105,7 @@
                     <h3 id="gp-parking-title" class="text-2xl font-black tracking-tight text-[var(--texto)]">Cargando Parking...</h3>
                     <p id="gp-parking-subtitle" class="text-sm text-[var(--texto-suave)] mt-1">Recuperando esquema de distribución</p>
                 </div>
-                <button class="btn btn-ghost text-xs text-[var(--texto-suave)] flex items-center gap-1 border border-[var(--borde)] hover:text-[var(--azul)] hover:border-[var(--azul)]" onclick="window.history.back()">
+                <button class="btn btn-ghost text-xs text-[var(--texto-suave)] flex items-center gap-1 border border-[var(--borde)] hover:text-[var(--primario)] hover:border-[var(--primario)]" onclick="window.history.back()">
                     <span class="material-symbols-outlined text-[16px]">arrow_back</span> Volver a Lista
                 </button>
             </div>
@@ -124,7 +124,7 @@
                 <div class="card p-5 flex flex-col gap-3">
                     <div class="flex items-center justify-between">
                         <p class="text-xs font-bold uppercase tracking-widest text-[var(--texto-suave)]">Ocupadas</p>
-                        <span class="material-symbols-outlined text-[var(--azul)]">directions_car</span>
+                        <span class="material-symbols-outlined text-[var(--primario)]">directions_car</span>
                     </div>
                     <p id="stat-occupied" class="text-3xl font-black text-[var(--texto)]">0</p>
                 </div>
@@ -166,7 +166,7 @@
                         <span class="text-xs font-bold uppercase tracking-widest text-[var(--texto-suave)]">Estado</span>
                         <div class="flex items-center gap-2">
                             <button id="filter-status-0" class="filtro-estado filtro-estado--verde" title="Libres"></button>
-                            <button id="filter-status-1" class="filtro-estado filtro-estado--azul"  title="Ocupadas"></button>
+                            <button id="filter-status-1" class="filtro-estado filtro-estado--primario"  title="Ocupadas"></button>
                             <button id="filter-status-2" class="filtro-estado filtro-estado--naranja" title="Reservadas"></button>
                             <button id="filter-status-3" class="filtro-estado filtro-estado--rojo"  title="Mantenimiento"></button>
                         </div>
@@ -210,7 +210,7 @@
                                 <span class="material-symbols-outlined text-[13px] text-[var(--naranja)]">airport_shuttle</span> Grande
                             </div>
                             <div class="text-[10px] flex items-center gap-1 text-[var(--texto-suave)] uppercase font-bold">
-                                <span class="material-symbols-outlined text-[13px] text-[var(--azul)]">accessible</span> PMR
+                                <span class="material-symbols-outlined text-[13px] text-[var(--primario)]">accessible</span> PMR
                             </div>
                         </div>
 
@@ -263,7 +263,7 @@
                 <span id="gp-ocupacion-texto" class="text-xs font-black text-[var(--texto)]">0%</span>
             </div>
             <div class="w-full h-2 bg-[var(--borde)] rounded-full overflow-hidden">
-                <div id="gp-ocupacion-barra" class="h-full bg-[var(--azul)] rounded-full transition-all duration-500" style="width:0%"></div>
+                <div id="gp-ocupacion-barra" class="h-full bg-[var(--primario)] rounded-full transition-all duration-500" style="width:0%"></div>
             </div>
         </div>
 

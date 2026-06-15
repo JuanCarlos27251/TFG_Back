@@ -164,12 +164,12 @@ class ParkingMap {
                 if (this.filtrosActivos.includes(tipoFiltro)) {
                     this.filtrosActivos = this.filtrosActivos.filter(f => f !== tipoFiltro);
                     // Apagamos visualmente el botón
-                    btn.classList.remove('bg-[var(--azul)]', 'text-white', 'border-[var(--azul)]');
+                    btn.classList.remove('bg-[var(--primario)]', 'text-white', 'border-[var(--primario)]');
                     btn.classList.add('bg-white', 'dark:bg-[#161b2e]', 'text-[var(--texto-suave)]');
                 } else {
                     this.filtrosActivos.push(tipoFiltro);
                     // Encendemos visualmente el botón
-                    btn.classList.add('bg-[var(--azul)]', 'text-white', 'border-[var(--azul)]');
+                    btn.classList.add('bg-[var(--primario)]', 'text-white', 'border-[var(--primario)]');
                     btn.classList.remove('bg-white', 'dark:bg-[#161b2e]', 'text-[var(--texto-suave)]');
                 }
                 
@@ -203,7 +203,7 @@ class ParkingMap {
 
             // 2. Interior con diseño y animaciones
             const innerEl = document.createElement('div');
-            innerEl.className = 'w-full h-full bg-[var(--azul)] text-white rounded-full flex items-center justify-center border-2 border-white shadow-lg hover:scale-110 transition-transform';
+            innerEl.className = 'w-full h-full bg-[var(--primario)] text-white rounded-full flex items-center justify-center border-2 border-white shadow-lg hover:scale-110 transition-transform';
             innerEl.innerHTML = '<span class="material-symbols-outlined text-xl">local_parking</span>';
             
             wrapper.appendChild(innerEl);
@@ -410,7 +410,7 @@ class ParkingMap {
         }
 
         const btn = document.getElementById('btn-reservar');
-        btn.innerHTML = `<span class="w-4 h-4 rounded-full border-2 border-[var(--azul)] border-t-white animate-spin"></span> Cargando...`;
+        btn.innerHTML = `<span class="w-4 h-4 rounded-full border-2 border-[var(--primario)] border-t-white animate-spin"></span> Cargando...`;
         
         setTimeout(() => {
             btn.innerHTML = `<span class="material-symbols-outlined text-sm">front_loader</span> Transfiriendo...`;
@@ -451,7 +451,7 @@ class ParkingMap {
             this.map.once('load', () => {
                 // Marcador del destino
                 const elDest = document.createElement('div');
-                elDest.className = 'w-10 h-10 bg-[var(--azul)] text-white rounded-full flex items-center justify-center border-2 border-white shadow-lg';
+                elDest.className = 'w-10 h-10 bg-[var(--primario)] text-white rounded-full flex items-center justify-center border-2 border-white shadow-lg';
                 elDest.innerHTML = '<span class="material-symbols-outlined text-xl">local_parking</span>';
                 new mapboxgl.Marker({ element: elDest })
                     .setLngLat([ruta.destLng, ruta.destLat])

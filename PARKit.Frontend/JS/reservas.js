@@ -10,7 +10,7 @@
     const STATUS_MAP = {
         0: { text: "Activa", class: "badge-verde" },
         1: { text: "Cancelada", class: "badge-rojo" },
-        2: { text: "Finalizada", class: "badge-azul" },
+        2: { text: "Finalizada", class: "badge-primario" },
         3: { text: "Pendiente", class: "badge-naranja" },
         4: { text: "Confirmada", class: "badge-verde" }
     };
@@ -23,7 +23,7 @@
         const colores = { exito: 'verde', error: 'rojo', aviso: 'naranja' };
         toast.className = `toast toast-${tipo}`;
         toast.innerHTML = `
-            <span class="material-symbols-outlined icono-relleno" style="color:var(--${colores[tipo] || 'azul'})">${iconos[tipo] || 'info'}</span>
+            <span class="material-symbols-outlined icono-relleno" style="color:var(--${colores[tipo] || 'primario'})">${iconos[tipo] || 'info'}</span>
             <span class="text-sm font-medium">${msg}</span>`;
         cont.appendChild(toast);
         setTimeout(() => toast.remove(), 3500);
@@ -190,7 +190,7 @@
                     <p class="text-[11px] text-[var(--texto-suave)] mt-0.5">${horaInicio} - ${horaFin}</p>
                 </td>
                 <td class="px-6 py-4">
-                    <p class="font-bold text-[var(--azul)] dark:text-[#a0c4ff]">${res.parkingName || 'Desconocido'}</p>
+                    <p class="font-bold text-[var(--primario)] dark:text-[#a0c4ff]">${res.parkingName || 'Desconocido'}</p>
                     <p class="text-[11px] text-[var(--texto-suave)] mt-0.5">ID: #${res.id}</p>
                 </td>
                 <td class="px-6 py-4 text-center">

@@ -8,7 +8,7 @@
 const AUTH = (() => {
 
     // ── Configuración ──────────────────────────────────────────────
-    const API_BASE = 'https://localhost:7033';
+    const API_BASE = window.CONFIG?.API_BASE || 'https://localhost:7033';
 
     const RUTAS = {
         loginUsuario:  `${API_BASE}/api/Auth/Login`,

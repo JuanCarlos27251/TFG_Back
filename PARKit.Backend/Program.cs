@@ -13,15 +13,15 @@ using PARKit.Backend.Worker;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ─────────────────────────────────────────
+// 
 // 1. BASE DE DATOS — Entity Framework Core
-// ─────────────────────────────────────────
+// 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// ─────────────────────────────────────────
+// 
 // 2. REPOSITORIOS
-// ─────────────────────────────────────────
+// 
 builder.Services.AddScoped<IUserRepository,          UserRepository>();
 builder.Services.AddScoped<ICompanyRepository,       CompanyRepository>();
 builder.Services.AddScoped<IParkingRepository,       ParkingRepository>();
@@ -32,9 +32,9 @@ builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
 builder.Services.AddScoped<ITarifRepository,         TarifRepository>();
 builder.Services.AddScoped<ICarRepository,           CarRepository>();
 
-// ─────────────────────────────────────────
+// 
 // 3. SERVICIOS DE NEGOCIO
-// ─────────────────────────────────────────
+// 
 builder.Services.AddScoped<IAuthServices,         AuthServices>();
 builder.Services.AddScoped<IUserService,          UserService>();
 builder.Services.AddScoped<ICompanyService,       CompanyService>();
@@ -50,24 +50,24 @@ builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<IPaymentService>(sp       => sp.GetRequiredService<PaymentService>());
 builder.Services.AddScoped<IPaymentMethodService>(sp => sp.GetRequiredService<PaymentService>());
 
-// ─────────────────────────────────────────
+// 
 // 4. HTTPCLIENT PARA EL WORKER MUNICIPAL
-// ─────────────────────────────────────────
+// 
 builder.Services.AddHttpClient("ZaragozaApi", client =>
 {
     client.Timeout = TimeSpan.FromSeconds(15);
 });
 
-// ─────────────────────────────────────────
+// 
 // 5. WORKER (Background Service)
-// ─────────────────────────────────────────
+// 
 builder.Services.AddHostedService<ZaragozaOccupancyWorker>();
 builder.Services.AddHostedService<PARKit.Backend.Worker.ReservationStatusWorker>();
 
 
-// ─────────────────────────────────────────
+// 
 // 6. AUTENTICACIÓN JWT
-// ─────────────────────────────────────────
+// 
 var jwtKey = builder.Configuration["Jwt:SecretKey"]
     ?? throw new InvalidOperationException("Jwt:SecretKey no está configurada en appsettings.");
 
@@ -106,14 +106,14 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-// ─────────────────────────────────────────
+// 
 // 7. SIGNALR
-// ─────────────────────────────────────────
+// 
 builder.Services.AddSignalR();
 
-// ─────────────────────────────────────────
+// 
 // 8. CORS
-// ─────────────────────────────────────────
+// 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -132,9 +132,9 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ─────────────────────────────────────────
+// 
 // 9. CONTROLLERS + SWAGGER
-// ─────────────────────────────────────────
+// 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -180,9 +180,9 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// ─────────────────────────────────────────
+// 
 // 10. PIPELINE HTTP
-// ─────────────────────────────────────────
+// 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -201,9 +201,22 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// ─────────────────────────────────────────
+// 
 // 11. SIGNALR HUB
-// ─────────────────────────────────────────
+// 
 app.MapHub<ParkingHub>("/hubs/parking");
+
+// 
+// 12. MIGRACIONES AUTOMATICAS (Solo en Docker)
+// 
+if (Environment.GetEnvironmentVariable("RUN_MIGRATIONS_ON_STARTUP") == "true")
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        // Aplica las migraciones pendientes automaticamente
+        db.Database.Migrate();
+    }
+}
 
 app.Run();

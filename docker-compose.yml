@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: parkit_db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=PARKit_2026_Plazas! # Misma contraseña que en tu appsettings.json
+    ports:
+      - "1450:1433" # Mapeamos al 1450 localmente tal como lo tienes en tu appsettings
+    volumes:
+      - parkit_sql_data:/var/opt/mssql
+
+  api:
+    build: 
+      context: ./PARKit.Backend
+      dockerfile: Dockerfile
+    container_name: parkit_api
+    environment:
+      # Sobrescribimos la conexión para que el contenedor busque al contenedor "db" en vez de localhost
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=PARKit;User Id=sa;Password=PARKit_2026_Plazas!;TrustServerCertificate=True;
+      # Activamos la bandera para que solo Docker ejecute las migraciones
+      - RUN_MIGRATIONS_ON_STARTUP=true
+    ports:
+      - "8080:8080" # El backend estará accesible en localhost:8080
+    depends_on:
+      - db
+
+volumes:
+  parkit_sql_data:

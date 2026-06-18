@@ -7,7 +7,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoianVhbnBpbmEiLCJhIjoiY21sNzA3Mm4zMDJqeTNjc2k3M
 
 class ParkingMap {
     constructor() {
-        this.API_BASE     = window.AUTH ? AUTH.API_BASE : 'https://localhost:7033';
+        this.API_BASE     = window.CONFIG?.API_BASE || (window.AUTH ? AUTH.API_BASE : 'https://localhost:7033');
         this.map          = null;
         this.geocoder     = null;
         this.userLocation = null;

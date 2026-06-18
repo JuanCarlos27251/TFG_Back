@@ -2,7 +2,7 @@
    PARKit — Confirmación y Resumen de Pago
    ============================================== */
 
-const API_BASE = window.AUTH ? AUTH.API_BASE : 'https://localhost:7033';
+const API_BASE = window.CONFIG?.API_BASE || 'https://localhost:7033';
 
 document.addEventListener('DOMContentLoaded', () => {
     const raw = localStorage.getItem('confirmedReservation');

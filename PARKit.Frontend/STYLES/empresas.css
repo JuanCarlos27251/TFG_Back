@@ -15,7 +15,7 @@
     --primario-claro: rgba(224, 93, 71, 0.15); /* Fondo suave para botones activos */
 }
 
-/* ── Navegación del sidebar ─────────────────── */
+/*  Navegación del sidebar  */
 .nav-item {
     display:       flex;
     align-items:   center;
@@ -39,7 +39,7 @@
     font-weight:      600;
 }
 
-/* ── Tabla del dashboard ────────────────────── */
+/*  Tabla del dashboard  */
 .tabla-business th {
     padding:          1rem 1.5rem;
     font-size:        0.75rem;
@@ -70,7 +70,7 @@
     background-color: rgba(255, 255, 255, 0.02);
 }
 
-/* ── Etiqueta de rol (personal) ─────────────── */
+/*  Etiqueta de rol (personal)  */
 .tag-rol {
     display:          inline-block;
     background-color: var(--fondo);
@@ -80,7 +80,7 @@
     border:           1px solid var(--borde);
 }
 
-/* ── Labels formulario configuración ────────── */
+/*  Labels formulario configuración  */
 .label-settings {
     font-size:      0.825rem;
     font-weight:    700;
@@ -89,7 +89,7 @@
     letter-spacing: 0.05em;
 }
 
-/* ── Ajustes Buscador Mapbox (Geocoder) para Tema Oscuro ── */
+/*  Ajustes Buscador Mapbox (Geocoder) para Tema Oscuro  */
 
 /* Caja principal */
 .mapboxgl-ctrl-geocoder {
@@ -125,7 +125,7 @@
     margin-top: 5px !important;
 }
 
-/* ── Desplegable de Sugerencias (Z-Index alto para estar por encima) ── */
+/*  Desplegable de Sugerencias (Z-Index alto para estar por encima)  */
 .mapboxgl-ctrl-geocoder .suggestions {
     background-color: var(--fondo-card) !important;
     border: 1px solid var(--borde) !important;

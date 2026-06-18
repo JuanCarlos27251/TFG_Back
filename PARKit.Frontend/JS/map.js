@@ -179,7 +179,7 @@ class ParkingMap {
         });
     }
 
-    // ── GESTIÓN DE PARKINGS Y RUTAS ──
+    //  GESTIÓN DE PARKINGS Y RUTAS 
 
     async cargarParkings() {
         try {
@@ -269,7 +269,7 @@ class ParkingMap {
         document.getElementById('detalle-nombre').textContent    = parking.name || 'Parking Municipal';
         document.getElementById('detalle-direccion').textContent = parking.address || 'Zaragoza';
         
-        // ── AQUÍ LA MAGIA: Lectura de Plazas de Base de Datos ──
+        //  AQUÍ LA MAGIA: Lectura de Plazas de Base de Datos 
         // Si hay 'availableSpots' validos, los pone, sino avisa con '--'
         document.getElementById('detalle-plazas').textContent    = parking.availableSpots != null ? parking.availableSpots : '--'; 
         
@@ -277,7 +277,7 @@ class ParkingMap {
         const totalSpots = parking.spots && parking.spots.length > 0 ? parking.spots.length : 'Depende de vía';
         document.getElementById('detalle-capacidad').textContent = totalSpots;
 
-        // ── LECTURA DE TARIFA OFICIAL ──
+        //  LECTURA DE TARIFA OFICIAL 
         let precioPantalla = 'Sin tarifa';
         if (parking.tarifs && parking.tarifs.length > 0) {
             precioPantalla = `${Number(parking.tarifs[0].pricePerHour).toFixed(2)} € / h`;
@@ -397,7 +397,7 @@ class ParkingMap {
         this.updateStatus('Explorando');
     }
 
-    // ── PASARELA DE CHECKOUT ──
+    //  PASARELA DE CHECKOUT 
 
     ejecutarReserva() {
         const p = this.selectedParking;
@@ -436,7 +436,7 @@ class ParkingMap {
         const el = document.getElementById('status-text');
         if (el) el.textContent = message;
     }
-    // ── RUTA PENDIENTE DESDE CONFIRMACIÓN DE PAGO ──
+    //  RUTA PENDIENTE DESDE CONFIRMACIÓN DE PAGO 
     comprobarRutaPendiente() {
         const raw = localStorage.getItem('pendingRoute');
         if (!raw) return;

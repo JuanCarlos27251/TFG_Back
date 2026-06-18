@@ -8,7 +8,7 @@
     let companyId = null;
     let todosLosParkings = []; // Para guardarlos en local para filtros/búsqueda
 
-    // ── Utilidades Básicas ──────────────────────────
+    //  Utilidades Básicas 
 
     async function apiFetch(url, opciones = {}) {
         const resp = await fetch(url, { headers: AUTH.cabecerasAuth(), ...opciones });
@@ -39,7 +39,7 @@
         if (subEl) subEl.textContent = empresa.email || '';
     }
 
-    // ── Lógica Principal "Mis Parkings" ────────────
+    //  Lógica Principal "Mis Parkings" 
 
     async function initMisParkings() {
         if (!verificarSesion()) return;
@@ -259,14 +259,14 @@
     }
 
 
-    // ── Log Out de esta pantalla ──
+    //  Log Out de esta pantalla 
     document.addEventListener('click', (e) => {
         if(e.target.closest('#btn-logout-empresa')){
             AUTH.cerrarSesion(true);
         }
     });
 
-    // ── Arranque Automático ──
+    //  Arranque Automático 
     document.addEventListener('DOMContentLoaded', initMisParkings);
 
 })();

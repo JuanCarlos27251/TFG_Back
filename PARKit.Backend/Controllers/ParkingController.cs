@@ -11,7 +11,6 @@ namespace PARKit.Backend.Controllers
     public class ParkingController : ControllerBase
     {
         private readonly IParkingService _parkingService;
-        //private readonly IZaragozaDataService _zaragozaService;
 
         public ParkingController(IParkingService parkingService)
         {

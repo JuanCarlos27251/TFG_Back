@@ -1,0 +1,21 @@
+{
+  "name": "PARKit - Gestión Inteligente",
+  "short_name": "PARKit",
+  "description": "App de gestión de aparcamientos y reservas para el TFG",
+  "start_url": "./HTMl/index.html",
+  "display": "standalone",
+  "background_color": "#161413",
+  "theme_color": "#e05d47",
+  "icons": [
+    {
+      "src": "./icon_PARKit.png.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon_PARKit2.png.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

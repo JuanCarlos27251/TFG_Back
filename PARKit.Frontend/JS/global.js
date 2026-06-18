@@ -3,7 +3,7 @@
    + Lógica de header dinámico según sesión
    ============================================== */
 
-// ── Configuración de Tailwind ──────────────────
+//  Configuración de Tailwind 
 window.tailwind.config = {
     darkMode: 'class',
     theme: {
@@ -20,7 +20,7 @@ window.tailwind.config = {
     },
 };
 
-// ── SISTEMA GLOBAL DE NOTIFICACIONES (TOAST PREMIUM) ──
+//  SISTEMA GLOBAL DE NOTIFICACIONES (TOAST PREMIUM) 
 window.mostrarToast = function(msg, tipo = 'exito') {
     // Buscar contenedor o crearlo automáticamente
     let cont = document.getElementById('contenedor-toast');
@@ -53,7 +53,7 @@ window.mostrarToast = function(msg, tipo = 'exito') {
     }, 2000);
 };
 
-// ── Lógica de header dinámico ──────────────────
+//  Lógica de header dinámico 
 // Se ejecuta al cargar el DOM en todas las páginas que incluyan este script.
 // Adapta los botones y la navegación según el estado de sesión del usuario.
 
@@ -78,19 +78,19 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {}
     }
 
-    // ── Referencias a elementos del header ────────
+    //  Referencias a elementos del header 
     const enlacesAuth  = document.getElementById('enlaces-auth');   // div con botones login/registro
     const avatarBtn    = document.getElementById('header-user-avatar'); // avatar del perfil (páginas internas)
     const navEmpresa   = document.querySelector('nav a[href*="empresa"], nav a[href*="Empresa"], nav a[href*="panelEmpresa"], nav a[href*="EMPRESA"]');
 
-    // ── Estado: SIN sesión ─────────────────────────
+    //  Estado: SIN sesión 
     if (!sesionActiva) {
         // Si el avatar está visible (páginas internas), lo ocultamos
         if (avatarBtn) avatarBtn.style.display = 'none';
         return; // el header por defecto ya muestra login/registro
     }
 
-    // ── Estado: CON sesión activa ──────────────────
+    //  Estado: CON sesión activa 
     const rol       = localStorage.getItem('parkit_rol');
     const esEmpresa = (rol === 'empresa');
     const esAdmin   = (rol === 'Admin'); // Nueva validación
@@ -162,4 +162,16 @@ document.addEventListener('DOMContentLoaded', () => {
         else avatarBtn.href = 'perfil.html';
     }
 
+    //  REGISTRO DE SERVICE WORKER (PWA) 
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            // Registramos el sw.js que está en la raíz de PARKit.Frontend
+            navigator.serviceWorker.register('../sw.js')
+                .then(reg => console.log('PWA: Service Worker registrado.', reg.scope))
+                .catch(err => console.error('PWA: Error al registrar Service Worker.', err));
+        });
+    }  
+
 });
+
+

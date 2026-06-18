@@ -6,7 +6,7 @@
     const API = AUTH.API_BASE;
     let userId = null;
 
-    // ── Utilidades ──────────────────────────────
+    //  Utilidades 
 
     function headers() { return AUTH.cabecerasAuth(); }
 
@@ -31,7 +31,7 @@
         m.classList.remove('flex');
     }
 
-    // ── Inicialización ──────────────────────────
+    //  Inicialización 
 
     async function init() {
         if (!AUTH.estaAutenticado()) {
@@ -55,7 +55,7 @@
         if (btn && u) btn.innerHTML = `<span style="font-size:1rem;font-weight:700">${u.inicial || 'U'}</span>`;
     }
 
-    // ── Datos personales ────────────────────────
+    //  Datos personales 
 
     function renderDatosUsuario(user) {
         const inicial = (user.name || 'U').charAt(0).toUpperCase();
@@ -92,7 +92,7 @@
         }
     });
 
-    // ── Modal cambio de contraseña ──────────────
+    //  Modal cambio de contraseña 
 
     document.getElementById('btn-change-password')?.addEventListener('click', () => abrirModal('modal-password'));
     document.getElementById('btn-cancel-password')?.addEventListener('click', cerrarModalPassword);
@@ -135,7 +135,7 @@
         });
     });
 
-    // ── Vehículos ───────────────────────────────
+    //  Vehículos 
 
     async function cargarVehiculos() {
         const cont = document.getElementById('vehicles-list');
@@ -251,7 +251,7 @@
         }
     };
 
-    // ── Métodos de pago ─────────────────────────
+    //  Métodos de pago 
 
     async function cargarMetodosPago() {
         if (!userId) return;
@@ -355,7 +355,7 @@
         }
     };
 
-    // ── Cerrar sesión ───────────────────────────
+    //  Cerrar sesión 
     document.getElementById('btn-logout')?.addEventListener('click', () => AUTH.cerrarSesion(true));
 
     document.addEventListener('DOMContentLoaded', init);

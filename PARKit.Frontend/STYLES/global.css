@@ -7,7 +7,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
 
-/* ── Variables: modo claro (defecto) ─────────── */
+/*  Variables: modo claro (defecto)  */
 :root {
     /* Colores de marca Salmón/Terracota */
     --primario:        #e05d47;
@@ -45,14 +45,14 @@
     --sombra:       0 6px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
-/* ── Reset base ──────────────────────────────── */
+/*  Reset base  */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html  { scroll-behavior: smooth; }
 a     { color: inherit; text-decoration: none; }
 img   { display: block; max-width: 100%; }
 button { cursor: pointer; font-family: var(--fuente); }
 
-/* ── Layout ──────────────────────────────────── */
+/*  Layout  */
 .layout-base {
     font-family:            var(--fuente);
     background-color:       var(--fondo);
@@ -77,7 +77,7 @@ button { cursor: pointer; font-family: var(--fuente); }
     transition:       background-color var(--transicion), border-color var(--transicion);
 }
 
-/* ── Card ────────────────────────────────────── */
+/*  Card  */
 .card {
     background-color: var(--fondo-card);
     border:           1px solid var(--borde);
@@ -90,7 +90,7 @@ button { cursor: pointer; font-family: var(--fuente); }
     box-shadow: 0 12px 30px rgba(224, 93, 71, 0.12); /* Resplandor salmón */
 }
 
-/* ── Inputs ──────────────────────────────────── */
+/*  Inputs  */
 .input-base {
     width:            100%;
     padding:          0.625rem 1rem;
@@ -112,7 +112,7 @@ button { cursor: pointer; font-family: var(--fuente); }
 }
 .input-con-icono { padding-left: 2.5rem; }
 
-/* ── Iconos Material Symbols ─────────────────── */
+/*  Iconos Material Symbols  */
 .material-symbols-outlined {
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     vertical-align: middle;
@@ -120,7 +120,7 @@ button { cursor: pointer; font-family: var(--fuente); }
 }
 .icono-relleno { font-variation-settings: 'FILL' 1; }
 
-/* ── Utilidades de color (CSS nativo) ────────── */
+/*  Utilidades de color (CSS nativo)  */
 /* Usar text-primario (Tailwind) o texto-primario (CSS) indistintamente;
    ambas clases producen el mismo resultado. */
 .texto-suave,   .text-suave   { color: var(--texto-suave); }
@@ -129,7 +129,7 @@ button { cursor: pointer; font-family: var(--fuente); }
 .texto-rojo,    .text-rojo    { color: var(--rojo); }
 .texto-naranja, .text-naranja { color: var(--naranja); }
 
-/* ── Botones ─────────────────────────────────── */
+/*  Botones  */
 .btn {
     display:       inline-flex;
     align-items:   center;
@@ -185,7 +185,7 @@ button { cursor: pointer; font-family: var(--fuente); }
 }
 .avatar-btn:hover { background-color: var(--primario); color: white; }
 
-/* ── Badges ──────────────────────────────────── */
+/*  Badges  */
 .badge {
     display:       inline-flex;
     align-items:   center;
@@ -206,18 +206,18 @@ button { cursor: pointer; font-family: var(--fuente); }
 .dark .badge-primario    { background: #1e3a8a; color: #93c5fd; }
 .dark .badge-naranja { background: #7c2d12; color: #fdba74; }
 
-/* ── Animaciones ─────────────────────────────── */
+/*  Animaciones  */
 .aparecer { animation: aparecer 0.4s var(--transicion) both; }
 @keyframes aparecer {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Utilidades ──────────────────────────────── */
+/*  Utilidades  */
 .sin-scrollbar               { scrollbar-width: none; -ms-overflow-style: none; }
 .sin-scrollbar::-webkit-scrollbar { display: none; }
 
-/* ── Toast ───────────────────────────────────── */
+/*  Toast  */
 #contenedor-toast {
     position:       fixed;
     top:            5.5rem; /* Esquina superior derecha, bajo el header */

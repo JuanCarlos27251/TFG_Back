@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm(`¿Deseas cancelar esta reserva?\nPenalización: ${fee.toFixed(2)} €`)) return;
 
         try {
-            // ✅ Llamada al endpoint correcto de cancelación
+            //  Llamada al endpoint correcto de cancelación
             const resp = await fetch(`${API_BASE}/api/Reservation/${d.reservationId}/cancel`, {
                 method: 'PUT',
                 headers: AUTH.cabecerasAuth()

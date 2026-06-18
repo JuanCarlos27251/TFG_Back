@@ -17,6 +17,7 @@ services:
       context: ./PARKit.Backend
       dockerfile: Dockerfile
     container_name: parkit_api
+    restart: on-failure 
     environment:
       # Sobrescribimos la conexión para que el contenedor busque al contenedor "db" en vez de localhost
       - ConnectionStrings__DefaultConnection=Server=db,1433;Database=PARKit;User Id=sa;Password=PARKit_2026_Plazas!;TrustServerCertificate=True;

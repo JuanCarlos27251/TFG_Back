@@ -40,7 +40,7 @@ namespace PARKit.Backend.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")] // Solo un súper admin debería poder listar TODAS las empresas
+        [Authorize(Roles = "Admin")] 
         public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAll()
         {
             var companies = await _companyService.GetAllCompaniesAsync();

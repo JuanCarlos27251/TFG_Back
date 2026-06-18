@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PARKit — Parking inteligente en tiempo real</title>
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#e05d47">
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="../JS/auth.js"></script>
     <script src="../JS/config.js"></script>
     <script src="../JS/global.js"></script>
     <link rel="stylesheet" href="../STYLES/global.css" />
@@ -27,7 +30,7 @@
         <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
             <a href="map.html" class="hover:text-primario transition-colors">Mapa</a>
             <a href="#como-funciona" class="hover:text-primario transition-colors">Cómo funciona</a>
-            <a href="./EMPRESA/" class="hover:text-primario transition-colors">Para empresas</a>
+            <a href="./EMPRESA/panelEmpresa.html" class="hover:text-primario transition-colors">Para empresas</a>
         </nav>
 
         <!-- Acciones auth (JS las rellena) -->
@@ -68,7 +71,7 @@
                     <span class="material-symbols-outlined">map</span>
                     Ver mapa
                 </a>
-                <a href="BussinessDashboard.html" class="btn btn-contorno btn-lg">
+                <a href="./EMPRESA/panelEmpresa.html" class="btn btn-contorno btn-lg">
                     Gestionar espacios
                 </a>
             </div>

@@ -66,7 +66,7 @@ const AUTH = (() => {
         if (redirigir) window.location.href = '/PARKit.Frontend/HTMl/index.html';
     }
 
-    // ── Decodificador de payload JWT ───────────────────────────────
+    //  Decodificador de payload JWT 
 
     function decodificarToken(token) {
         try {
@@ -76,7 +76,7 @@ const AUTH = (() => {
         }
     }
 
-    // ── Extraer datos básicos del payload ──────────────────────────
+    //  Extraer datos básicos del payload 
 
     function extraerDatosDeToken(token, esEmpresaLogin) {
         const payload = decodificarToken(token);
@@ -108,7 +108,7 @@ const AUTH = (() => {
     }
 
 
-    // ── Llamada genérica a la API ──────────────────────────────────
+    //  Llamada genérica a la API 
 
     async function llamarAPI(url, cuerpo) {
         const respuesta = await fetch(url, {
@@ -132,7 +132,7 @@ const AUTH = (() => {
         return datos;
     }
 
-    // ── Login de usuario ───────────────────────────────────────────
+    //  Login de usuario 
 
     async function loginUsuario(email, password) {
         const datos = await llamarAPI(RUTAS.loginUsuario, { email, password });
@@ -146,7 +146,7 @@ const AUTH = (() => {
     }
 
 
-    // ── Login de empresa ───────────────────────────────────────────
+    //  Login de empresa 
 
     async function loginEmpresa(email, password) {
         const datos = await llamarAPI(RUTAS.loginEmpresa, { email, password });
@@ -158,7 +158,7 @@ const AUTH = (() => {
         return infoUsuario;
     }
 
-    // ── Registro de usuario ────────────────────────────────────────
+    //  Registro de usuario 
 
     async function registrarUsuario(nombre, email, password) {
         const datos = await llamarAPI(RUTAS.registroUsuario, {
@@ -172,7 +172,7 @@ const AUTH = (() => {
         return infoUsuario;
     }
 
-    // ── Registro de empresa ────────────────────────────────────────
+    //  Registro de empresa 
 
     async function registrarEmpresa(nombre, cif, email, password) {
         // El registro de empresa no devuelve token, redirige al login
@@ -186,7 +186,7 @@ const AUTH = (() => {
         return true;
     }
 
-    // ── Cabecera con token para peticiones autenticadas ───────────
+    //  Cabecera con token para peticiones autenticadas 
 
     function cabecerasAuth() {
         const token = obtenerToken();
@@ -196,7 +196,7 @@ const AUTH = (() => {
         };
     }
 
-    // ── API pública del módulo ─────────────────────────────────────
+    //  API pública del módulo 
 
     return {
         loginUsuario,

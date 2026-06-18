@@ -8,7 +8,7 @@
     let modoEdicion = false;
     let companyId = null;
 
-    // ── Utilidades ──────────────────────────────
+    //  Utilidades 
     async function apiFetch(url, opciones = {}) {
         const config = { 
             headers: { 'Content-Type': 'application/json', ...AUTH.cabecerasAuth() },
@@ -22,7 +22,7 @@
         return resp.status === 204 ? null : resp.json();
     }
 
-    // ── Arranque ────────────────────────────────
+    //  Arranque 
     async function initFormulario() {
         if (!AUTH.estaAutenticado() || !AUTH.esEmpresa()) {
             window.location.href = '../login.html';
@@ -146,7 +146,7 @@
         } catch (e) { mostrarToast(e.message, 'error'); }
     }
 
-    // ── Tarifas ─────────────────────────────────
+    //  Tarifas 
     async function cargarTarifas() {
         const tarifs = await apiFetch(`${API}/api/ParkingManagement/parking/${parkingId}/tarifs`);
         const cont = document.getElementById('tarifs-body');
@@ -245,7 +245,7 @@
         mostrarToast('Tarifa eliminada');
     }
 
-    // ── Otras Funciones ─────────────────────────
+    //  Otras Funciones 
     async function generarPlazas() {
         const cant = parseInt(document.getElementById('p-total').value);
         const tipo = document.getElementById('p-spot-type').value;

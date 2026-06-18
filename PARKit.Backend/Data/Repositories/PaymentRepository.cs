@@ -95,8 +95,6 @@ namespace PARKit.Backend.Repositories
                 Currency = payment.Currency,
                 ClientSecret = payment.ClientSecret,
                 PaymentDate = payment.PaymentDate,
-                
-                // ¡ESTA ES LA LÍNEA QUE FALTABA PARA QUE NO DEVUELVA NULL AL FRONTEND!
                 ExternalTransactionId = payment.ExternalTransactionId 
             };
         }

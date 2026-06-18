@@ -170,10 +170,10 @@
 
     <script>
     (() => {
-        // ── Estado del formulario ─────────────────────────
+        //  Estado del formulario 
         let modoActual = 'usuario'; // 'usuario' | 'empresa'
 
-        // ── Redirigir si ya hay sesión activa ─────────────
+        //  Redirigir si ya hay sesión activa 
         if (AUTH.estaAutenticado()) {
             const rolActual = localStorage.getItem('parkit_rol');
             if (rolActual === 'empresa') window.location.href = './EMPRESA/panelEmpresa.html';
@@ -181,7 +181,7 @@
             else window.location.href = 'index.html';
         }
 
-        // ── Referencias ───────────────────────────────────
+        //  Referencias 
         const tabUsuario  = document.getElementById('tab-usuario');
         const tabEmpresa  = document.getElementById('tab-empresa');
         const formLogin   = document.getElementById('form-login');
@@ -191,7 +191,7 @@
         const iconoBtn    = document.getElementById('icono-btn-login');
         const pieLogin    = document.getElementById('pie-login');
 
-        // ── Toggle contraseña visible ─────────────────────
+        //  Toggle contraseña visible 
         document.getElementById('btn-ver-password')?.addEventListener('click', () => {
             const input  = document.getElementById('login-password');
             const icono  = document.getElementById('icono-ver-password');
@@ -200,7 +200,7 @@
             icono.textContent = visible ? 'visibility' : 'visibility_off';
         });
 
-        // ── Cambio de tab ─────────────────────────────────
+        //  Cambio de tab 
         function activarTab(modo) {
             modoActual = modo;
             const esEmpresa = modo === 'empresa';
@@ -232,7 +232,7 @@
         tabUsuario.addEventListener('click', () => activarTab('usuario'));
         tabEmpresa.addEventListener('click', () => activarTab('empresa'));
 
-        // ── Mostrar / ocultar error ───────────────────────
+        //  Mostrar / ocultar error 
         function mostrarError(msg) {
             errorEl.textContent = msg;
             errorEl.classList.remove('hidden');
@@ -243,7 +243,7 @@
             errorEl.classList.add('hidden');
         }
 
-        // ── Estado de carga del botón ─────────────────────
+        //  Estado de carga del botón 
         function setCargando(activo) {
             btnLogin.disabled       = activo;
             iconoBtn.textContent    = activo ? 'hourglass_top' : 'login';
@@ -252,7 +252,7 @@
             else        iconoBtn.classList.remove('animate-spin');
         }
 
-        // ── Envío del formulario ──────────────────────────
+        //  Envío del formulario 
         formLogin.addEventListener('submit', async (e) => {
             e.preventDefault();
             ocultarError();
@@ -286,7 +286,7 @@
             }
         });
 
-        // ── Pre-seleccionar tab empresa si viene por URL ──
+        //  Pre-seleccionar tab empresa si viene por URL 
         // Ej: login.html?tipo=empresa (desde el panel de empresas)
         const params = new URLSearchParams(window.location.search);
         if (params.get('tipo') === 'empresa') activarTab('empresa');

@@ -211,17 +211,17 @@
 
     <script>
     (() => {
-        // ── Estado ────────────────────────────────────────
+        //  Estado 
         let modoActual = 'conductor'; // 'conductor' | 'empresa'
 
-        // ── Redirigir si ya hay sesión activa ─────────────
+        //  Redirigir si ya hay sesión activa 
         if (AUTH.estaAutenticado()) {
             window.location.href = AUTH.esEmpresa()
                 ? './EMPRESA/panelEmpresa.html'
                 : 'index.html';
         }
 
-        // ── Referencias ───────────────────────────────────
+        //  Referencias 
         const tabConductor   = document.getElementById('reg-tab-conductor');
         const tabEmpresa     = document.getElementById('reg-tab-empresa');
         const camposEmpresa  = document.getElementById('campos-empresa');
@@ -234,7 +234,7 @@
         const errorEl        = document.getElementById('reg-error');
         const exitoEl        = document.getElementById('reg-exito');
 
-        // ── Toggle contraseña visible ─────────────────────
+        //  Toggle contraseña visible 
         document.getElementById('btn-ver-reg-password')?.addEventListener('click', () => {
             const input = document.getElementById('reg-password');
             const icono = document.getElementById('icono-ver-reg-password');
@@ -243,7 +243,7 @@
             icono.textContent = visible ? 'visibility' : 'visibility_off';
         });
 
-        // ── Indicador de fortaleza de contraseña ──────────
+        //  Indicador de fortaleza de contraseña 
         document.getElementById('reg-password')?.addEventListener('input', (e) => {
             const val = e.target.value;
             let nivel = 0;
@@ -270,7 +270,7 @@
             }
         });
 
-        // ── Cambio de tab ─────────────────────────────────
+        //  Cambio de tab 
         function activarTab(modo) {
             modoActual = modo;
             const esEmpresa = modo === 'empresa';
@@ -319,7 +319,7 @@
         tabConductor.addEventListener('click', () => activarTab('conductor'));
         tabEmpresa.addEventListener('click',   () => activarTab('empresa'));
 
-        // ── Mensajes ──────────────────────────────────────
+        //  Mensajes 
         function mostrarError(msg) {
             errorEl.textContent = msg;
             errorEl.classList.remove('hidden');
@@ -337,7 +337,7 @@
             exitoEl.classList.add('hidden');
         }
 
-        // ── Estado de carga del botón ─────────────────────
+        //  Estado de carga del botón 
         function setCargando(activo) {
             btnRegistro.disabled  = activo;
             iconoBtn.textContent  = activo ? 'hourglass_top' : (modoActual === 'empresa' ? 'business' : 'person_add');
@@ -346,7 +346,7 @@
             else        iconoBtn.classList.remove('animate-spin');
         }
 
-        // ── Validaciones básicas ──────────────────────────
+        //  Validaciones básicas 
         function validar() {
             const nombre   = document.getElementById('reg-nombre').value.trim();
             const email    = document.getElementById('reg-email').value.trim();
@@ -365,7 +365,7 @@
             return null; // sin errores
         }
 
-        // ── Envío del formulario ──────────────────────────
+        //  Envío del formulario 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             ocultarMensajes();
@@ -402,7 +402,7 @@
             }
         });
 
-        // ── Pre-seleccionar tab si viene por URL ──────────
+        //  Pre-seleccionar tab si viene por URL 
         const params = new URLSearchParams(window.location.search);
         if (params.get('tipo') === 'empresa') activarTab('empresa');
 

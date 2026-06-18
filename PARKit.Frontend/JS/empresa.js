@@ -8,7 +8,7 @@
     let companyId = null;
     let chartInstancias = {}; // Para destruir gráficos antiguos antes de redibujar
 
-    // ── Utilidades ──────────────────────────────
+    //  Utilidades 
 
     function headers() { return AUTH.cabecerasAuth(); }
 
@@ -322,9 +322,6 @@
     }
 
     function crearGraficoIngresosPorParking(ocupacion) {
-        // En tu controlador actual no hay desglose de ingresos por parking exacto para grafica de barras.
-        // Simularemos esta visualización basándonos en la capacidad como aproximador para que el gráfico no esté vacío.
-        // (En un futuro puedes crear un endpoint en StatisticsController para esto).
         const labels = ocupacion.map(o => o.parkingName);
         const estimacionReservas = ocupacion.map(o => o.occupiedSpots * 1.5); // Dato ficticio basado en ocupación
 

@@ -13,7 +13,7 @@
     let filtroTipo = 'all';
     let filtroEstadoActivo = null; 
 
-    // ── Novedad: Fondos Sólidos Reales (Relleno completo) ──
+    //  Novedad: Fondos Sólidos Reales (Relleno completo) 
     const STATUS = {
         0: { name: 'Libre',         color: 'verde',   bgClass: 'bg-[#22c55e] text-white border-transparent shadow shadow-[#22c55e]/40' },
         1: { name: 'En Uso',        color: 'naranja', bgClass: 'bg-[#eab308] text-white border-transparent shadow shadow-[#eab308]/40' }, // Amarillo
